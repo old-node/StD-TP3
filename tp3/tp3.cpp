@@ -9,15 +9,16 @@ Description:	3e travail pratique du cours Structure de donnée. Application de de
 #include <locale>
 #include <iostream>
 using namespace std;
-//#include <SFML/Graphics.hpp>
-//using namespace sf;
+#include <SFML/Graphics.hpp>
+using namespace sf;
+
 
 // Programme principal
 int main()
 {
 	setlocale(LC_CTYPE, "can");
 
-	/*
+	
 	RenderWindow sandbox;
 	//sandbox.create();
 	RectangleShape test(Vector2f(100, 100));
@@ -30,7 +31,7 @@ int main()
 	sandbox.create(VideoMode(300, 200), "Sandbox");
 	sandbox.draw(truc);
 	sandbox.draw(test);
-	*/
+	
 
 	system("pause");
 
