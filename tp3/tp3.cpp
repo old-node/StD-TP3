@@ -18,7 +18,7 @@ int main()
 {
 	setlocale(LC_CTYPE, "can");
 
-	
+	//Commit
 	RenderWindow sandbox;
 	//sandbox.create();
 	RectangleShape test(Vector2f(100, 100));
