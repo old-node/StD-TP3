@@ -11,6 +11,12 @@ Description:	3e travail pratique du cours Structure de donnée. Application de de
 using namespace std;
 #include <SFML/Graphics.hpp>
 using namespace sf;
+#include "cursor.h"
+
+
+const float SCREENW = 800;
+const int NBBUTTON = 5;
+const float BW = SCREENW / NBBUTTON;
 
 
 // Programme principal
@@ -18,21 +24,131 @@ int main()
 {
 	setlocale(LC_CTYPE, "can");
 
-	// adding stuff to check branch
-	
 	RenderWindow sandbox;
-	//sandbox.create();
-	RectangleShape test(Vector2f(100, 100));
+	sandbox.create(VideoMode(SCREENW, 800), "Sandbox");
+
+	Color tColor;
+	Font font;
+	font.loadFromFile("styles/font_arial.ttf");
+
+	vector<oButton*> bOptions;
+	bOptions.push_back(new oB_cBox(0, 0, BW, 30, font, "Boite"));
+	bOptions.push_back(new oB_cLine(BW, 0, BW, 30, font, "Ligne"));
+	bOptions.push_back(new oB_remove(BW * 2, 0, BW, 30, font, "Effacer"));
+	bOptions.push_back(new oB_link(BW * 3, 0, BW, 30, font, "Lier"));
+	bOptions.push_back(new oB_select(BW * 4, 0, BW, 30, font, "Sélectionner"));
+	vector<Vertex> s;
+
+	cursor pointer;
+
+	Event event;
+
+	//system("pause");
+
+	/* Tests */
+	RectangleShape test(Vector2f(100, 500));
 	test.setFillColor(Color(120, 210, 100, 130));
-
 	Texture machin;
-	machin.loadFromFile("machin.jpg");
+	machin.loadFromFile("images/machin.jpg");
 	Sprite truc(machin);
-
-	sandbox.create(VideoMode(300, 200), "Sandbox");
 	sandbox.draw(truc);
 	sandbox.draw(test);
-	
+	/* Fin des tests */
+
+	bool play = true;
+	while (play)
+	{
+		while (sandbox.isOpen())
+		{
+			while (sandbox.pollEvent(event))
+			{
+				sandbox.clear();
+
+				switch (event.type)
+				{
+				case Event::Closed:
+					exit(0);
+				case Event::KeyPressed:
+					if (event.key.code == Keyboard::Escape)
+						exit(0);
+				case Event::MouseButtonPressed:
+					/// Doit exclure les zones sans boutons ici
+					// 
+
+					for (auto & b : bOptions)	// Pour chaque bouton d'options
+					{
+						// Vérifie si l'utilisateur clique sur le bouton
+						if (b->gotMouse(sandbox))
+						{
+							pointer.setMode(b);
+							pointer.click(Mouse::getPosition(sandbox));
+
+							cout << "A click was made in the button whos origin is at : ("
+								<< b->RectangleShape::getOrigin().x << ","
+								<< b->RectangleShape::getOrigin().y << "), the mouse was at : ("
+								<< Mouse::getPosition(sandbox).x << ","
+								<< Mouse::getPosition(sandbox).y << ").";
+							break;
+						}
+					}
+
+					break;
+				case Event::MouseButtonReleased:
+
+					for (auto & b : bOptions)
+					{
+						if (b->gotMouse(sandbox))
+						{
+							pointer.setMode(b);
+							pointer.unclick(Mouse::getPosition(sandbox));
+							b->drawFocus(sandbox);
+							cout << "A click was released in the button whos origin is at : ("
+								<< b->RectangleShape::getOrigin().x << ","
+								<< b->RectangleShape::getOrigin().y << "), the mouse was at : ("
+								<< Mouse::getPosition(sandbox).x << ","
+								<< Mouse::getPosition(sandbox).y << ").";
+							break;
+						}
+					}
+
+					break;
+				case Event::MouseMoved:
+					/// Doit exclure les zones ayant des boutons ici
+					// 
+
+					s.push_back(Vertex((Vector2f)Mouse::getPosition(sandbox), 
+						Color::Red, (Vector2f)Mouse::getPosition(sandbox)));
+
+					for (auto & b : bOptions)
+					{
+						if (b->gotMouse(sandbox))
+						{
+							b->RectangleShape::setFillColor(Color::Black);
+							break;
+						}
+					}
+
+					if (pointer.getClicking())
+						pointer.drag(Mouse::getPosition(sandbox));
+					break;
+				default:
+					break;
+				}
+				
+				for (auto & b : bOptions)
+					b->draw(sandbox);
+				for (const auto & p : s)
+					sandbox.draw(&p, 1, sf::PrimitiveType::Points);
+
+				//pointer.drawFocus(sandbox);
+
+				sandbox.display();
+			}
+		}
+
+		if (false)
+			play = false;
+	}
 
 	system("pause");
 
