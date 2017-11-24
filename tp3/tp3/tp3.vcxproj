@@ -111,16 +111,21 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\cursor.cpp" />
+    <ClCompile Include="..\oButton.cpp" />
     <ClCompile Include="..\tp3.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\cursor.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="..\machin.jpg" />
+    <ClInclude Include="..\oButton.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="..\styles\font_arial.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\images\machin.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
