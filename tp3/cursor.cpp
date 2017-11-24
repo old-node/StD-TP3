@@ -67,6 +67,7 @@ void cursor::click(Vector2i click)
 {
 	_clicking = true;
 	_click = (Vector2f)click;
+
 }
 
 void cursor::drag(Vector2i current)
