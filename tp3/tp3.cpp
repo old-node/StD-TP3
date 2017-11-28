@@ -15,6 +15,7 @@ using namespace std;
 using namespace sf;
 
 
+int mainSimon();
 
 
 
@@ -22,6 +23,8 @@ using namespace sf;
 int main()
 {
 	setlocale(LC_CTYPE, "can");
+
+	mainSimon();
 
 	/*
 	sqlConnect bd;
@@ -69,6 +72,7 @@ int main()
 
 	//system("pause");
 
+	
 
 	bool play = true;
 	while (play)
@@ -92,6 +96,7 @@ int main()
 					// 
 					if (event.mouseButton.button == Mouse::Left)
 						pointer.click();
+					
 					break;
 				case Event::MouseButtonReleased:
 					if (event.mouseButton.button == Mouse::Left)
@@ -130,6 +135,15 @@ int main()
 	return 0;
 }
 
+
+int mainSimon()
+{
+	cout << "Bienvenue dans le main de Simon!" << endl;
+
+	system("pause");
+	return 0;
+
+}
 /*for (auto & b : bOptions)
 {
 if (b->gotMouse(sandbox))
