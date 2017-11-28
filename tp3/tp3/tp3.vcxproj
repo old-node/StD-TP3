@@ -75,6 +75,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
+    <Link />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -112,14 +113,21 @@
   <ItemGroup>
     <ClCompile Include="..\cursor.cpp" />
     <ClCompile Include="..\oButton.cpp" />
+<<<<<<< HEAD
+    <ClCompile Include="..\tp3.cpp" />
+    <ClCompile Include="sqlConnect.cpp" />
+=======
     <ClCompile Include="..\tp3.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\tp3Simon.cpp" />
+>>>>>>> refs/remotes/origin/master
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\cursor.h" />
     <ClInclude Include="..\oButton.h" />
+    <ClInclude Include="painterFuction.h" />
+    <ClInclude Include="sqlConnect.h" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="..\styles\font_arial.ttf" />
