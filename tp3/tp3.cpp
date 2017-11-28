@@ -9,14 +9,13 @@ Description:	3e travail pratique du cours Structure de donnée. Application de de
 #include <locale>
 #include <iostream>
 using namespace std;
-#include <SFML/Graphics.hpp>
-using namespace sf;
+//#include "tp3/sqlConnect.h"
+
 #include "cursor.h"
+using namespace sf;
 
 
-const float SCREENW = 800;
-const int NBBUTTON = 5;
-const float BW = SCREENW / NBBUTTON;
+
 
 
 // Programme principal
@@ -24,36 +23,52 @@ int main()
 {
 	setlocale(LC_CTYPE, "can");
 
-	RenderWindow sandbox;
-	sandbox.create(VideoMode(SCREENW, 800), "Sandbox");
+	/*
+	sqlConnect bd;
+	bd.selectUsager();
 
-	Color tColor;
-	Font font;
-	font.loadFromFile("styles/font_arial.ttf");
+	const char * nom = { "LastName\0" };
+	const char * prenom = { "Uner\0" };
 
-	vector<oButton*> bOptions;
-	bOptions.push_back(new oB_cBox(0, 0, BW, 30, font, "Boite"));
-	bOptions.push_back(new oB_cLine(BW, 0, BW, 30, font, "Ligne"));
-	bOptions.push_back(new oB_remove(BW * 2, 0, BW, 30, font, "Effacer"));
-	bOptions.push_back(new oB_link(BW * 3, 0, BW, 30, font, "Lier"));
-	bOptions.push_back(new oB_select(BW * 4, 0, BW, 30, font, "Sélectionner"));
-	vector<Vertex> s;
+	bd.ajouteUsager(nom, prenom);
+	*/
 
-	cursor pointer;
-
-	Event event;
-
-	//system("pause");
 
 	/* Tests */
 	RectangleShape test(Vector2f(100, 500));
 	test.setFillColor(Color(120, 210, 100, 130));
 	Texture machin;
-	machin.loadFromFile("images/machin.jpg");
+	machin.loadFromFile("machin.jpg");
 	Sprite truc(machin);
+
+	/*Text help("HELP ME", *FONT, 80);
+	Text help3("DONT help", *FONT, 80);
+	help.setPosition(Vector2f(60,88));
+	help3.setPosition(Vector2f(60, 120));
+	sandbox.draw(help);
+	sandbox.draw(help3);
+
+	sandbox.display();
+	/* Fin des tests */
+
+
+	RenderWindow sandbox		// Fenêtre principale ?
+	(VideoMode(SCREENW, SCREENH), "Sandbox");
+
+	vector<Vertex> v;			// Points rouges
+	vector<RectangleShape> r;
+	vector<RectangleShape> visible;
+	cursor pointer(sandbox);	// Souris
+	Event event;				// Événement de l'application
+
+	sandbox.clear();
 	sandbox.draw(truc);
 	sandbox.draw(test);
-	/* Fin des tests */
+	pointer.drawMenu();
+	sandbox.display();
+
+	//system("pause");
+
 
 	bool play = true;
 	while (play)
@@ -63,6 +78,7 @@ int main()
 			while (sandbox.pollEvent(event))
 			{
 				sandbox.clear();
+				visible.clear();
 
 				switch (event.type)
 				{
@@ -74,73 +90,32 @@ int main()
 				case Event::MouseButtonPressed:
 					/// Doit exclure les zones sans boutons ici
 					// 
-
-					for (auto & b : bOptions)	// Pour chaque bouton d'options
-					{
-						// Vérifie si l'utilisateur clique sur le bouton
-						if (b->gotMouse(sandbox))
-						{
-							pointer.setMode(b);
-							pointer.click(Mouse::getPosition(sandbox));
-
-							cout << "A click was made in the button whos origin is at : ("
-								<< b->RectangleShape::getOrigin().x << ","
-								<< b->RectangleShape::getOrigin().y << "), the mouse was at : ("
-								<< Mouse::getPosition(sandbox).x << ","
-								<< Mouse::getPosition(sandbox).y << ").";
-							break;
-						}
-					}
-
+					if (event.mouseButton.button == Mouse::Left)
+						pointer.click();
 					break;
 				case Event::MouseButtonReleased:
-
-					for (auto & b : bOptions)
-					{
-						if (b->gotMouse(sandbox))
-						{
-							pointer.setMode(b);
-							pointer.unclick(Mouse::getPosition(sandbox));
-							b->drawFocus(sandbox);
-							cout << "A click was released in the button whos origin is at : ("
-								<< b->RectangleShape::getOrigin().x << ","
-								<< b->RectangleShape::getOrigin().y << "), the mouse was at : ("
-								<< Mouse::getPosition(sandbox).x << ","
-								<< Mouse::getPosition(sandbox).y << ").";
-							break;
-						}
-					}
-
+					if (event.mouseButton.button == Mouse::Left)
+						if (pointer.unclick() == 1)
+							r.push_back(*pointer.getFocus());
 					break;
 				case Event::MouseMoved:
-					/// Doit exclure les zones ayant des boutons ici
-					// 
-
-					s.push_back(Vertex((Vector2f)Mouse::getPosition(sandbox),
+					/// Doit exclure les zones ayant des boutons ici ?
+					if (pointer.isClicking())
+						pointer.drag();
+					v.push_back(Vertex((Vector2f)Mouse::getPosition(sandbox),
 						Color::Red, (Vector2f)Mouse::getPosition(sandbox)));
-
-					for (auto & b : bOptions)
-					{
-						if (b->gotMouse(sandbox))
-						{
-							b->RectangleShape::setFillColor(Color::Black);
-							break;
-						}
-					}
-
-					if (pointer.getClicking())
-						pointer.drag(Mouse::getPosition(sandbox));
 					break;
 				default:
 					break;
 				}
 
-				for (auto & b : bOptions)
-					b->draw(sandbox);
-				for (const auto & p : s)
-					sandbox.draw(&p, 1, sf::PrimitiveType::Points);
+				for (const auto & V : v)
+					sandbox.draw(&V, 1, PrimitiveType::Points);
+				for (const auto & R : r)
+					sandbox.draw(R);
 
-				//pointer.drawFocus(sandbox);
+				pointer.drawFocus(); /// ?
+				pointer.drawMenu();
 
 				sandbox.display();
 			}
@@ -155,94 +130,17 @@ int main()
 	return 0;
 }
 
-/*	TP3
-============
-/////// Interfaces à Structure de données
-Pour que SFML soit opérationnel, il faut suivre le guide suivant:
-https://www.sfml-dev.org/tutorials/2.4/start-vc-fr.php
-Les classes précédés de '^' sont nécessaires pour l'applications
-Celles précédés de '¨' sont fortement souhaitées
-Il va fauloir dabors faire fonctionner sfml avant de pouvoir se séparer les tâches.
-///////
-__Classes
-¨::Save()				// Pour le TP3 de SQL
-¨::Load()				// idem
-::Parameters()
-^::Operations()			// Liste des outils graphique disponible de l'application
-+ 1 for each tools?
-^::Interface()			// Lieu d'affichage et de dessins
-^::Window()			// Fenêtre qui contiens l'interface
-^::Button()			// Boutons de commandes d'options et d'opérations
-^::Cursor()			// Curseur de la souris pour les opérations graphiques manuelles
-^::History()		// Contiens les opérations passés et 'futures'
-::Runtime()
-::Clipboard()
-^::Object()				// Objet parent qui permet la création et l'affichage de formes
-^::Label()			// Étiquette de text
-^::Square()			// Forme simple rectangulaire
-¨::Line()			// Forme simple linéaire
-::Dot()
-::Template()
-::Custom()
-__Opérations sur les objets
-^::Add()				// Ajoute un objet à la fenêtre
-Si possible (Si aucune autre opération est en cours),
-Commencer la création d'un objet
-TQ l'objet n'est pas complété, au click
-Compléter une partie de l'objet
-Terminer la création d'un objet
-__Undo + Redo
-^::Undo() max de 10?	// Défait les dernières opérations mémorisés
-Après chaque opérations crées sans les commandes,
-l'ajouter dans back(),
-si pleine, retire front()
-À l'appel de Ctrl+Z,
-Si back() est existant, (sinon rien)
-Change l'interface avec le back()
-Déplace back() dans le front() de Redo
-si Redo est plein, retire son back()
-^::Redo() (idem).		// Refais les dernières opérations mémorisés
-À l'appel de Ctrl+Y, (doit faire les opérations à l'inverse)
-Si front() est existant, (sinon rien)
-Si front() fait référence à des opérations valides,
-Change l'interface avec le front()
-Déplace le front() dans le back() de Undo
-Sinon,
-pop_front() TQ front() n'est pas valide
-¨::Select()				//
-¨::Delete()				//
-Si sélection existante,
-Ajouter les éléments dans un tampon (Undo)
-Retirer l'élément
-¨::Drag()				// changes its position
-::Link()
-Si possible,
-Trace une ligne entre les deux éléments
-::Unlink()
-Si ligne présente,
-Retire la ligne entre deux éléments
-::Copy()
-Met dans le presse papier les éléments sélectionnés, --(MO)
-::Cut()
-Copy() + Delete()
-::Paste()
-Ajoute les éléments dans le presse papier à l'endroit indiqué
---(MO)Mémorise les opérations(voir Undo + Redo)
-/////// Autres configurations possibles
-__Paramètres de configuration
-::Ils sont sélectionné avec les méthodes suivantes
-1 - Par un fichier de configutation
-2 - Durant les choix du menu principal
-3 - Par un menu d'option en mettant sur pause
-4 - Au fur et à mesure si une limite est atteinte
-::Ils comprennent les options suivants
-A - Dimmenssions de la fenêtre(1)
-B - Éléments à inclure(2)
-C - Dimmenssions des éléments(1, 2)
-D - Les données à représenter(1, 4)
-E - ...
-__Fichier de configuration
-__Option du menu principal
-__Menu d'option
-__Limites
-*/
+/*for (auto & b : bOptions)
+{
+if (b->gotMouse(sandbox))
+{
+
+pointer.setMode(b);
+pointer.unclick(Mouse::getPosition(sandbox));
+b->drawFocus(sandbox);
+cout << endl << "Unclicking ";
+cursorPos(b, sandbox);
+break;
+}
+
+}*/

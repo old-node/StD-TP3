@@ -9,33 +9,143 @@ Description:
 #include "oButton.h"
 
 
+
+/// Initialiseurs
+
+void oButton::initMode(cMode mode)
+{
+	assert(cDefault <= mode && mode <= cResize);
+	_m = mode;
+}
+
 // Constructeur de la classe parente
 oButton::oButton(float left, float top, float width, float height,
-	Font & font, string text, Color fontC, Color fillC, Color outlineC,
-	int charSize, float outline) :
-	RectangleShape(Vector2f(width, height)),
-	Text(text, font, charSize)
+	float OL, Color fillC, Color OLC,
+	string text, Font police, int tSize, Color fontC,
+	Color focusC, Color focusOLC, float focusOL)
 {
-	//RectangleShape::setOrigin(Vector2f(left, top));
-	RectangleShape::setPosition(Vector2f(left, top));
-	RectangleShape::setFillColor(fillC);
-	RectangleShape::setOutlineColor(outlineC);
-	RectangleShape::setOutlineThickness(outline);
+	assert(/// Peut changer si les boutons possèdent des icones ?
+		text != ""								// Message du bouton
+		&& 0 < tSize && tSize <= 25);			// Largeur de la police
+	assert(0 - width <= left && left <= SCREENW + width	// Pos en x
+		&& 0 - height <= top && top <= SCREENH + height	// Pos en y
+		&& 0 <= width && width <= BW			// Largeur du bouton
+		&& 0 <= height && height <= SCREENH);	// Hauteur du bouton
+	assert(0 <= OL && OL <= 10					// Outline du bouton
+		&& 0 <= focusOL && focusOL <= 10);		// Outline du focus
 
-	//Text::setOrigin(Vector2f(left, top));
-	Text::setPosition(left + 3, top + 3);
+	_p = police;
+
+	// Positionnement
+	static float l = left + OL;		// Pos. en X cummulée des boutons
+	static float t = top + OL;		// Pos. en Y cummulée des boutons
+
+	// Position, millieu du texte, centre du bouton et ses dimmenssions
+	Vector2f pos, mid, center, box;
+	pos = Vector2f(l, t);			// Origine du bouton
+
+	// Initiaise le text
+	this->Text::Text(text, _p, tSize);
 	Text::setFillColor(fontC);
 
-	//_focus.setOrigin(Vector2f());
-	setFocus(Vector2f(), Vector2f());
-	_focus.setFillColor(Color::Transparent);
+	// Obtien les dimenssions nécessaires au bouton
+	width = textDim(width, Text::getGlobalBounds().width, BW);
+	height = textDim(height, Text::getGlobalBounds().height, BH);
+	box = Vector2f(width + TOLW * 2, height + TOLH * 2);
+
+	if (_nbB == NULL || _nbB < 1)	/// static ??
+	{
+		_nbB++;
+
+	}
+
+	// Prépare la position du prochain bouton
+	if (HORIZONTALMENU)
+		offsetButton(l, t, width, height, TOLW, OL, SCREENW);
+	else
+		offsetButton(t, l, height, width, TOLH, OL, SCREENH);
+
+	// Positionne le texte
+	mid = Vector2f(width / 2, height / 2);
+	center = Vector2f(box.x / 2, box.y / 2 - TOLH / 2);
+	Text::setOrigin(mid);
+	Text::setPosition(pos);
+	Text::move(center);
+
+	// Initialise le bouton
+	this->RectangleShape::RectangleShape(box);
+	RectangleShape::setTextureRect((IntRect)FloatRect(pos, box));
+	RectangleShape::setOrigin(center);
+	RectangleShape::setPosition(pos);
+	RectangleShape::move(center);
+
+	RectangleShape::setFillColor(fillC);
+	RectangleShape::setOutlineColor(OLC);
+	RectangleShape::setOutlineThickness(OL);
+
+	// Initialise le focus
+	initFocus(Vector2f(), Vector2f());
+	_focus.setFillColor(focusC);
+	_focus.setOutlineColor(focusOLC);
+	_focus.setOutlineThickness(focusOL);
+}
+
+oButton::~oButton()
+{
+	_nbB = 0; /// shared_ptr?
+	RectangleShape::~RectangleShape();
+	Text::~Text();
+	_p.~Font();
+
+	_m = cDefault;
+	_clicking = false;
+	_focus.~RectangleShape();
+}
+
+/// Manipulation du focus
+
+void oButton::click(Vector2f pos)
+{
+	_clicking = true;
+	initFocus(pos, pos);
+}
+
+RectangleShape oButton::unclick(Vector2f pos)
+{
+	_clicking = false;
+	_focus.setOrigin(Vector2f(
+		abs(_focus.getPoint(1).x - _focus.getOrigin().x),
+		abs(_focus.getPoint(2).y - _focus.getOrigin().y)));
+
+	return RectangleShape(_focus);
 }
 
 
-void oButton::setFocus(Vector2f pos, Vector2f size)
+void oButton::drag(Vector2f pos)
 {
-	_focus.setPosition(pos);
-	_focus.setSize(size);
+	Vector2f factor = _focus.getOrigin() - pos;
+	_focus.setScale(factor);
+}
+
+void oButton::undrag(Vector2f pos)
+{
+
+}
+
+void oButton::initFocus(Vector2f origin, Vector2f pos)
+{
+	_focus.setOrigin(origin);	/// after pos ?
+	_focus.setPosition(pos);	/// fusionner origin et pos?
+	_focus.setSize(Vector2f());
+}
+
+
+void oButton::leave()
+{
+	Vector2f zero = Vector2f();
+	_focus.setSize(zero);
+	_focus.setPosition(zero);
+	_focus.setRotation(0);
 }
 
 
@@ -46,160 +156,96 @@ cMode oButton::getMode() const
 
 bool oButton::gotMouse(RenderWindow & screen) const
 {
+	cout << endl << getString().toAnsiString()
+		<< " at (" << RectangleShape::getPosition().x << ","
+		<< RectangleShape::getPosition().y << "), the mouse was at : ("
+		<< Mouse::getPosition(screen).x << ","
+		<< Mouse::getPosition(screen).y << ")."
+		<< endl << "\t" << RectangleShape::getTextureRect().left << ","
+		<< RectangleShape::getTextureRect().top << ".";
+
+	/// cout << RectangleShape::setGlobalBounds().left << "," << RectangleShape::getGlobalBounds().top;
+	if (RectangleShape::getGlobalBounds().contains((Vector2f)Mouse::getPosition()))
+		cout << "another method. for it to work, the button needs to be placed through transformation ?" << endl;
+
 	if (RectangleShape::getTextureRect().
-		contains(sf::Mouse::getPosition(screen)))
+		contains(Mouse::getPosition(screen)))
 		return true;
 	return false;
 }
 
-
-void oButton::draw(RenderWindow & window) const
+// 
+RectangleShape oButton::body()
 {
-	window.draw(static_cast<RectangleShape>(*this));
-	window.draw(static_cast<Text>(*this));
-	//Text::Drawable::draw(window, RenderStates::Default);
+	return static_cast<RectangleShape>(*this);
 }
 
-void oButton::drawFocus(RenderWindow & window) const
+RectangleShape oButton::focus()
 {
-	window.draw(_focus);
-}
-
-
-
-
-
-
-
-void oB_create::setMode(cMode mode)
-{
-	_m = mode;
-}
-oB_create::oB_create(float left, float top, float width, float height,
-	Font & font, string text, Color fontC, Color fillC, Color outlineC) :
-	oButton(left, top, width, height, font, text, fontC, fillC, outlineC)
-{
-	setMode();
+	return _focus;
 }
 
 
-shape oB_create::getShape() const
+///======///
+/* Create */
+///======///
+
+void oB_create::initShape(sShape vertex)
+{
+	assert(sNone <= vertex && vertex <= sLine);
+	_s = vertex;
+}
+
+sShape oB_create::getShape() const
 {
 	return _s;
 }
 
 
+///=====///
+/* Créer */
+///=====///
 
 
-void oB_cBox::setShape(shape vertex)
+
+
+///=====///
+/* Trait */
+///=====///
+
+
+
+
+
+///====///
+/* Lier */
+///====///
+
+
+
+
+///=========///
+/* Sélection */
+///=========///
+
+
+
+
+
+///======///
+/* Efface */
+///======///
+
+
+
+
+
+// Information de la position de la souris
+void cursorPos(oButton * b, RenderWindow & screen)
 {
-	_s = vertex;
-}
-void oB_cBox::setFocusColor(Color fillC, Color outlineC, float outlineT)
-{
-	_focus.setFillColor(fillC);
-	_focus.setOutlineColor(outlineC);
-	_focus.setOutlineThickness(outlineT);
-}
-oB_cBox::oB_cBox(float left, float top, float width, float height,
-	Font & font, string text, Color fontC, Color fillC, Color outlineC) :
-	oB_create(left, top, width, height, font, text, fontC, fillC, outlineC)
-{
-	setShape();
-	setFocusColor();
-}
-
-
-
-
-
-
-
-
-void oB_cLine::setShape(shape vertex)
-{
-	_s = vertex;
-}
-
-void oB_cLine::setFocusColor(Color fillC, Color outlineC, float outlineT)
-{
-	_focus.setFillColor(fillC);
-	_focus.setOutlineColor(outlineC);
-	_focus.setOutlineThickness(outlineT);
-}
-
-oB_cLine::oB_cLine(float left, float top, float width, float height,
-	Font & font, string text, Color fontC, Color fillC, Color outlineC) :
-	oB_create(left, top, width, height, font, text, fontC, fillC, outlineC)
-{
-	setShape();
-	setFocusColor();
-}
-
-
-
-
-void oB_remove::setMode(cMode mode)
-{
-	_m = mode;
-}
-
-void oB_remove::setFocusColor(Color fillC, Color outlineC, float outlineT)
-{
-	_focus.setFillColor(fillC);
-	_focus.setOutlineColor(outlineC);
-	_focus.setOutlineThickness(outlineT);
-}
-
-oB_remove::oB_remove(float left, float top, float width, float height,
-	Font & font, string text, Color fontC, Color fillC, Color outlineC) :
-	oButton(left, top, width, height, font, text, fontC, fillC, outlineC)
-{
-	setMode();
-	setFocusColor();
-}
-
-
-
-
-void oB_select::setMode(cMode mode)
-{
-	_m = mode;
-}
-
-void oB_select::setFocusColor(Color fillC, Color outlineC, float outlineT)
-{
-	_focus.setFillColor(fillC);
-	_focus.setOutlineColor(outlineC);
-	_focus.setOutlineThickness(outlineT);
-}
-
-oB_select::oB_select(float left, float top, float width, float height,
-	Font & font, string text, Color fontC, Color fillC, Color outlineC) :
-	oButton(left, top, width, height, font, text, fontC, fillC, outlineC)
-{
-	setMode();
-	setFocusColor();
-}
-
-
-
-void oB_link::setMode(cMode mode)
-{
-	_m = mode;
-}
-
-void oB_link::setFocusColor(Color fillC, Color outlineC, float outlineT)
-{
-	_focus.setFillColor(fillC);
-	_focus.setOutlineColor(outlineC);
-	_focus.setOutlineThickness(outlineT);
-}
-
-oB_link::oB_link(float left, float top, float width, float height,
-	Font & font, string text, Color fontC, Color fillC, Color outlineC) :
-	oButton(left, top, width, height, font, text, fontC, fillC, outlineC)
-{
-	setMode();
-	setFocusColor();
+	cout << b->getString().toAnsiString()
+		<< " at (" << b->RectangleShape::getPosition().x << ","
+		<< b->RectangleShape::getPosition().y << "), the mouse was at : ("
+		<< Mouse::getPosition(screen).x << ","
+		<< Mouse::getPosition(screen).y << ").";
 }
