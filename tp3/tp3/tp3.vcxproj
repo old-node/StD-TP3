@@ -75,6 +75,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
+    <Link />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -113,10 +114,13 @@
     <ClCompile Include="..\cursor.cpp" />
     <ClCompile Include="..\oButton.cpp" />
     <ClCompile Include="..\tp3.cpp" />
+    <ClCompile Include="sqlConnect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\cursor.h" />
     <ClInclude Include="..\oButton.h" />
+    <ClInclude Include="painterFuction.h" />
+    <ClInclude Include="sqlConnect.h" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="..\styles\font_arial.ttf" />

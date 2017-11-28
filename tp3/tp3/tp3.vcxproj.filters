@@ -24,12 +24,21 @@
     <ClCompile Include="..\oButton.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="sqlConnect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\cursor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\oButton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sqlConnect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="painterFuction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
