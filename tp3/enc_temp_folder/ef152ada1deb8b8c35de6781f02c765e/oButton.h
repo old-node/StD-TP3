@@ -101,11 +101,22 @@ public:
 	~oButton();
 
 	/// Setteurs
-	void setColors(Color fillC = FILLC, Color OLC = OUTLC);
+	void setColors(Color fillC = FILLC, Color OLC = OUTLC)
+	{
+		RectangleShape::setFillColor(fillC);
+		RectangleShape::setOutlineColor(OLC);
+	}
 	void setFocusColor(Color focusC = Color::Transparent,
-		Color focusOLC = Color::Yellow);
+		Color focusOLC = Color::Yellow) /// ?
+	{
+		_focus.setFillColor(focusC);
+		_focus.setOutlineColor(focusOLC);
+	}
 	void initFocus(Vector2f origin, Vector2f pos); /// ?
-	void scaleFocus(Vector2f diff);
+	void scaleFocus(Vector2f diff)
+	{
+		_focus.setScale(diff);
+	}
 
 	/// Manipulation du focus
 	virtual void click(Vector2f pos = (Vector2f)Mouse::getPosition());
@@ -118,14 +129,23 @@ public:
 	virtual void pick() {} /// ?
 
 	/// Getteurs
-	Vector2f getP(int p = 0);
+	Vector2f getP(int p = 0)
+	{
+		return RectangleShape::getPoint(p);
+	}
 	cMode getMode() const;
-	RectangleShape * getFocus();
+	RectangleShape * getFocus()
+	{
+		return new RectangleShape(_focus);
+	}
 	bool gotMouse(RenderWindow & screen) const;
 
 	/// Affichage
 	RectangleShape body();
-	Text text();
+	Text text()
+	{
+		return static_cast<Text>(*this);
+	}
 	RectangleShape focus();
 };
 
@@ -152,8 +172,6 @@ public:
 
 	/// Getteurs
 	sShape getShape() const;
-
-
 };
 
 // Classe du bouton de création de boites

@@ -102,20 +102,6 @@ oButton::~oButton()
 	_focus.~RectangleShape();
 }
 
-/// Setteurs
-
-inline void oButton::setColors(Color fillC, Color OLC)
-{
-	RectangleShape::setFillColor(fillC);
-	RectangleShape::setOutlineColor(OLC);
-}
-
-inline void oButton::setFocusColor(Color focusC, Color focusOLC) /// ?
-{
-	_focus.setFillColor(focusC);
-	_focus.setOutlineColor(focusOLC);
-}
-
 /// Manipulation du focus
 
 void oButton::click(Vector2f pos)
@@ -153,13 +139,6 @@ void oButton::initFocus(Vector2f origin, Vector2f pos)
 	_focus.setSize(Vector2f());
 }
 
-/// ?
-
-inline void oButton::scaleFocus(Vector2f diff)
-{
-	_focus.setScale(diff);
-}
-
 
 void oButton::leave()
 {
@@ -170,22 +149,9 @@ void oButton::leave()
 }
 
 
-
-/// Getteurs
-
-inline Vector2f oButton::getP(int p)
-{
-	return RectangleShape::getPoint(p);
-}
-
 cMode oButton::getMode() const
 {
 	return _m;
-}
-
-inline RectangleShape * oButton::getFocus()
-{
-	return new RectangleShape(_focus);
 }
 
 bool oButton::gotMouse(RenderWindow & screen) const
@@ -212,11 +178,6 @@ bool oButton::gotMouse(RenderWindow & screen) const
 RectangleShape oButton::body()
 {
 	return static_cast<RectangleShape>(*this);
-}
-
-inline Text oButton::text()
-{
-	return static_cast<Text>(*this);
 }
 
 RectangleShape oButton::focus()

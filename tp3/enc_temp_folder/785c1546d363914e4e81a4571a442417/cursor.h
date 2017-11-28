@@ -54,7 +54,13 @@ public:
 
 	/// Manipulations du focus
 	void initFocus(Vector2f current);
-	void setFocus(Vector2f current);
+	void setFocus(Vector2f current)
+	{
+		if (_mode != nullptr)
+		{
+			_mode->scaleFocus(_click - current);
+		}
+	}
 
 	/// Clicker
 	void click(Vector2i click = getPosition());
@@ -62,20 +68,77 @@ public:
 	int unclick(Vector2i current = getPosition());
 
 	/// Getteurs
-	bool isClicking(Mouse::Button it = Mouse::Left);
+	bool isClicking(Mouse::Button it = Mouse::Left)
+	{
+		return (isButtonPressed(it) && _clicking);
+	}
 	bool getClicking() const;
 	oButton * getMode() const;	// Retourner un int au lieu ?*
-	RectangleShape * getFocus() const;
+	RectangleShape * getFocus() const
+	{
+		assert(_mode != nullptr);
+		return _mode->getFocus();
+	}
 	Vector2f getClick() const;
 	Vector2f getCurrent() const;
 	//RectangleShape getFocus() const { return _focus; }
 
 	/// Affichage
 	// Procède à une méthode avec chaqu'un des boutons
-	void drawMenu();
+	void drawMenu()
+	{
+		for (auto & b : _bOptions)	// Pour chaque bouton d'options
+		{
+			if (b->gotMouse(_w)) /// b->gotMouse(_window)
+			{
+				drawButton(b);
+				cursorPos(b, _w);
+			}
+		}
+	}
 
 
-	void drawButton(oButton * oB);
+	void drawButton(oButton * oB)
+	{
+		_w.draw(oB->body());
+		_w.draw(oB->text());
+
+	}
 	void drawFocus();
-	bool onZone(rRegion z);
+	void drawCanvas()
+	{
+
+	}
+	bool onZone(rRegion z)
+	{
+		if (_zones[z].contains((Vector2f)getPosition(_w)))
+		{
+			_zone = z;
+			return true;
+		}
+		return false;
+	}
 };
+
+
+//if (x < 0)
+//{
+//	if (y < 0)	// quadrant supérieur gauche
+//		_mode->setFocus(_current, Vector2f(-x, -y));
+//	else		// quadrant inférieur gauche
+//		_mode->setFocus(Vector2f(_current.x, _click.y), Vector2f(-x, y));
+//}
+//else if (y < 0)	// quadrant supérieur droit
+//	_mode->setFocus(Vector2f(_click.x, _current.y), Vector2f(x, -y));
+//else			// quadrant inférieur droit
+//	_mode->setFocus(_click, Vector2f(x, y));
+
+
+
+//void forwarder(void* context, int i0, int i1) {
+//	;//static_cast<oButton*>(context)->member(i0, i1);
+//}
+/*bool gotZone(void* oB)
+{
+return static_cast<oButton*>(oB)->gotMouse(_window);
+}*/
