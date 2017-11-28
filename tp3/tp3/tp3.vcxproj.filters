@@ -24,7 +24,11 @@
     <ClCompile Include="..\oButton.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="sqlConnect.cpp">
+=======
+    <ClCompile Include="..\tp3Simon.cpp">
+>>>>>>> refs/remotes/origin/master
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
