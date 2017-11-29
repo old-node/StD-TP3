@@ -5,14 +5,14 @@
     <ClCompile Include="..\oButton.cpp" />
     <ClCompile Include="..\tp3.cpp" />
     <ClCompile Include="sqlConnect.cpp" />
-    <ClCompile Include="forme.cpp" />
+    <ClCompile Include="painter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\cursor.h" />
     <ClInclude Include="..\oButton.h" />
     <ClInclude Include="painterFuction.h" />
     <ClInclude Include="sqlConnect.h" />
-    <ClInclude Include="forme.h" />
+    <ClInclude Include="painter.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\images\machin.jpg" />

@@ -104,13 +104,13 @@ oButton::~oButton()
 
 /// Setteurs
 
-inline void oButton::setColors(Color fillC, Color OLC)
+void oButton::setColors(Color fillC, Color OLC)
 {
 	RectangleShape::setFillColor(fillC);
 	RectangleShape::setOutlineColor(OLC);
 }
 
-inline void oButton::setFocusColor(Color focusC, Color focusOLC) /// ?
+void oButton::setFocusColor(Color focusC, Color focusOLC) /// ?
 {
 	_focus.setFillColor(focusC);
 	_focus.setOutlineColor(focusOLC);
@@ -155,7 +155,7 @@ void oButton::initFocus(Vector2f origin, Vector2f pos)
 
 /// ?
 
-inline void oButton::scaleFocus(Vector2f diff)
+void oButton::scaleFocus(Vector2f diff)
 {
 	_focus.setScale(diff);
 }
@@ -173,7 +173,7 @@ void oButton::leave()
 
 /// Getteurs
 
-inline Vector2f oButton::getP(int p)
+Vector2f oButton::getP(int p)
 {
 	return RectangleShape::getPoint(p);
 }
@@ -183,7 +183,7 @@ cMode oButton::getMode() const
 	return _m;
 }
 
-inline RectangleShape * oButton::getFocus()
+RectangleShape * oButton::getFocus()
 {
 	return new RectangleShape(_focus);
 }
@@ -214,7 +214,7 @@ RectangleShape oButton::body()
 	return static_cast<RectangleShape>(*this);
 }
 
-inline Text oButton::text()
+Text oButton::text()
 {
 	return static_cast<Text>(*this);
 }

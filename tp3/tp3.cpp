@@ -10,7 +10,7 @@ Description:	3e travail pratique du cours Structure de donnée. Application de de
 #include <iostream>
 using namespace std;
 //#include "tp3/sqlConnect.h"
-
+#include "tp3/painter.h"
 #include "cursor.h"
 using namespace sf;
 
@@ -72,7 +72,6 @@ int main()
 
 	//system("pause");
 
-	
 
 	bool play = true;
 	while (play)
@@ -139,6 +138,10 @@ int main()
 int mainSimon()
 {
 	cout << "Bienvenue dans le main de Simon!" << endl;
+
+	painter inte;
+	inte.init();
+	inte.run();
 
 	system("pause");
 	return 0;

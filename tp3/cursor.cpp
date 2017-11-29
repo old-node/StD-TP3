@@ -81,7 +81,7 @@ void cursor::initFocus(Vector2f current)
 	_mode->scaleFocus(_click - current);
 }
 
-inline void cursor::setFocus(Vector2f current)
+ void cursor::setFocus(Vector2f current)
 {
 	if (_mode != nullptr)
 	{
@@ -159,7 +159,7 @@ int cursor::unclick(Vector2i current)
 
 /// Getteurs
 
-inline bool cursor::isClicking(Mouse::Button it)
+ bool cursor::isClicking(Mouse::Button it)
 {
 	return (isButtonPressed(it) && _clicking);
 }
@@ -170,7 +170,7 @@ oButton * cursor::getMode() const { return _mode; }
 
 // Retourner un int au lieu ?*
 
-inline RectangleShape * cursor::getFocus() const
+ RectangleShape * cursor::getFocus() const
 {
 	assert(_mode != nullptr);
 	return _mode->getFocus();
@@ -183,7 +183,7 @@ Vector2f cursor::getCurrent() const { return _current; }
 /// Affichage
 // Procède à une méthode avec chaqu'un des boutons
 
-inline void cursor::drawMenu()
+ void cursor::drawMenu()
 {
 	for (auto & b : _bOptions)	// Pour chaque bouton d'options
 	{
@@ -198,7 +198,7 @@ inline void cursor::drawMenu()
 
 /// Affichage
 
-inline void cursor::drawButton(oButton * oB)
+ void cursor::drawButton(oButton * oB)
 {
 	_w.draw(oB->body());
 	_w.draw(oB->text());
@@ -212,7 +212,7 @@ void cursor::drawFocus()
 
 }
 
-inline bool cursor::onZone(rRegion z)
+ bool cursor::onZone(rRegion z)
 {
 	if (_zones[z].contains((Vector2f)getPosition(_w)))
 	{
