@@ -114,12 +114,14 @@
     <ClCompile Include="..\cursor.cpp" />
     <ClCompile Include="..\oButton.cpp" />
     <ClCompile Include="..\tp3.cpp" />
+    <ClCompile Include="painter.cpp" />
     <ClCompile Include="buttonStrip.cpp" />
     <ClCompile Include="sqlConnect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\cursor.h" />
     <ClInclude Include="..\oButton.h" />
+    <ClInclude Include="painter.h" />
     <ClInclude Include="buttonStrip.h" />
     <ClInclude Include="painterFuction.h" />
     <ClInclude Include="sqlConnect.h" />

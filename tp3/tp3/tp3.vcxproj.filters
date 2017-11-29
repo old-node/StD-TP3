@@ -5,6 +5,7 @@
     <ClCompile Include="..\oButton.cpp" />
     <ClCompile Include="..\tp3.cpp" />
     <ClCompile Include="sqlConnect.cpp" />
+    <ClCompile Include="painter.cpp" />
     <ClCompile Include="buttonStrip.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -12,6 +13,7 @@
     <ClInclude Include="..\oButton.h" />
     <ClInclude Include="painterFuction.h" />
     <ClInclude Include="sqlConnect.h" />
+    <ClInclude Include="painter.h" />
     <ClInclude Include="buttonStrip.h" />
   </ItemGroup>
   <ItemGroup>
