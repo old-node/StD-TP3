@@ -16,8 +16,6 @@ using namespace sf;
 
 
 
-
-
 // Programme principal
 int main()
 {

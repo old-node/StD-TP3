@@ -2,7 +2,7 @@
 Fichier:		painterFuntion.h
 Auteur:			Olivier Lemay Dostie & Simon Lagacé
 Date:			25-11-2017
-Description:
+Description:	.
 ======================================================================================*/
 
 
@@ -19,10 +19,13 @@ using namespace sf;
 ///============///
 
 
-
+// Coins d'un bouton
+enum bCorner {
+	bUpperLeft, bUpperRight, bLowerRight, bLowerLeft
+};
 // Zones où le pointeur peut être situé
 enum rRegion {
-	rStart, rMenu, rButton, rDraw, rCOUNT
+	rStart, rMenuPrincipale, rButton, rDraw, rCOUNT
 };
 // Modes de fonctionnement avec le curseur
 enum oMode {
@@ -39,7 +42,6 @@ enum sShape {
 enum PBOARD;
 
 
-
 ///========================///
 /* Prototypes des fonctions */
 ///========================///
@@ -49,7 +51,6 @@ static const Font FONT(string fontLocation = "font_arial.ttf");
 static const PBOARD getNewColor(PBOARD last);
 static const Color getColor(PBOARD c);
 static void swithColor(Shape & s, int c);
-
 
 
 

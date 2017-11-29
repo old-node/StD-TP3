@@ -2,13 +2,23 @@
 Fichier:		cursor.h
 Auteur:			Olivier Lemay Dostie & Simon Lagacé
 Date:			20-11-2017
-Description:
 ======================================================================================*/
 
 
 #include "cursor.h"
 
 
+
+
+// Recherche si un bouton est sous la souris
+
+oButton * cursor::searchForButton()
+{
+	for (auto & b : _bOptions)
+		if (b->gotMouse(_w))
+			return b;
+	return nullptr;
+}
 
 // Constructeur
 cursor::cursor(RenderWindow & window) : _w(window)
@@ -75,13 +85,12 @@ void cursor::setCurrent(Vector2f current)
 
 void cursor::initFocus(Vector2f current)
 {
-	float x = current.x - _click.x;
-	float y = current.x - _click.x;
-
-	_mode->scaleFocus(_click - current);
+	_focus.setOrigin(current);	/// after pos ?
+	_focus.setPosition(current);	/// fusionner origin et pos?
+	_focus.setSize(Vector2f());
 }
 
-inline void cursor::setFocus(Vector2f current)
+void cursor::setFocus(Vector2f current)
 {
 	if (_mode != nullptr)
 	{
@@ -109,7 +118,7 @@ void cursor::click(Vector2i click)
 	// Initialise le focus
 	if (_mode != nullptr)
 	{
-		_mode->initFocus(_click, _click);
+		initFocus(_click);
 		_mode->click();
 	}
 }
@@ -159,7 +168,7 @@ int cursor::unclick(Vector2i current)
 
 /// Getteurs
 
-inline bool cursor::isClicking(Mouse::Button it)
+bool cursor::isClicking(Mouse::Button it)
 {
 	return (isButtonPressed(it) && _clicking);
 }
@@ -170,10 +179,10 @@ oButton * cursor::getMode() const { return _mode; }
 
 // Retourner un int au lieu ?*
 
-inline RectangleShape * cursor::getFocus() const
+RectangleShape * cursor::getFocus() const
 {
 	assert(_mode != nullptr);
-	return _mode->getFocus();
+	return new RectangleShape(_focus);
 }
 
 Vector2f cursor::getClick() const { return _click; }
@@ -183,7 +192,7 @@ Vector2f cursor::getCurrent() const { return _current; }
 /// Affichage
 // Procède à une méthode avec chaqu'un des boutons
 
-inline void cursor::drawMenu()
+void cursor::drawMenu()
 {
 	for (auto & b : _bOptions)	// Pour chaque bouton d'options
 	{
@@ -198,7 +207,7 @@ inline void cursor::drawMenu()
 
 /// Affichage
 
-inline void cursor::drawButton(oButton * oB)
+void cursor::drawButton(oButton * oB)
 {
 	_w.draw(oB->body());
 	_w.draw(oB->text());
@@ -208,11 +217,10 @@ inline void cursor::drawButton(oButton * oB)
 void cursor::drawFocus()
 {
 	if (_mode != nullptr)
-		_w.draw(_mode->focus());
-
+		_w.draw(_focus);
 }
 
-inline bool cursor::onZone(rRegion z)
+bool cursor::onZone(rRegion z)
 {
 	if (_zones[z].contains((Vector2f)getPosition(_w)))
 	{

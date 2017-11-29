@@ -30,18 +30,14 @@ private:
 	bool _clicking;			// État des boutons de la souris 
 	bool _dragable;			// Condition qui permet le déplacement du focus
 
+	RectangleShape _focus;	// Zone de sélection ou aperçu d'une forme
+
 	rRegion _zone;			// Zone active du curseur
 	FloatRect _zones[static_cast<int>(rCOUNT)];	// Dimmenssions des zones
 
 
 	// Recherche si un bouton est sous la souris
-	oButton * searchForButton()
-	{
-		for (auto & b : _bOptions)
-			if (b->gotMouse(_w))
-				return b;
-		return nullptr;
-	}
+	oButton * searchForButton();
 
 public:
 	cursor(RenderWindow & window);

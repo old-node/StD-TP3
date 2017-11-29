@@ -24,8 +24,7 @@ const int SCREENH = 800;				// Hauteur de l'écran
 const int BUTTONSPAN = 5;				// Rapport de boutons en largeur
 const float BW = SCREENW / BUTTONSPAN;	// Largeur maximum des boutons
 const float BH = 40.0;					// Hauteur maximum des boutons
-const bool HORIZONTALMENU = true;			// Sens de la liste des boutons
-
+const bool HORIZONTALMENU = false;		// Sens de la liste des boutons
 const float BOL = 1;
 
 // pour l'apparence
@@ -61,21 +60,23 @@ static float textDim(float p, float t, float MAX)
 			p = MAX;
 	return p;
 }
-// Obtien les bonnes coordonnées du prochain bouton selon sa liste
-static bool offsetButton(float & p, float & q, float P, float Q,
-	float tol, float ol, int MAX)
-{
-	if (p + P > MAX)
-	{
-		p = 0;
-		q += Q + ol * 3 + tol;
-		return true;
-	}
-	else
-		p += P + ol * 2 + tol * 2;
-	return false;
-}
 
+// Classe de base des boutons de la boite à outils et du menu principal
+class button
+{
+private:
+
+public:
+	button()
+	{
+
+	}
+	~button()
+	{
+
+	}
+
+};
 
 
 // Classe de base des boutons
@@ -84,11 +85,14 @@ class oButton : public RectangleShape, public Text
 private:
 	Font _p;				// Police du bouton
 	int _nbB;				// Nombre de bouton d'option
+	Color _focusC;			// 
+	Color _focusOLC;		// 
+	float _focusOL;			// 
 
 protected:
 	cMode _m;				// Type d'opérations que le bouton effectue
 	bool _clicking;			/// ??
-	RectangleShape _focus;	// Zone de sélection ou aperçu d'une forme
+	RectangleShape * _focus;// 
 
 	/// Initialiseur
 	void initMode(cMode mode = cDefault);
@@ -102,14 +106,14 @@ public:
 
 	/// Setteurs
 	void setColors(Color fillC = FILLC, Color OLC = OUTLC);
-	void setFocusColor(Color focusC = Color::Transparent,
-		Color focusOLC = Color::Yellow);
-	void initFocus(Vector2f origin, Vector2f pos); /// ?
+	void setFocus(Color focusC = Color::Transparent,
+		Color focusOLC = Color::Yellow, float focusOL = 1);
+
 	void scaleFocus(Vector2f diff);
 
 	/// Manipulation du focus
 	virtual void click(Vector2f pos = (Vector2f)Mouse::getPosition());
-	virtual RectangleShape unclick(Vector2f pos);
+	virtual int release(/*Vector2f pos*/);
 	virtual void drag(Vector2f pos);
 	virtual void undrag(Vector2f pos); /// ?
 	virtual void c(Vector2f pos) {} /// ?
@@ -118,15 +122,21 @@ public:
 	virtual void pick() {} /// ?
 
 	/// Getteurs
-	Vector2f getP(int p = 0);
+	float getW()
+	{
+		return RectangleShape::getPoint(2).x - RectangleShape::getPoint(0).x;
+	}
+	float getH()
+	{
+		return RectangleShape::getPoint(0).y - RectangleShape::getPoint(2).y;
+	}
+	Vector2f getP(bCorner p = bLowerRight);
 	cMode getMode() const;
-	RectangleShape * getFocus();
 	bool gotMouse(RenderWindow & screen) const;
 
 	/// Affichage
-	RectangleShape body();
-	Text text();
-	RectangleShape focus();
+	RectangleShape & body();
+	Text & text();
 };
 
 

@@ -2,21 +2,11 @@
 Fichier:		oButton.cpp
 Auteur:			Olivier Lemay Dostie & Simon Lagacé
 Date:			22-11-2017
-Description:
 ======================================================================================*/
 
 
 #include "oButton.h"
 
-
-
-/// Initialiseurs
-
-void oButton::initMode(cMode mode)
-{
-	assert(cDefault <= mode && mode <= cResize);
-	_m = mode;
-}
 
 // Constructeur de la classe parente
 oButton::oButton(float left, float top, float width, float height,
@@ -53,18 +43,6 @@ oButton::oButton(float left, float top, float width, float height,
 	height = textDim(height, Text::getGlobalBounds().height, BH);
 	box = Vector2f(width + TOLW * 2, height + TOLH * 2);
 
-	if (_nbB == NULL || _nbB < 1)	/// static ??
-	{
-		_nbB++;
-
-	}
-
-	// Prépare la position du prochain bouton
-	if (HORIZONTALMENU)
-		offsetButton(l, t, width, height, TOLW, OL, SCREENW);
-	else
-		offsetButton(t, l, height, width, TOLH, OL, SCREENH);
-
 	// Positionne le texte
 	mid = Vector2f(width / 2, height / 2);
 	center = Vector2f(box.x / 2, box.y / 2 - TOLH / 2);
@@ -84,10 +62,7 @@ oButton::oButton(float left, float top, float width, float height,
 	RectangleShape::setOutlineThickness(OL);
 
 	// Initialise le focus
-	initFocus(Vector2f(), Vector2f());
-	_focus.setFillColor(focusC);
-	_focus.setOutlineColor(focusOLC);
-	_focus.setOutlineThickness(focusOL);
+	//setFocus(focusC, focusOLC, focusOL); /// 
 }
 
 oButton::~oButton()
@@ -99,21 +74,31 @@ oButton::~oButton()
 
 	_m = cDefault;
 	_clicking = false;
-	_focus.~RectangleShape();
+	_focusC = _focusOLC = Color();
+	_focusOL = 0;
+	_focus = nullptr;
+}
+
+/// Initialiseurs
+void oButton::initMode(cMode mode)
+{
+	assert(cDefault <= mode && mode <= cResize);
+	_m = mode;
 }
 
 /// Setteurs
 
-inline void oButton::setColors(Color fillC, Color OLC)
+void oButton::setColors(Color fillC, Color OLC)
 {
 	RectangleShape::setFillColor(fillC);
 	RectangleShape::setOutlineColor(OLC);
 }
 
-inline void oButton::setFocusColor(Color focusC, Color focusOLC) /// ?
+void oButton::setFocus(Color focusC, Color focusOLC, float focusOL) /// ?
 {
-	_focus.setFillColor(focusC);
-	_focus.setOutlineColor(focusOLC);
+	_focusC = focusC;
+	_focusOLC = focusOLC;
+	_focusOL = focusOL;
 }
 
 /// Manipulation du focus
@@ -121,24 +106,23 @@ inline void oButton::setFocusColor(Color focusC, Color focusOLC) /// ?
 void oButton::click(Vector2f pos)
 {
 	_clicking = true;
-	initFocus(pos, pos);
 }
 
-RectangleShape oButton::unclick(Vector2f pos)
+int oButton::release(/*Vector2f pos*/)
 {
 	_clicking = false;
-	_focus.setOrigin(Vector2f(
-		abs(_focus.getPoint(1).x - _focus.getOrigin().x),
-		abs(_focus.getPoint(2).y - _focus.getOrigin().y)));
+	_focus->setOrigin(Vector2f(
+		abs(_focus->getPoint(1).x - _focus->getOrigin().x),
+		abs(_focus->getPoint(2).y - _focus->getOrigin().y)));
 
-	return RectangleShape(_focus);
+	return 1;
 }
 
 
 void oButton::drag(Vector2f pos)
 {
 	
-	_focus.setScale(pos);
+	_focus->setScale(pos);
 }
 
 void oButton::undrag(Vector2f pos)
@@ -146,34 +130,26 @@ void oButton::undrag(Vector2f pos)
 
 }
 
-void oButton::initFocus(Vector2f origin, Vector2f pos)
-{
-	_focus.setOrigin(origin);	/// after pos ?
-	_focus.setPosition(pos);	/// fusionner origin et pos?
-	_focus.setSize(Vector2f());
-}
-
 /// ?
-
-inline void oButton::scaleFocus(Vector2f diff)
+void oButton::scaleFocus(Vector2f diff)
 {
-	_focus.setScale(diff);
+	_focus->setScale(diff);
 }
 
 
 void oButton::leave()
 {
 	Vector2f zero = Vector2f();
-	_focus.setSize(zero);
-	_focus.setPosition(zero);
-	_focus.setRotation(0);
+	_focus->setSize(zero);
+	_focus->setPosition(zero);
+	_focus->setRotation(0);
 }
 
 
 
 /// Getteurs
 
-inline Vector2f oButton::getP(int p)
+Vector2f oButton::getP(bCorner p)
 {
 	return RectangleShape::getPoint(p);
 }
@@ -181,11 +157,6 @@ inline Vector2f oButton::getP(int p)
 cMode oButton::getMode() const
 {
 	return _m;
-}
-
-inline RectangleShape * oButton::getFocus()
-{
-	return new RectangleShape(_focus);
 }
 
 bool oButton::gotMouse(RenderWindow & screen) const
@@ -209,19 +180,14 @@ bool oButton::gotMouse(RenderWindow & screen) const
 }
 
 // 
-RectangleShape oButton::body()
+RectangleShape & oButton::body()
 {
 	return static_cast<RectangleShape>(*this);
 }
 
-inline Text oButton::text()
+Text & oButton::text()
 {
 	return static_cast<Text>(*this);
-}
-
-RectangleShape oButton::focus()
-{
-	return _focus;
 }
 
 
