@@ -197,9 +197,10 @@ Text & oButton::text()
 
 void oB_create::initShape(sShape vertex)
 {
-	assert(sNone <= vertex && vertex <= sLine);
+	assert(sBox <= vertex && vertex <= sCOUNT);
 	_s = vertex;
 }
+
 
 sShape oB_create::getShape() const
 {

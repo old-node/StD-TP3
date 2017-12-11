@@ -29,14 +29,15 @@ protected:
 	bool _fromTopOrLeft;
 	//bool _reverseOrder;	/// optionnel
 	bCorner _lastCorner;
-	static float _left;
-	static float _top;
+	float _left;
+	float _top;
 
 public:
 	buttonStrip(bool fromTopOrLeft, Vector2f startPos, Vector2f endPos);
 	~buttonStrip();
 
-	virtual void initStrip() = 0;
+	virtual void initStrip() {
+	}
 
 	int addButtons(const vector<oButton> buttons)
 	{
@@ -62,6 +63,8 @@ public:
 		Vector2f v = getLastPos();
 		_left = v.x;
 		_top = v.y;
+
+		return true;
 	}
 };
 
