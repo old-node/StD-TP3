@@ -37,6 +37,8 @@ cursor::cursor()
 
 	_dragable = true;
 	
+	_selecting = false;
+
 	_zone = rStart;
 
 	//Initialisation du focus
@@ -104,6 +106,11 @@ void cursor::setFocus(shape s)
 	_focus = s;
 }
 
+void cursor::setSelected(bool b)
+{
+	_selecting = b;
+}
+
 
 /// Clicker
 void cursor::click()
@@ -136,8 +143,11 @@ void cursor::click()
 			_focus.shapePtr->setPosition(_click);
 			break;
 		case cSelect:
-			_offSet = _click - Vector2f(_focus.shapePtr->getPosition().x/2 + (_focus.shapePtr->getLocalBounds().width/2),
-				_focus.shapePtr->getPosition().y/2 + (_focus.shapePtr->getLocalBounds().height/2));
+			if (_selecting)
+			{
+				_offSet = _click - Vector2f(_focus.shapePtr->getPosition().x / 2 + (_focus.shapePtr->getLocalBounds().width / 2),
+					_focus.shapePtr->getPosition().y / 2 + (_focus.shapePtr->getLocalBounds().height / 2));
+			}
 			break;
 		default:
 			break;
@@ -172,7 +182,8 @@ void cursor::drag(Vector2i mouse)
 			}
 			break;
 		case cSelect:
-			_focus.shapePtr->move(_current - _focus.shapePtr->getPosition() - _offSet);
+			if(_selecting)
+				_focus.shapePtr->move(_current - _focus.shapePtr->getPosition() - _offSet);
 			break;	
 		default:
 			break;
@@ -209,6 +220,11 @@ shape cursor::releaseClick()
 			//Couleur aleatoire
 			srand(time(NULL));
 			_focus.shapePtr->setFillColor(DBOARD.at(random));
+			break;
+		case cSelect:
+			if(_selecting)
+				_focus.shapePtr->move(_current - _focus.shapePtr->getPosition() - _offSet);
+			_selecting = false;
 			break;
 		default:
 			break;

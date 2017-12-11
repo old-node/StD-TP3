@@ -69,24 +69,31 @@ void painter::run()
 						if (!listShape.empty() && _cursorInterface.getModeCurs() == cSelect && selectedShape(mousePos)!=nullptr)
 						{
 							_cursorInterface.setFocus(*selectedShape(mousePos));
+							_cursorInterface.setSelected(true);
 							//selectShape = selectedShape(mousePos);
-						}		
+						}
+						else
+							_cursorInterface.setSelected(false);
+
 						_cursorInterface.click(); //On fait cliquer le curseur
 					}
 					break;
 				case Event::MouseButtonReleased:
 					if (event.mouseButton.button == Mouse::Left)
 					{	
-						_cursorInterface.releaseClick();
-						//On push la nouvelle forme dans la liste
-						if (!listShape.empty() && _cursorInterface.getModeCurs() == cSelect && selectShape != nullptr)
+						
+						if (!listShape.empty() && _cursorInterface.getModeCurs() == cSelect)
 						{
 							selectShape = nullptr;
+							_cursorInterface.releaseClick();
 						}
 						else if (_cursorInterface.getModeCurs() == cCreate)
 						{
+							//On push la nouvelle forme dans la liste
 							listShape.push_back(_cursorInterface.releaseClick());
-						}		
+						}
+
+						
 					}		
 					break;
 				case Event::KeyPressed:

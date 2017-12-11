@@ -31,6 +31,7 @@ private:
 	Vector2f _offSet;		//Offset pour la selection
 	bool _clicking;			// État des boutons de la souris 
 	bool _dragable;			// Condition qui permet le déplacement du focus
+	bool _selecting;		// Condition à savoir si une forme est selectionne ou pas
 
 	shape _focus;	// Zone de sélection ou aperçu d'une forme
 
@@ -49,6 +50,7 @@ public:
 	void setMode(oButton * b);
 	void setClick(Vector2f click);
 	void setCurrent(Vector2f current);
+	void setSelected(bool b);
 
 	/// Manipulations du focus
 	void initFocus();
