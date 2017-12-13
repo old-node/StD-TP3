@@ -71,7 +71,7 @@ public:
 	Vector2f getClick() const;
 	Vector2f getCurrent() const;
 	
-	void changeMode();
+	void changeMode(cMode mode);
 	//Setteur de focus
 
 	//RectangleShape getFocus() const { return _focus; }

@@ -212,7 +212,7 @@ void oButton::scaleFocus(Vector2f diff)
 
 void oButton::leave()
 {
-	_focus->~Shape();
+	//_focus->~Shape();
 }
 
 /// Getteurs

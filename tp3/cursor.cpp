@@ -268,7 +268,7 @@ Vector2f cursor::getClick() const { return _click; }
 
 Vector2f cursor::getCurrent() const { return _current; }
 
-void cursor::changeMode()
+void cursor::changeMode(cMode mode)
 {
 	if (_mode == _bOptions[0])
 		_mode = _bOptions[4];

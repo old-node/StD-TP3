@@ -50,13 +50,8 @@ void painter::run()
 				case Event::MouseMoved:
 					mousePos = (Vector2f)Mouse::getPosition(_window);
 					_cursorInterface.setCurrent(mousePos); //On met le current du cursor avec la position
-					//cout << "Position en X : " << mousePos.x << endl;
-					//cout << "Position en Y : " << mousePos.y << endl;
 					//Regarde si on est dans un buttonstrip
 					_cursorInterface.setOnZone(isOnAZone());
-					if (isOnAZone())
-						if (isOnButton()->getMode() == cCreate)
-							cout << "Release sur cCreate!!!!!" << mousePos.x << endl;
 		
 					if (_cursorInterface.getClicking())
 					{
@@ -87,8 +82,8 @@ void painter::run()
 					if (event.mouseButton.button == Mouse::Left)
 					{	
 						if (isOnAZone())
-							if (isOnButton()->getMode() == cCreate)
-								cout << "Release sur cCreate!!!!!" << endl;
+							if (isOnButton() != nullptr)
+								_cursorInterface.setMode(isOnButton());
 
 						switch (_cursorInterface.getModeCurs())
 						{
@@ -115,11 +110,7 @@ void painter::run()
 						}
 					}		
 					break;
-				case Event::KeyPressed:
-					if (event.key.code == sf::Keyboard::M)
-					{
-						_cursorInterface.changeMode();
-					}
+
 				default :
 					break;	
 			}
@@ -128,7 +119,6 @@ void painter::run()
 
 			drawListShape();
 
-			
 			if(_cursorInterface.getModeCurs() != cRemove)
 				_window.draw(*_cursorInterface.getFocus().shapePtr);
 
