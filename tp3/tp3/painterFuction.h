@@ -107,6 +107,7 @@ static float distance2Points(Vector2f p1, Vector2f p2);
 /* Constantes de l'application */
 ///===========================///
 
+const Font D_F = FONT();
 // Vecteur de deux points float pour les multiplications.
 const Vector2f TWOO = Vector2f(2, 2);
 // Palette des couleurs par défaut.

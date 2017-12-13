@@ -119,13 +119,13 @@ void painter::run()
 			_window.clear(Color::Black);
 
 			drawListShape();
-			drawButtonstrips();
+
 			_window.draw(*_cursorInterface.getFocus().shapePtr);
+			drawButtonstrips();
+
 			_window.display();
 		}
-			
 	}
-
 }
 
 //Nettoie l'interface
@@ -156,7 +156,7 @@ void painter::drawButtonstrips()
 		for (auto & b : s->getButtonList())
 		{
 			_window.draw(b.getBody());
-			//_window.draw(b.getText());
+			_window.draw(b.getText());
 		}
 	}
 }
@@ -211,7 +211,6 @@ void painter::addBsH(bool normalScope, bool normalInterval, Vector2f initPos, Ve
 	if (limitPos.y == 0)
 		limitPos.y = _sHeight;
 
-	// Une erreur se produit à la destruction de la copie
 	_bsH.push_back(new buttonStripH(normalScope, normalInterval,
 		initPos, limitPos, fixed, minDim));
 	_bs = _bsH.back();		// Change la bannière active

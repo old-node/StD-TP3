@@ -190,8 +190,6 @@ public:
 
 	/// Getteurs
 	sShape getShape() const;
-
-
 };
 
 // Classe du bouton de création de boites
@@ -202,7 +200,7 @@ protected:
 public:
 	oB_cBox(float l = 0, float t = 0, float w = 0, float h = 0,
 		float o = 1, Color bC = FILLC, Color olC = CBOX,
-		string s = "Boite", Font p = FONT(), int c = TSIZE, Color sC = CBOX,
+		string s = "Boite", Font p = D_F, int c = TSIZE, Color sC = Color::Black,
 		Color fC = CBOX, Color folC = Color::Black, float fol = 1, Shape * f = nullptr) :
 		oB_create(l, t, w, h, o, bC, olC, s, p, c, sC, folC, fC, fol, f)
 	{
@@ -232,7 +230,7 @@ protected:
 public:
 	oB_cCircle(float l = 0, float t = 0, float w = 0, float h = 0,
 		float o = BOL, Color bC = FILLC, Color olC = CLINE,
-		string s = "Trait", Font p = FONT(), int c = TSIZE, Color sC = CLINE,
+		string s = "Trait", Font p = D_F, int c = TSIZE, Color sC = Color::Black,
 		Color fC = Color::Yellow, Color folC = CLINE, float fol = 2, Shape * f = nullptr) :
 		oB_create(l, t, w, h, o, bC, olC, s, p, c, sC, folC, fC, fol, f)
 	{
@@ -256,7 +254,7 @@ protected:
 public:
 	oB_remove(float l = 0, float t = 0, float w = 0, float h = 0,
 		float o = 1, Color bC = FILLC, Color olC = Color::Red,
-		string s = "Efface", Font p = FONT(), int c = TSIZE, Color sC = Color::Red,
+		string s = "Efface", Font p = D_F, int c = TSIZE, Color sC = Color::Black,
 		Color fC = Color::Transparent, Color folC = Color::Red, float fol = 2, Shape * f = nullptr) :
 		oButton(l, t, w, h, o, bC, olC, s, p, c, sC, folC, fC, fol, f)
 	{
@@ -279,7 +277,7 @@ protected:
 public:
 	oB_select(float l = 0, float t = 0, float w = 0, float h = 0,
 		float o = 5, Color bC = FILLC, Color olC = Color::Green,
-		string s = "Sélection", Font p = FONT(), int c = TSIZE, Color sC = Color::Green,
+		string s = "Sélection", Font p = D_F, int c = TSIZE, Color sC = Color::Black,
 		Color fC = Color::White, Color folC = Color::Green, float fol = 3, Shape * f = nullptr) :
 		oButton(l, t, w, h, o, bC, olC, s, p, c, sC, folC, fC, fol, f)
 	{
@@ -302,7 +300,7 @@ protected:
 public:
 	oB_link(float l = 0, float t = 0, float w = 0, float h = 0,
 		float o = 11, Color bC = FILLC, Color olC = Color::Yellow,
-		string s = "Lier", Font p = FONT(), int c = TSIZE, Color sC = Color::Yellow,
+		string s = "Lier", Font p = D_F, int c = TSIZE, Color sC = Color::Black,
 		Color fC = Color::Black, Color folC = Color::Yellow, float fol = 1, Shape * f = nullptr) :
 		oButton(l, t, w, h, o, bC, olC, s, p, c, sC, folC, fC, fol, f)
 	{

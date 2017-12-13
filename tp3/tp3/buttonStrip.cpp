@@ -15,21 +15,43 @@ Date:			29-11-2017
 
 /// Utiliser plutôt autre méthode qui travail avec des min() et des max() ??
 
-Vector2f buttonStrip::getCornerB(bCorner c)
+Vector2f buttonStrip::getCornerB(bCorner c, bool front)
 {
-	float cPos = _buttons.back().getP(c).x;
+	float cPos;
+	oButton * b;
+	if (front)
+		b = &_buttons.front();
+	else
+		b = &_buttons.back();
+
+	cPos = b->RectangleShape::getPosition().x + b->getP(c).x;
 	return Vector2f((_scopeNb > 1) ? _limitPos.x : cPos, _initPos.y);
 }
 
-Vector2f buttonStrip::getCornerC(bCorner c)
+Vector2f buttonStrip::getCornerC(bCorner c, bool front)
 {
-	float cPos = _buttons.back().getP(c).y;
+	float cPos;
+	oButton * b;
+	if (front)
+		b = &_buttons.front();
+	else
+		b = &_buttons.back();
+
+	cPos = b->RectangleShape::getPosition().y + b->getP(c).y;
 	return Vector2f(_initPos.x, cPos);
 }
 
-Vector2f buttonStrip::getCornerD(bCorner c)
+Vector2f buttonStrip::getCornerD(bCorner c, bool front)
 {
-	Vector2f cPos = _buttons.back().getP(c);
+	Vector2f cPos;
+	oButton * b;
+	if (front)
+		b = &_buttons.front();
+	else
+		b = &_buttons.back();
+
+	Vector2f bPos = b->RectangleShape::getPosition();
+	cPos = Vector2f(bPos.x + b->getP(c).x, bPos.y + b->getP(c).y);
 	return (_scopeNb > 1) ? Vector2f(_limitPos.x, cPos.y) : cPos;
 }
 
@@ -208,6 +230,7 @@ buttonStrip::buttonStrip(bool fromTopOrLeft, bool reverseOrder,
 	_fixed = fixed;
 	_minDim = minDim;
 	_buttonPos = _initPos;
+	_overlay.setPosition(_initPos);
 	///initCorner();	// Seullement dans les enfants
 }
 // 
@@ -228,9 +251,7 @@ int buttonStrip::addButton(oButton b)
 		_activeButton--;
 
 	// Retourne si une nouvelle portée a été nécessaire.
-	int c = initButtonStat();
-	updateZone();
-	return c;
+	return initButtonStat();
 }
 
 int buttonStrip::addButtons(const vector<oButton> buttons)
@@ -274,7 +295,7 @@ void buttonStrip::updateZone()
 	assert(!_buttons.empty());
 	Vector2f ul = getUpperLeftCorner();
 	Vector2f lr = getLowerRightCorner();
-	_overlay.setPosition(ul);
+	//_overlay.setPosition(ul);
 	_overlay.setSize(Vector2f(lr.x - ul.x, lr.y - ul.y));
 }
 
@@ -286,12 +307,15 @@ FloatRect buttonStrip::getZone()
 /// Il est possible de former un FloatRect directement 
 ///		en combinant les deux prochaines méthodes si nécessaire.
 
-Vector2f buttonStrip::getUpperLeftCorner()
+Vector2f buttonStrip::getUpperLeftCorner(bool front)
 {
 	if (_normalScope)
 	{
 		if (_normalInterval)
-			return _initPos; // Pareil à : getCornerA()
+			//if (front)
+				return _initPos; // Pareil à : getCornerA()
+			//else
+			//	return ;
 		else
 			return getCornerB(bUpperLeft);
 	}
@@ -304,14 +328,20 @@ Vector2f buttonStrip::getUpperLeftCorner()
 	}
 }
 
-Vector2f buttonStrip::getLowerRightCorner()
+Vector2f buttonStrip::getLowerRightCorner(bool front)
 {
 	if (_normalScope)
 	{
 		if (_normalInterval)
-			return getCornerD(bLowerRight);
+			if (front)
+				return getCornerD(bLowerRight, front);
+			else
+				return getCornerD(bLowerRight);
 		else
-			return getCornerC(bLowerRight);
+			if (front)
+				return getCornerC(bLowerRight);
+			else
+				return getCornerC(bLowerRight);
 	}
 	else
 	{
@@ -352,7 +382,7 @@ void buttonStripH::initCorner()
 buttonStripH::~buttonStripH()
 {
 	_buttons.clear();
-	_activeButton = _buttons.begin();	
+	_activeButton = _buttons.begin();
 	_pressedButtons.clear();
 	_pressedColors.~elemColors();
 	_lastHovered = nullptr;

@@ -35,7 +35,7 @@ oButton::oButton(float left, float top, float width, float height,
 	pos = Vector2f(l, t);			// Origine du bouton
 
 	// Initiaise le text
-	this->Text::Text(text, _p, tSize);
+	this->Text::Text(text, D_F, tSize);
 	Text::setFillColor(fontC);
 
 	// Obtien les dimenssions nécessaires au bouton
