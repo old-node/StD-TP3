@@ -80,6 +80,28 @@ struct elemColors
 	Color f;				// Couleur du corps de la forme.
 	Color ol;				// Couleur de la bordure de la forme.
 	Color t;				// Couleur du text sur la forme.
+	elemColors(Color fill = Color::White,
+		Color outline = Color::Black,
+		Color text = Color::Black)
+	{
+		set(fill, outline, text);
+	}
+	void set(Color fill = Color::White,
+		Color outline = Color::Black,
+		Color text = Color::Black)
+	{
+		f = fill;
+		ol = outline;
+		t = text;
+	}
+	void set(elemColors c)
+	{
+		set(c.f, c.ol, c.t);
+	}
+	~elemColors()
+	{
+		t = ol = f = Color();
+	}
 };
 
 
@@ -117,93 +139,25 @@ public:
 	void setColors(Color fillC = FILLC, Color OLC = OUTLC);
 	void setFocus(Color focusC = Color::Transparent, Color focusOLC = Color::Yellow,
 		float focusOL = 1, Shape * focus = nullptr);
-	void move(Vector2f pos = Vector2f())
-	{
-		RectangleShape::setPosition(pos);
-		Text::setPosition(pos);
-	}
-	void resize(Vector2f dim = Vector2f(1, 1))	/// Trop petit ??
-	{
-		assert(0 < dim.x && dim.x < 1000
-			&& 0 < dim.y && dim.y < 1000
-			/*&& dim.y >= Text::getGlobalBounds().height*/);
-
-		Vector2f box, mid, center, pos;
-		float ol = RectangleShape::getOutlineThickness();
-		RectangleShape::setOrigin(Vector2f(-ol, -ol));
-		pos = RectangleShape::getPosition();
-
-		float width = textDim(dim.x, Text::getGlobalBounds().width, BW);
-		float height;// = textDim(dim.y, Text::getGlobalBounds().height, BH);
-		/// Resizer seullement la largeur ??
-
-		while (dim.x < Text::getGlobalBounds().width)
-		{
-			string current = Text::getString();
-			current.pop_back();
-			Text::setString(current);
-		}
-		if (dim.x > Text::getGlobalBounds().width)
-			width = dim.x;
-		
-		/*//if (dim.y != Text::getGlobalBounds().height)
-		height = dim.y;
-		box = Vector2f(width + TOLW * 2, height + TOLH * 2);
-		mid = Vector2f(width / 2, height / 2);
-		center = Vector2f(box.x / 2, box.y / 2 - TOLH / 2);
-		Text::setOrigin(mid);
-		Text::setPosition(pos);
-		Text::move(center);
-		//RectangleShape::setTextureRect((IntRect)FloatRect(pos, box));
-		RectangleShape::setOrigin(center);*/
-
-		initOrigins();
-	}
+	void move(Vector2f pos = Vector2f());
+	void resize(Vector2f dim = Vector2f(1, 1));
 	// Met à jour l'origine du rectangle et 
-	void initOrigins(bCorner corner = bUpperLeft)
-	{
-		///if (_originCorner == corner)
-		///	return;
-		
-		_originCorner = corner;
-		
-		// Initialise l'origine du rectangle.
-		float ol = RectangleShape::getOutlineThickness();
-		Vector2f rPos = RectangleShape::getPosition();
-		Vector2f origin = originOffset(_originCorner, ol, getP(_originCorner));
-		RectangleShape::setOrigin(origin);
-
-		// Initialise l'origine du texte.
-		Vector2f rDim = RectangleShape::getSize();
-		FloatRect tDim = Text::getLocalBounds();
-		_textOrigin = Vector2f(
-			((rDim.x + ol * 2) - tDim.width) / 2,
-			((rDim.y + ol * 2) - tDim.height) / 2);
-		_textOrigin = updateTextOrigin(_originCorner, tDim, _textOrigin);
-		Text::setOrigin(_textOrigin);
-		Text::setPosition(rPos);	/// À enlever pour certains cas??
-	}
+	void initOrigins(bCorner corner = bUpperLeft);
 	void scaleFocus(Vector2f diff);
 
 	/// Manipulation du focus
 	virtual void click(Vector2f pos = (Vector2f)Mouse::getPosition());
 	virtual int release(/*Vector2f pos*/);
 	virtual void drag(Vector2f pos);
-	virtual void undrag(Vector2f pos);	/// ?
-	virtual void c(Vector2f pos) {}		/// ?
+	virtual void undrag(Vector2f pos);
+	virtual void c(Vector2f pos) {}
 
 	void leave();
-	virtual void pick() {}				/// ?
+	virtual void pick() {}
 
 	/// Getteurs
-	float getW()
-	{
-		return getP(bUpperRight).x - getP(bUpperLeft).x;
-	}
-	float getH()
-	{
-		return getP(bLowerLeft).y - getP(bUpperLeft).y;
-	}
+	float getW();
+	float getH();
 	Vector2f getP(bCorner p = bLowerRight);
 	cMode getMode() const;
 	bool gotMouse(RenderWindow & screen) const;

@@ -288,13 +288,13 @@ Shape * cursor::getFocus()
 	return temp;
 }
 
-bool cursor::onZone(rRegion z)
+bool cursor::onZone(FloatRect z, RenderWindow & w)
 {
-	/*if (_zones[z]->contains((Vector2f)getPosition(_w)))
+	if (z.contains((Vector2f)getPosition(w)))
 	{
-		_zone = z;
+		///_zone = z;
 		return true;
-	}*/
+	}
 	return false;
 }
 
