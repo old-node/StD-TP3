@@ -79,6 +79,6 @@ public:
 
 
 	//void drawButton(oButton * oB);
-	//void drawFocus();
-	//bool onZone(rRegion z);
+	Shape * getFocus();
+	bool onZone(rRegion z);
 };

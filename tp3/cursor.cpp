@@ -281,16 +281,20 @@ void cursor::changeMode()
 Shape * cursor::getFocus()
 {
 	if (_mode != nullptr)
-		return static_cast<Shape*>(&_focus);
+		;// return static_cast<Shape*>(&_focus);
+
+	// contournement du bug temporaire
+	static Shape * temp;
+	return temp;
 }
 
 bool cursor::onZone(rRegion z)
 {
-	if (_zones[z]->contains((Vector2f)getPosition(_w)))
+	/*if (_zones[z]->contains((Vector2f)getPosition(_w)))
 	{
 		_zone = z;
 		return true;
-	}
+	}*/
 	return false;
 }
 

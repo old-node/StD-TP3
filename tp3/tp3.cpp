@@ -29,7 +29,7 @@ int main()
 	/// Mettre la liste du bouton dans l'interface
 	buttonStripH topBanner;
 	topBanner.addButton(oB_cBox());
-	topBanner.addButton(oB_cLine());
+	topBanner.addButton(oB_cCircle());
 	topBanner.addButton(oB_remove());
 	topBanner.addButton(oB_link());
 	topBanner.addButton(oB_select());
@@ -89,7 +89,7 @@ int main()
 	vector<Vertex> v;			// Points rouges
 	vector<Shape*> r;
 	vector<RectangleShape> visible;
-	cursor pointer(sandbox);	// Souris
+	cursor pointer();			// Souris
 	Event event;				// Événement de l'application
 
 	sandbox.clear();
@@ -121,21 +121,21 @@ int main()
 					/// Doit exclure les zones sans boutons ici
 					// 
 					if (event.mouseButton.button == Mouse::Left)
-						pointer.click();
+						;// pointerclick();
 					
 					break;
 				case Event::MouseButtonReleased:
 					if (event.mouseButton.button == Mouse::Left)
-						if (pointer.unclick() == 1)
-							r.push_back(pointer.getFocus());
+						;// if (pointer.unclick() == 1)
+							//r.push_back(pointer.getFocus());
 					break;
 				case Event::MouseMoved:
 					/// Doit exclure les zones ayant des boutons ici ?
-					if (pointer.isClicking())
+					/*if (pointer.isClicking())
 					{
 						pointer.drag();
 						sandbox.draw(*pointer.getFocus()); /// ?
-					}
+					}*/
 					v.push_back(Vertex((Vector2f)Mouse::getPosition(sandbox),
 						Color::Red, (Vector2f)Mouse::getPosition(sandbox)));
 					break;

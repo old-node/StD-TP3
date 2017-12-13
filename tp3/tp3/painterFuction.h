@@ -22,7 +22,7 @@ enum PBOARD;
 
 // Coins d'un bouton
 enum bCorner {
-	bUpperLeft, bUpperRight, bLowerRight, bLowerLeft
+	bUpperLeft, bUpperRight, bLowerRight, bLowerLeft, bCenter
 };
 // Zones où le pointeur peut être situé
 enum rRegion {
@@ -39,10 +39,6 @@ enum cMode {
 // Choix de la forme à dessinner
 enum sShape {
 	sBox, sCircle, sCOUNT ///, sBall, sPoint, sLink?
-};
-// Coins d'un bouton
-enum bCorner {
-	bUpperLeft, bUpperRight, bLowerRight, bLowerLeft, bCenter
 };
 static bCorner oppositeC(bCorner c)
 {

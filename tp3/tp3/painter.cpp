@@ -107,7 +107,7 @@ void painter::run()
 
 			_window.clear(Color::Black);
 			drawListShape();
-			_window.draw(*_cursorInterface.getFocus().shapePtr);
+			//_window.draw(*_cursorInterface.getFocus().shapePtr);
 			_window.display();
 		}
 			
