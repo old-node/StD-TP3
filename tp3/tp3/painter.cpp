@@ -24,10 +24,10 @@ void painter::init()
 	iteratorShape = listShape.begin();	//Initialisation de l'iterateur
 }
 
-void painter::show()
-{
-	_window.display();
-}
+//void painter::show()
+//{
+//	_window.display();
+//}
 
 //Va afficher l'interface et gèrer les evenements
 //Un peu comme une boucle de main...
@@ -110,7 +110,7 @@ void painter::run()
 			drawListShape();
 			drawButtonstrips();
 			drawListShape();
-			//_window.draw(*_cursorInterface.getFocus().shapePtr);
+			_window.draw(*_cursorInterface.getFocus().shapePtr);
 			_window.display();
 		}
 			

@@ -277,17 +277,6 @@ void cursor::changeMode()
 }
 
 /// Affichage
-
-Shape * cursor::getFocus()
-{
-	if (_mode != nullptr)
-		;// return static_cast<Shape*>(&_focus);
-
-	// contournement du bug temporaire
-	static Shape * temp;
-	return temp;
-}
-
 bool cursor::onZone(FloatRect z, RenderWindow & w)
 {
 	if (z.contains((Vector2f)getPosition(w)))

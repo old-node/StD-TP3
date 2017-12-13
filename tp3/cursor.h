@@ -79,6 +79,5 @@ public:
 
 
 	//void drawButton(oButton * oB);
-	Shape * getFocus();
 	bool onZone(FloatRect z, RenderWindow & w);
 };

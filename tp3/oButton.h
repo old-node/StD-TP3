@@ -214,6 +214,13 @@ public:
 	{
 
 	}
+	bool drawFocus(Shape * s, RenderWindow & w)
+	{
+		//RectangleShape * focus = new dynamic_cast<RectangleShape*>(s);
+		//w.draw(*focus);
+		return true;
+	}
+
 };
 
 // Classe du bouton de création de traits

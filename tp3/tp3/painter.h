@@ -33,13 +33,13 @@ private:
 	buttonStrip * _bs;			// Bannière active.
 
 public:
-	painter();					//Constructeur sans parametre
-	void init();				//Initialise l'interface
-	void show();				//Affiche l'interface ///inutile ?
-	void run();					//Boucle principale
-	void clear();				//Nettoie l'interface
-	void drawListShape();		//Dessine les formes de la liste
-	void drawButtonstrips();
+	painter();					// Constructeur sans parametre
+	void init();				// Initialise l'interface
+	//void show();				// Affiche l'interface ///inutile ?
+	void run();					// Boucle principale
+	void clear();				// Nettoie l'interface
+	void drawListShape();		// Dessine les formes de la liste
+	void drawButtonstrips();	// Dessine toutes les bannières et leur boutons.
 	shape* selectedShape(Vector2f v); //Retourne la shape si elle est selectionnée
 
 	// Ajoute une bannière horizontale à l'interface.
