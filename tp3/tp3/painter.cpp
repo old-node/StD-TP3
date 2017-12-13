@@ -56,7 +56,7 @@ void painter::run()
 					_cursorInterface.setOnZone(isOnAZone());
 					if (isOnAZone())
 						if (isOnButton()->getMode() == cCreate)
-							cout << "Release sur cCreate!!!!!" << endl;
+							cout << "Release sur cCreate!!!!!" << mousePos.x << endl;
 		
 					if (_cursorInterface.getClicking())
 					{
@@ -71,10 +71,11 @@ void painter::run()
 						{
 							_cursorInterface.setFocus(*selectedShape(mousePos));
 							_cursorInterface.setSelected(true);
-							//selectShape = selectedShape(mousePos);
 						}
 						else if (_cursorInterface.getModeCurs() == cRemove)
-							cout << "Remove" << endl;
+						{
+			
+						}	
 						else
 							_cursorInterface.setSelected(false);
 
@@ -99,9 +100,16 @@ void painter::run()
 							}
 							break;
 						case cCreate:
-							//On push la nouvelle forme dans la liste
-							listShape.push_back(_cursorInterface.releaseClick());
+							//On push la nouvelle forme dans la liste si on est pas sur un bouton strip
+							if (!isOnAZone())
+								listShape.push_back(_cursorInterface.releaseClick());
+							break;
 						case cRemove:
+							if (!listShape.empty() && (searchShape(_cursorInterface.getClick()) != listShape.end()))
+							{
+								listShape.erase(searchShape(_cursorInterface.getClick()));
+							}
+							break;
 						default:
 							break;
 						}
@@ -120,7 +128,10 @@ void painter::run()
 
 			drawListShape();
 
-			_window.draw(*_cursorInterface.getFocus().shapePtr);
+			
+			if(_cursorInterface.getModeCurs() != cRemove)
+				_window.draw(*_cursorInterface.getFocus().shapePtr);
+
 			drawButtonstrips();
 
 			_window.display();
