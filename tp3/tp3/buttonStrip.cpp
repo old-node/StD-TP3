@@ -228,7 +228,9 @@ int buttonStrip::addButton(oButton b)
 		_activeButton--;
 
 	// Retourne si une nouvelle portée a été nécessaire.
-	return initButtonStat();
+	int c = initButtonStat();
+	updateZone();
+	return c;
 }
 
 int buttonStrip::addButtons(const vector<oButton> buttons)
