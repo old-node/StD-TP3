@@ -190,6 +190,9 @@ public:
 
 	/// Getteurs
 	sShape getShape() const;
+
+	/// Opérations virtuelles des modes
+	virtual void s() = 0;
 };
 
 // Classe du bouton de création de boites

@@ -235,6 +235,7 @@ void painter::addButton(oButton b)
 	assert(_bs != nullptr);
 	_bs->addButton(b);
 	_bs->updateZone();
+	_cursorInterface.addButton(&_bs->getButtonList().back());
 }
 
 bool painter::isOnAZone()

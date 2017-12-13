@@ -34,7 +34,7 @@ private:
 	bool _selecting;		// Condition à savoir si une forme est selectionne ou pas
 	bool _onZone;			// Condition à savoir si le curseur est dans une zone (buttonstrip)
 
-	shape _focus;	// Zone de sélection ou aperçu d'une forme
+	shape _focus;			// Zone de sélection ou aperçu d'une forme
 
 	rRegion _zone;			// Zone active du curseur
 	FloatRect _zones[static_cast<int>(rCOUNT)];	// Dimmenssions des zones
@@ -53,6 +53,10 @@ public:
 	void setCurrent(Vector2f current);
 	void setSelected(bool b);
 	void setOnZone(bool b);
+	void addButton(oButton * b)
+	{
+		_bOptions.push_back(b);
+	}
 
 	/// Manipulations du focus
 	void initFocus();
