@@ -194,7 +194,7 @@ void cursor::drag(Vector2i mouse)
 }
 
 
-//Va retourner la forme selon le mode du curseur
+// Va retourner la forme selon le mode du curseur
 shape cursor::releaseClick()
 {
 	_clicking = false;
@@ -241,8 +241,6 @@ shape cursor::releaseClick()
 /// Getteurs
 
 
-/// Getteurs
-
 bool cursor::isClicking(Mouse::Button it)
 {
 	return (isButtonPressed(it) && _clicking);
@@ -254,8 +252,6 @@ cMode cursor::getModeCurs() const
 { 
 	return _mode->getMode();
 }
-
-// Retourner un int au lieu ?*
 
 //Retourne le focus
 shape cursor::getFocus() const

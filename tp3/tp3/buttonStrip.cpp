@@ -208,6 +208,7 @@ buttonStrip::buttonStrip(bool fromTopOrLeft, bool reverseOrder,
 	_fixed = fixed;
 	_minDim = minDim;
 	_buttonPos = _initPos;
+	_overlay.setPosition(_initPos);
 	///initCorner();	// Seullement dans les enfants
 }
 // 
@@ -228,9 +229,7 @@ int buttonStrip::addButton(oButton b)
 		_activeButton--;
 
 	// Retourne si une nouvelle portée a été nécessaire.
-	int c = initButtonStat();
-	updateZone();
-	return c;
+	return initButtonStat();
 }
 
 int buttonStrip::addButtons(const vector<oButton> buttons)
@@ -274,7 +273,7 @@ void buttonStrip::updateZone()
 	assert(!_buttons.empty());
 	Vector2f ul = getUpperLeftCorner();
 	Vector2f lr = getLowerRightCorner();
-	_overlay.setPosition(ul);
+	//_overlay.setPosition(ul);
 	_overlay.setSize(Vector2f(lr.x - ul.x, lr.y - ul.y));
 }
 
