@@ -9,8 +9,9 @@ Description:	3e travail pratique du cours Structure de donnée. Application de de
 #include <locale>
 #include <iostream>
 using namespace std;
-//#include "tp3/sqlConnect.h"
-#include "tp3/painter.h"
+//#include "tp3\sqlConnect.h"
+#include "tp3\painter.h"
+#include "tp3\buttonStrip.h"
 #include "cursor.h"
 using namespace sf;
 
@@ -22,7 +23,35 @@ int main()
 {
 	setlocale(LC_CTYPE, "can");
 
-	mainSimon();
+	//mainSimon();
+
+	/// Mettre la liste du bouton dans l'interface
+	buttonStripH topBanner;
+	topBanner.addButton(oB_cBox());
+	topBanner.addButton(oB_cLine());
+	topBanner.addButton(oB_remove());
+	topBanner.addButton(oB_link());
+	topBanner.addButton(oB_select());
+	FloatRect rectTB = topBanner.getZone();
+	
+	// Au cas où l'on veut implémenter des bannières à des positions différentes.
+	///buttonStripH lowerBanner(false, false, Vector2f(0, SCREENH), Vector2f(SCREENW, SCREENH));
+	///lowerBanner.addButton();
+	///FloatRect rectLB = lowerBanner.getZone();
+	///buttonStripV leftBanner;
+	
+	vector<oButton*> bOptionList;	// Pointeurs de toutes les options pour le curseur.
+	
+	for (auto & b : topBanner.getButtonList())
+		bOptionList.push_back(&b);
+	/*for (auto & b : lowerBanner.getButtonList())
+		bOptionList.push_back(&b);
+	for (auto & b : leftBanner.getButtonList())
+		bOptionList.push_back(&b);*/
+
+	/// Mettre bOptionList dans le curseur
+	/// Les zones aussi
+	FloatRect _zones[static_cast<int>(rCOUNT)];	// Dimmenssions des zones
 
 	/*
 	sqlConnect bd;
@@ -57,7 +86,7 @@ int main()
 	(VideoMode(SCREENW, SCREENH), "Sandbox");
 
 	vector<Vertex> v;			// Points rouges
-	vector<RectangleShape> r;
+	vector<Shape*> r;
 	vector<RectangleShape> visible;
 	cursor pointer(sandbox);	// Souris
 	Event event;				// Événement de l'application
@@ -65,7 +94,6 @@ int main()
 	sandbox.clear();
 	sandbox.draw(truc);
 	sandbox.draw(test);
-	pointer.drawMenu();
 	sandbox.display();
 
 	//system("pause");
@@ -98,12 +126,15 @@ int main()
 				case Event::MouseButtonReleased:
 					if (event.mouseButton.button == Mouse::Left)
 						if (pointer.unclick() == 1)
-							r.push_back(*pointer.getFocus());
+							r.push_back(pointer.getFocus());
 					break;
 				case Event::MouseMoved:
 					/// Doit exclure les zones ayant des boutons ici ?
 					if (pointer.isClicking())
+					{
 						pointer.drag();
+						sandbox.draw(*pointer.getFocus()); /// ?
+					}
 					v.push_back(Vertex((Vector2f)Mouse::getPosition(sandbox),
 						Color::Red, (Vector2f)Mouse::getPosition(sandbox)));
 					break;
@@ -114,11 +145,13 @@ int main()
 				for (const auto & V : v)
 					sandbox.draw(&V, 1, PrimitiveType::Points);
 				for (const auto & R : r)
-					sandbox.draw(R);
+					sandbox.draw(*R);
 
-				pointer.drawFocus(); /// ?
-				pointer.drawMenu();
-
+				for (auto & b : topBanner.getButtonList())
+				{
+					sandbox.draw(b.getBody());
+					//sandbox.draw(b.getText());
+				}
 				sandbox.display();
 			}
 		}

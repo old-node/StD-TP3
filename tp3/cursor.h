@@ -22,8 +22,7 @@ class cursor : private Mouse
 {
 private:
 	RenderWindow & _w;		// Fenêtre active du curseur
-	vector<oButton*> _bOptions;	// Listes des modes disponibles
-
+	vector<oButton*> _bOptions;
 	oButton * _mode;		// Mode dans lequel le curseur fonctionne
 	Vector2f _click;		// Position du dernier click
 	Vector2f _current;		// Position actue /// ?? utiliser getPosition()
@@ -33,8 +32,7 @@ private:
 	RectangleShape _focus;	// Zone de sélection ou aperçu d'une forme
 
 	rRegion _zone;			// Zone active du curseur
-	FloatRect _zones[static_cast<int>(rCOUNT)];	// Dimmenssions des zones
-
+	FloatRect * _zones[];	// Dimmenssions des zones
 
 	// Recherche si un bouton est sous la souris
 	oButton * searchForButton();
@@ -68,10 +66,7 @@ public:
 
 	/// Affichage
 	// Procède à une méthode avec chaqu'un des boutons
-	void drawMenu();
 
-
-	void drawButton(oButton * oB);
-	void drawFocus();
+	Shape * getFocus();
 	bool onZone(rRegion z);
 };

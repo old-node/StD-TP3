@@ -12,7 +12,7 @@ Date:			22-11-2017
 oButton::oButton(float left, float top, float width, float height,
 	float OL, Color fillC, Color OLC,
 	string text, Font police, int tSize, Color fontC,
-	Color focusC, Color focusOLC, float focusOL)
+	Color focusC, Color focusOLC, float focusOL, Shape * focus)
 {
 	assert(/// Peut changer si les boutons possèdent des icones ?
 		text != ""								// Message du bouton
@@ -21,7 +21,7 @@ oButton::oButton(float left, float top, float width, float height,
 		&& 0 - height <= top && top <= SCREENH + height	// Pos en y
 		&& 0 <= width && width <= BW			// Largeur du bouton
 		&& 0 <= height && height <= SCREENH);	// Hauteur du bouton
-	assert(0 <= OL && OL <= 10					// Outline du bouton
+	assert(0 <= OL && OL <= 20					// Outline du bouton
 		&& 0 <= focusOL && focusOL <= 10);		// Outline du focus
 
 	_p = police;
@@ -45,7 +45,7 @@ oButton::oButton(float left, float top, float width, float height,
 
 	// Positionne le texte
 	mid = Vector2f(width / 2, height / 2);
-	center = Vector2f(box.x / 2, box.y / 2 - TOLH / 2);
+	center = Vector2f(box.x / 2, box.y / 2/* - TOLH / 2*/);
 	Text::setOrigin(mid);
 	Text::setPosition(pos);
 	Text::move(center);
@@ -62,7 +62,7 @@ oButton::oButton(float left, float top, float width, float height,
 	RectangleShape::setOutlineThickness(OL);
 
 	// Initialise le focus
-	//setFocus(focusC, focusOLC, focusOL); /// 
+	setFocus(focusC, focusOLC, focusOL, focus); /// 
 }
 
 oButton::~oButton()
@@ -70,7 +70,7 @@ oButton::~oButton()
 	_nbB = 0; /// shared_ptr?
 	RectangleShape::~RectangleShape();
 	Text::~Text();
-	_p.~Font();
+	//_p.~Font();
 
 	_m = cDefault;
 	_clicking = false;
@@ -94,11 +94,13 @@ void oButton::setColors(Color fillC, Color OLC)
 	RectangleShape::setOutlineColor(OLC);
 }
 
-void oButton::setFocus(Color focusC, Color focusOLC, float focusOL) /// ?
+void oButton::setFocus(Color focusC, Color focusOLC, 
+	float focusOL, Shape * focus) /// ?
 {
 	_focusC = focusC;
 	_focusOLC = focusOLC;
 	_focusOL = focusOL;
+	_focus = focus;
 }
 
 /// Manipulation du focus
@@ -139,10 +141,7 @@ void oButton::scaleFocus(Vector2f diff)
 
 void oButton::leave()
 {
-	Vector2f zero = Vector2f();
-	_focus->setSize(zero);
-	_focus->setPosition(zero);
-	_focus->setRotation(0);
+	_focus->~Shape();
 }
 
 
@@ -151,6 +150,11 @@ void oButton::leave()
 
 Vector2f oButton::getP(bCorner p)
 {
+	if (p == bCenter)
+	{
+		Vector2f diagonal = RectangleShape::getPoint(bLowerRight);
+		return Vector2f(diagonal.x / 2, diagonal.y / 2);
+	}
 	return RectangleShape::getPoint(p);
 }
 
@@ -180,12 +184,12 @@ bool oButton::gotMouse(RenderWindow & screen) const
 }
 
 // 
-RectangleShape & oButton::body()
+RectangleShape oButton::getBody()
 {
 	return static_cast<RectangleShape>(*this);
 }
 
-Text & oButton::text()
+Text oButton::getText()
 {
 	return static_cast<Text>(*this);
 }

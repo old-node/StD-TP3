@@ -23,24 +23,21 @@ oButton * cursor::searchForButton()
 // Constructeur
 cursor::cursor(RenderWindow & window) : _w(window)
 {
-	_bOptions.push_back(new oB_cBox());
-	_bOptions.push_back(new oB_cLine());
-	_bOptions.push_back(new oB_remove());
-	_bOptions.push_back(new oB_link());
-	_bOptions.push_back(new oB_select());
-
 	_mode = nullptr;
 	_click = _current = Vector2f();
 	_clicking = false;
 	_dragable = true;
 
 	_zone = rStart;
+	/* // Former les zones après avoir fait les buttonStrips
 	if (HORIZONTALMENU)
-		_zones[rRegion::rButton] = FloatRect(
-			Vector2f(), Vector2f((float)SCREENW, _bOptions.back()->getP(2).y));
+		_zones[rButton] = FloatRect(
+			Vector2f(), Vector2f((float)SCREENW, _bOptions.back()->getP(bLowerRight).y));
 	else
-		_zones[rRegion::rButton] = FloatRect(
-			Vector2f(), Vector2f(_bOptions.back()->getP(2).x, (float)SCREENH));
+		_zones[rButton] = FloatRect(
+			Vector2f(), Vector2f(_bOptions.back()->getP(bLowerRight).x, (float)SCREENH));
+
+	_zoes[rDraw] = FloatRect();*/
 }
 
 // Destructeur
@@ -53,6 +50,7 @@ cursor::~cursor()
 	_click = _current = Vector2f();
 
 	_zone = rStart;
+	
 	//for (cRegion i = rNone; i != rDraw; /*i++*/)
 	//	_zones[i] = FloatRect();
 }
@@ -130,7 +128,7 @@ void cursor::drag(Vector2i mouse)
 		if (_zone != rStart && _zone != rButton)
 		{
 			_mode->RectangleShape::setFillColor(Color::White);
-			drawButton(_mode);
+			//getButtonBody(_mode);
 		}
 		else if (_zone == rButton)
 			return;
@@ -192,37 +190,18 @@ Vector2f cursor::getCurrent() const { return _current; }
 /// Affichage
 // Procède à une méthode avec chaqu'un des boutons
 
-void cursor::drawMenu()
-{
-	for (auto & b : _bOptions)	// Pour chaque bouton d'options
-	{
-		if (b->gotMouse(_w)) /// b->gotMouse(_window)
-		{
-			drawButton(b);
-			cursorPos(b, _w);
-		}
-	}
-}
-
 
 /// Affichage
 
-void cursor::drawButton(oButton * oB)
-{
-	_w.draw(oB->body());
-	_w.draw(oB->text());
-
-}
-
-void cursor::drawFocus()
+Shape * cursor::getFocus()
 {
 	if (_mode != nullptr)
-		_w.draw(_focus);
+		return static_cast<Shape*>(&_focus);
 }
 
 bool cursor::onZone(rRegion z)
 {
-	if (_zones[z].contains((Vector2f)getPosition(_w)))
+	if (_zones[z]->contains((Vector2f)getPosition(_w)))
 	{
 		_zone = z;
 		return true;

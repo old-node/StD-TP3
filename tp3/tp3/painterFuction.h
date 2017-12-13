@@ -18,11 +18,9 @@ using namespace sf;
 /* Enumérateurs */
 ///============///
 
+// Palette de couleur
+enum PBOARD;
 
-// Coins d'un bouton
-enum bCorner {
-	bUpperLeft, bUpperRight, bLowerRight, bLowerLeft
-};
 // Zones où le pointeur peut être situé
 enum rRegion {
 	rStart, rMenuPrincipale, rButton, rDraw, rCOUNT
@@ -39,8 +37,49 @@ enum cMode {
 enum sShape {
 	sNone, sBox, sLine, sCOUNT ///, sBall, sPoint, sLink?
 };
-enum PBOARD;
+// Coins d'un bouton
+enum bCorner {
+	bUpperLeft, bUpperRight, bLowerRight, bLowerLeft, bCenter
+};
+static bCorner oppositeC(bCorner c)
+{
+	switch (c)
+	{
+	case bUpperLeft:	return bLowerRight;
+	case bUpperRight:	return bLowerLeft;
+	case bLowerRight:	return bUpperLeft;
+	case bLowerLeft:	return bUpperRight;
+	default:	assert(false);		break;
+	}
+}
+static Vector2f originOffset(bCorner c, float ol, Vector2f o)
+{
+	switch (c)
+	{
+	case bUpperLeft:	return Vector2f(o.x - ol, o.y - ol);
+	case bUpperRight:	return Vector2f(o.x + ol, o.y - ol);
+	case bLowerRight:	return Vector2f(o.x + ol, o.y + ol);
+	case bLowerLeft:	return Vector2f(o.x - ol, o.y + ol);
+	default:			return o;
+	}
+}
 
+static Vector2f updateTextOrigin(bCorner c, FloatRect dim, Vector2f o)
+{
+	switch (c)
+	{
+	case bUpperLeft:	
+		return Vector2f(-o.x, -o.y);
+	case bUpperRight:	
+		return Vector2f(dim.width + o.x, -o.y);
+	case bLowerRight:	
+		return Vector2f(dim.width + o.x, dim.height + o.y);
+	case bLowerLeft:	
+		return Vector2f(-o.x, dim.height + o.y);
+	default:			
+		return Vector2f(dim.width / 2, dim.height / 2);
+	}
+}
 
 ///========================///
 /* Prototypes des fonctions */
@@ -58,7 +97,11 @@ static void swithColor(Shape & s, int c);
 /* Constantes de l'application */
 ///===========================///
 
-const vector<Color> DBOARD = makeCBoard();	// 
+// Vecteur de deux points float pour les multiplications.
+const Vector2f TWOO = Vector2f(2, 2);
+// Palette des couleurs par défaut.
+const vector<Color> DBOARD = makeCBoard();
+// Palette de couleur personalisée.
 enum PBOARD {
 	P_A,	// 250, 255, 250
 	P_B,	// 250, 229, 150
@@ -101,8 +144,8 @@ const Font FONT(string fontLocation)
 	assert(LFONT.loadFromFile(fontLocation));
 	return Font(LFONT);
 }
-
-const PBOARD getNewColor(PBOARD last)
+// Obtien une nouvelle couleur
+const PBOARD getNewColor(PBOARD last = COUNT)
 {
 	PBOARD n = last;
 	do {
@@ -110,18 +153,19 @@ const PBOARD getNewColor(PBOARD last)
 	} while (n == last);
 	return n;
 }
-
+// Retourne la couleur à l'indice recherché
 const Color getColor(PBOARD c)
 {
+	assert(0 < c && c < DBOARD.size());
 	return DBOARD[c];
 }
-
+// Modifie la couleur interne d'une forme à partir de la palette personalisée
 void swithColor(Shape & s, int c)
 {
 	assert(0 <= c && c <= PBOARD::COUNT);
 	s.setFillColor(DBOARD[static_cast<PBOARD>(c)]);
 }
-
+// Constructeur de la palette par défaut
 const vector<Color> makeCBoard()
 {
 	vector<Color> c;
