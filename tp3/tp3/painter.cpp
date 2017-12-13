@@ -52,28 +52,32 @@ void painter::run()
 					_cursorInterface.setCurrent(mousePos); //On met le current du cursor avec la position
 					//cout << "Position en X : " << mousePos.x << endl;
 					//cout << "Position en Y : " << mousePos.y << endl;
+					//Regarde si on est dans un buttonstrip
+					_cursorInterface.setOnZone(isOnAZone());
+					if (isOnAZone())
+						if (isOnButton()->getMode() == cCreate)
+							cout << "Release sur cCreate!!!!!" << endl;
+		
 					if (_cursorInterface.getClicking())
 					{
 						_cursorInterface.drag();
-						
-						//if (!listShape.empty() && _cursorInterface.getModeCurs() == cSelect && selectShape != nullptr)
-						//{
-						//	//selectShape->shapePtr->move(_cursorInterface.getCurrent() - selectShape->shapePtr->getPosition());
-						//	//_cursorInterface.getFocus().shapePtr->move(_cursorInterface.getCurrent() - selectShape->shapePtr->getPosition());
-						//}	
 					}
 					break;
 				case Event::MouseButtonPressed:
 					if (event.mouseButton.button == Mouse::Left)
 					{
-						if (!listShape.empty() && _cursorInterface.getModeCurs() == cSelect && selectedShape(mousePos)!=nullptr)
+						
+						if (!listShape.empty() && _cursorInterface.getModeCurs() == cSelect && selectedShape(mousePos) != nullptr)
 						{
 							_cursorInterface.setFocus(*selectedShape(mousePos));
 							_cursorInterface.setSelected(true);
 							//selectShape = selectedShape(mousePos);
 						}
+						else if (_cursorInterface.getModeCurs() == cRemove)
+							cout << "Remove" << endl;
 						else
 							_cursorInterface.setSelected(false);
+
 
 						_cursorInterface.click(); //On fait cliquer le curseur
 					}
@@ -81,19 +85,26 @@ void painter::run()
 				case Event::MouseButtonReleased:
 					if (event.mouseButton.button == Mouse::Left)
 					{	
-						
-						if (!listShape.empty() && _cursorInterface.getModeCurs() == cSelect)
+						if (isOnAZone())
+							if (isOnButton()->getMode() == cCreate)
+								cout << "Release sur cCreate!!!!!" << endl;
+
+						switch (_cursorInterface.getModeCurs())
 						{
-							selectShape = nullptr;
-							_cursorInterface.releaseClick();
-						}
-						else if (_cursorInterface.getModeCurs() == cCreate)
-						{
+						case cSelect:
+							if (!listShape.empty())
+							{
+								selectShape = nullptr;
+								_cursorInterface.releaseClick();
+							}
+							break;
+						case cCreate:
 							//On push la nouvelle forme dans la liste
 							listShape.push_back(_cursorInterface.releaseClick());
+						case cRemove:
+						default:
+							break;
 						}
-
-						
 					}		
 					break;
 				case Event::KeyPressed:
@@ -109,7 +120,6 @@ void painter::run()
 
 			drawListShape();
 			drawButtonstrips();
-			drawListShape();
 			_window.draw(*_cursorInterface.getFocus().shapePtr);
 			_window.display();
 		}
@@ -151,18 +161,43 @@ void painter::drawButtonstrips()
 	}
 }
 
+bool painter::findShape() const
+{
+	return false;
+}
+
+//Retourne la shape selon une position
+//Retourne nullptr si elle n'est pas trouvée
 shape* painter::selectedShape(Vector2f mousePos)
 {
+	assert(!listShape.empty());
 	list<shape>::iterator it = listShape.end();
 	//On parcourt la liste
+	it = searchShape(mousePos);
+	if (it == listShape.end())
+		return nullptr;
+	else
+		return &*it;
+}
+
+//Cherche une shape dans le vecteur et retourne l'iterateur ou la shape est
+//selon une position donnee
+list<shape>::iterator painter::searchShape(Vector2f pos)
+{
+	assert(!listShape.empty());
+	list<shape>::iterator it = listShape.end();
+
 	do
 	{
 		it--;
-		if (it->shapePtr->getGlobalBounds().intersects(FloatRect(mousePos, Vector2f(1, 1))))
-			return &*it;
-	}while(it != listShape.begin());
+		if (it->shapePtr->getGlobalBounds().intersects(FloatRect(pos, Vector2f(1, 1))))
+			return it;
+	} while (it != listShape.begin());
 
-	return nullptr;
+	//Si la boucle est fini sans qu'on retourne l'iterateur,
+	//On retourne l'iterateur a la fin
+	it = listShape.end();
+	return it;
 }
 
 // Ajoute une bannière horizontale à l'interface.

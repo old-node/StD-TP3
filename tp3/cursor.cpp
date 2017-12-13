@@ -34,10 +34,9 @@ cursor::cursor()
 	_click = _current = Vector2f();
 
 	_clicking = false;
-
 	_dragable = true;
-	
 	_selecting = false;
+	_onZone = false;
 
 	_zone = rStart;
 
@@ -112,6 +111,11 @@ void cursor::setSelected(bool b)
 	_selecting = b;
 }
 
+void cursor::setOnZone(bool b)
+{
+	_onZone = b;
+}
+
 
 /// Clicker
 void cursor::click()
@@ -123,7 +127,7 @@ void cursor::click()
 	_clicking = true;
 	_click = _current;
 	
-	if (_mode != nullptr)
+	if (_mode != nullptr && !_onZone)
 	{
 		switch (_mode->getMode())
 		{
@@ -158,7 +162,7 @@ void cursor::click()
 
 void cursor::drag(Vector2i mouse)
 {
-	if (_clicking)
+	if (_clicking && !_onZone)
 	{
 		//Rayon pour le cercle
 		int radius = distance2Points(_click, _current); 
@@ -198,7 +202,7 @@ void cursor::drag(Vector2i mouse)
 shape cursor::releaseClick()
 {
 	_clicking = false;
-	if (_mode != nullptr)
+	if (_mode != nullptr && !_onZone)
 	{
 		int radius = distance2Points(_click,_current);
 		int random = rand() % DBOARD.size();

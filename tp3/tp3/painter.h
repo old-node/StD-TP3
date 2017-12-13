@@ -40,7 +40,9 @@ public:
 	void clear();				// Nettoie l'interface
 	void drawListShape();		// Dessine les formes de la liste
 	void drawButtonstrips();	// Dessine toutes les bannières et leur boutons.
+	bool findShape()const;
 	shape* selectedShape(Vector2f v); //Retourne la shape si elle est selectionnée
+	list<shape>::iterator searchShape(Vector2f v);
 
 	// Ajoute une bannière horizontale à l'interface.
 	void addBsH(bool normalScope = true, bool normalInterval = true,
