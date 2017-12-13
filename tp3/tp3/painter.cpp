@@ -14,7 +14,11 @@ differents boutons
 //Constructeur sans parametre
 painter::painter()
 {
-	
+	_label.setFont(D_F);
+	_label.setCharacterSize(22);
+	_label.setFillColor(Color::White);
+	_label.setOrigin(Vector2f(0, 50));
+	_label.setPosition(Vector2f(20, (float)_sHeight));
 }
 
 //Initiatlise l'interface
@@ -50,13 +54,12 @@ void painter::run()
 				case Event::MouseMoved:
 					mousePos = (Vector2f)Mouse::getPosition(_window);
 					_cursorInterface.setCurrent(mousePos); //On met le current du cursor avec la position
-					//cout << "Position en X : " << mousePos.x << endl;
-					//cout << "Position en Y : " << mousePos.y << endl;
+					
 					//Regarde si on est dans un buttonstrip
 					_cursorInterface.setOnZone(isOnAZone());
 					if (isOnAZone())
 						if (isOnButton()->getMode() == cCreate)
-							cout << "Release sur cCreate!!!!!" << endl;
+							_label.setString("Release sur cCreate!!!!!");
 		
 					if (_cursorInterface.getClicking())
 					{
@@ -74,7 +77,7 @@ void painter::run()
 							//selectShape = selectedShape(mousePos);
 						}
 						else if (_cursorInterface.getModeCurs() == cRemove)
-							cout << "Remove" << endl;
+							_label.setString("Remove");
 						else
 							_cursorInterface.setSelected(false);
 
@@ -87,7 +90,7 @@ void painter::run()
 					{	
 						if (isOnAZone())
 							if (isOnButton()->getMode() == cCreate)
-								cout << "Release sur cCreate!!!!!" << endl;
+								_label.setString("Release sur cCreate!!!!!");
 
 						switch (_cursorInterface.getModeCurs())
 						{
@@ -122,6 +125,7 @@ void painter::run()
 
 			_window.draw(*_cursorInterface.getFocus().shapePtr);
 			drawButtonstrips();
+			_window.draw(_label);
 
 			_window.display();
 		}
@@ -229,9 +233,9 @@ bool painter::isOnAZone()
 	for (auto & s : _bsH)
 		if (_cursorInterface.onZone(s->getZone(), _window))
 			return true;
-	/*for (auto & s : _bsV)
+	for (auto & s : _bsV)
 	if (_cursorInterface.onZone(s->getZone(), _window))
-	return true;*/
+	return true;
 	return false;
 }
 
@@ -240,9 +244,9 @@ buttonStrip * painter::isOnZone()
 	for (auto & s : _bsH)
 		if (_cursorInterface.onZone(s->getZone(), _window))
 			return s;
-	/*for (auto & s : _bsV)
+	for (auto & s : _bsV)
 	if (_cursorInterface.onZone(s->getZone(), _window))
-	return s;*/
+	return s;
 	return nullptr;
 }
 

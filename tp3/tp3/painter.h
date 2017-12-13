@@ -27,9 +27,10 @@ private:
 	list<shape>::iterator iteratorShape;	//Iterateur pour la liste de forme
 	shape *selectShape;			//Shape qui est selectionnée
 	cursor _cursorInterface;	//Curseur de l'interface 
-
+	
+	Text _label;				// Message en bas de l'écran.
 	list<buttonStripH*> _bsH;	// 	Bannières de boutons d'ordre horizontal.
-	//list<buttonStripV*> _bsV;	/// Bannières de boutons d'ordre vertical.
+	list<buttonStripV*> _bsV;	/// Bannières de boutons d'ordre vertical.
 	buttonStrip * _bs;			// Bannière active.
 
 public:
@@ -53,8 +54,6 @@ public:
 	bool isOnAZone();
 	buttonStrip * isOnZone();
 	oButton * isOnButton();
-
-
 };
 
 
