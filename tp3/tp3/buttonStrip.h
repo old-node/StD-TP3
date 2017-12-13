@@ -48,9 +48,9 @@ class buttonStrip
 {
 private:
 	/// Utiliser plutôt autre méthode qui travail avec des min() et des max() ??
-	Vector2f getCornerB(bCorner c);
-	Vector2f getCornerC(bCorner c);
-	Vector2f getCornerD(bCorner c);
+	Vector2f getCornerB(bCorner c, bool front = false);
+	Vector2f getCornerC(bCorner c, bool front = false);
+	Vector2f getCornerD(bCorner c, bool front = false);
 protected:
 	/// Pour que la liste fonctionne correctement, 
 	///		il faut initialiser l'origine de ceux-ci au fur et à mesure.
@@ -114,8 +114,8 @@ public:
 	}
 	/// Il est possible de former un FloatRect directement 
 	///		en combinant les deux prochaines méthodes si nécessaire.
-	virtual Vector2f getUpperLeftCorner();
-	virtual Vector2f getLowerRightCorner();
+	virtual Vector2f getUpperLeftCorner(bool front = true);
+	virtual Vector2f getLowerRightCorner(bool front = false);
 };
 
 
