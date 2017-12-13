@@ -295,7 +295,7 @@ void buttonStrip::updateZone()
 	assert(!_buttons.empty());
 	Vector2f ul = getUpperLeftCorner();
 	Vector2f lr = getLowerRightCorner();
-	//_overlay.setPosition(ul);
+	_overlay.setPosition(ul);
 	_overlay.setSize(Vector2f(lr.x - ul.x, lr.y - ul.y));
 }
 
@@ -313,9 +313,9 @@ Vector2f buttonStrip::getUpperLeftCorner(bool front)
 	{
 		if (_normalInterval)
 			//if (front)
-				return _initPos; // Pareil à : getCornerA()
-			//else
-			//	return ;
+			return _initPos; // Pareil à : getCornerA()
+		//else
+		//	return ;
 		else
 			return getCornerB(bUpperLeft);
 	}
@@ -333,15 +333,9 @@ Vector2f buttonStrip::getLowerRightCorner(bool front)
 	if (_normalScope)
 	{
 		if (_normalInterval)
-			if (front)
-				return getCornerD(bLowerRight, front);
-			else
-				return getCornerD(bLowerRight);
+			return getCornerD(bLowerRight, front);
 		else
-			if (front)
-				return getCornerC(bLowerRight);
-			else
-				return getCornerC(bLowerRight);
+			return getCornerC(bLowerRight, front);
 	}
 	else
 	{

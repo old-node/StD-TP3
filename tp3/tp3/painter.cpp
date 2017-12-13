@@ -14,7 +14,11 @@ differents boutons
 //Constructeur sans parametre
 painter::painter()
 {
-	
+	_label.setFont(D_F);
+	_label.setCharacterSize(22);
+	_label.setFillColor(Color::White);
+	_label.setOrigin(Vector2f(0, 50));
+	_label.setPosition(Vector2f(20, (float)_sHeight));
 }
 
 //Initiatlise l'interface
@@ -50,8 +54,12 @@ void painter::run()
 				case Event::MouseMoved:
 					mousePos = (Vector2f)Mouse::getPosition(_window);
 					_cursorInterface.setCurrent(mousePos); //On met le current du cursor avec la position
+					
 					//Regarde si on est dans un buttonstrip
 					_cursorInterface.setOnZone(isOnAZone());
+					if (isOnAZone())
+						if (isOnButton()->getMode() == cCreate)
+							cout << "Release sur cCreate!!!!!" << mousePos.x << endl;
 		
 					if (_cursorInterface.getClicking())
 					{
@@ -68,9 +76,7 @@ void painter::run()
 							_cursorInterface.setSelected(true);
 						}
 						else if (_cursorInterface.getModeCurs() == cRemove)
-						{
-			
-						}	
+							_label.setString("Remove");
 						else
 							_cursorInterface.setSelected(false);
 
@@ -123,6 +129,7 @@ void painter::run()
 				_window.draw(*_cursorInterface.getFocus().shapePtr);
 
 			drawButtonstrips();
+			_window.draw(_label);
 
 			_window.display();
 		}
@@ -223,6 +230,7 @@ void painter::addButton(oButton b)
 	assert(_bs != nullptr);
 	_bs->addButton(b);
 	_bs->updateZone();
+	_cursorInterface.addButton(&_bs->getButtonList().back());
 }
 
 bool painter::isOnAZone()
@@ -230,9 +238,9 @@ bool painter::isOnAZone()
 	for (auto & s : _bsH)
 		if (_cursorInterface.onZone(s->getZone(), _window))
 			return true;
-	/*for (auto & s : _bsV)
+	for (auto & s : _bsV)
 	if (_cursorInterface.onZone(s->getZone(), _window))
-	return true;*/
+	return true;
 	return false;
 }
 
@@ -241,9 +249,9 @@ buttonStrip * painter::isOnZone()
 	for (auto & s : _bsH)
 		if (_cursorInterface.onZone(s->getZone(), _window))
 			return s;
-	/*for (auto & s : _bsV)
+	for (auto & s : _bsV)
 	if (_cursorInterface.onZone(s->getZone(), _window))
-	return s;*/
+	return s;
 	return nullptr;
 }
 

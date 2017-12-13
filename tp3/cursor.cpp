@@ -23,13 +23,7 @@ Date:			20-11-2017
 // Constructeur
 cursor::cursor()
 {
-	_bOptions.push_back(new oB_cBox());
-	_bOptions.push_back(new oB_cCircle());
-	_bOptions.push_back(new oB_remove());
-	_bOptions.push_back(new oB_link());
-	_bOptions.push_back(new oB_select());
-
-	_mode = _bOptions[0];
+	_mode = nullptr;
 
 	_click = _current = Vector2f();
 
@@ -42,13 +36,6 @@ cursor::cursor()
 
 	//Initialisation du focus
 	initFocus();
-
-	//if (HORIZONTALMENU)
-	//	_zones[rRegion::rButton] = FloatRect(
-	//		Vector2f(), Vector2f((float)SCREENW, _bOptions.back()->getP(2).y));
-	//else
-	//	_zones[rRegion::rButton] = FloatRect(
-	//		Vector2f(), Vector2f(_bOptions.back()->getP(2).x, (float)SCREENH));
 }
 
 // Destructeur
@@ -271,7 +258,7 @@ Vector2f cursor::getCurrent() const { return _current; }
 void cursor::changeMode(cMode mode)
 {
 	if (_mode == _bOptions[0])
-		_mode = _bOptions[4];
+		_mode = _bOptions[2];
 	else
 		_mode = _bOptions[0];
 }
