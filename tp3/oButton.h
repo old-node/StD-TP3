@@ -222,7 +222,7 @@ protected:
 	sShape _s;				// Type de forme à créer
 
 	/// Initialiseur
-	void initShape(sShape vertex = sNone);/// avec un default ?
+	void initShape(sShape vertex = sBox);/// avec un default ?
 
 public:
 	oB_create(float l, float t, float w, float h,
@@ -263,19 +263,19 @@ public:
 };
 
 // Classe du bouton de création de traits
-class oB_cLine : public oB_create
+class oB_cCircle : public oB_create
 {
 private:
 protected:
 
 public:
-	oB_cLine(float l = 0, float t = 0, float w = 0, float h = 0,
-		float o = 1, Color bC = FILLC, Color olC = CLINE,
+	oB_cCircle(float l = 0, float t = 0, float w = 0, float h = 0,
+		float o = BOL, Color bC = FILLC, Color olC = CLINE,
 		string s = "Trait", Font p = FONT(), int c = TSIZE, Color sC = CLINE,
 		Color fC = Color::Yellow, Color folC = CLINE, float fol = 2, Shape * f = nullptr) :
 		oB_create(l, t, w, h, o, bC, olC, s, p, c, sC, folC, fC, fol, f)
 	{
-		initShape(sLine);
+		initShape(sCircle);
 	}
 
 	// 

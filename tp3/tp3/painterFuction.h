@@ -13,7 +13,6 @@ Description:	.
 using namespace std;
 using namespace sf;
 
-
 ///============///
 /* Enumérateurs */
 ///============///
@@ -21,6 +20,10 @@ using namespace sf;
 // Palette de couleur
 enum PBOARD;
 
+// Coins d'un bouton
+enum bCorner {
+	bUpperLeft, bUpperRight, bLowerRight, bLowerLeft
+};
 // Zones où le pointeur peut être situé
 enum rRegion {
 	rStart, rMenuPrincipale, rButton, rDraw, rCOUNT
@@ -35,7 +38,7 @@ enum cMode {
 };
 // Choix de la forme à dessinner
 enum sShape {
-	sNone, sBox, sLine, sCOUNT ///, sBall, sPoint, sLink?
+	sBox, sCircle, sCOUNT ///, sBall, sPoint, sLink?
 };
 // Coins d'un bouton
 enum bCorner {
@@ -81,6 +84,18 @@ static Vector2f updateTextOrigin(bCorner c, FloatRect dim, Vector2f o)
 	}
 }
 
+//Structure d'une forme pour connaître son type
+struct shape
+{
+	Shape* shapePtr;	//Pointeur pour la forme
+	sShape shapeType;	//Type de forme selon l'enum
+	shape(Shape* s = nullptr, sShape sT = sBox)
+	{
+		shapePtr = s;
+		shapeType = sT;
+	}
+};
+
 ///========================///
 /* Prototypes des fonctions */
 ///========================///
@@ -90,8 +105,7 @@ static const Font FONT(string fontLocation = "font_arial.ttf");
 static const PBOARD getNewColor(PBOARD last);
 static const Color getColor(PBOARD c);
 static void swithColor(Shape & s, int c);
-
-
+static float distance2Points(Vector2f p1, Vector2f p2);
 
 ///===========================///
 /* Constantes de l'application */
@@ -196,4 +210,9 @@ const vector<Color> makeCBoard()
 	c.push_back(Color(10, 20, 100));
 	c.push_back(Color(0, 0, 1));
 	return c;
+}
+
+float distance2Points(Vector2f p1, Vector2f p2)
+{
+	return sqrt(pow(p1.x - p2.x, 2) + pow(p1.y - p2.y, 2));
 }

@@ -9,35 +9,47 @@ Date:			20-11-2017
 
 
 
-
+///Va dans painter.cpp???
 // Recherche si un bouton est sous la souris
 
-oButton * cursor::searchForButton()
-{
-	for (auto & b : _bOptions)
-		if (b->gotMouse(_w))
-			return b;
-	return nullptr;
-}
+//oButton * cursor::searchForButton()
+//{
+//	for (auto & b : _bOptions)
+//		if (b->gotMouse(_w))
+//			return b;
+//	return nullptr;
+//}
 
 // Constructeur
-cursor::cursor(RenderWindow & window) : _w(window)
+cursor::cursor()
 {
-	_mode = nullptr;
+	_bOptions.push_back(new oB_cBox());
+	_bOptions.push_back(new oB_cCircle());
+	_bOptions.push_back(new oB_remove());
+	_bOptions.push_back(new oB_link());
+	_bOptions.push_back(new oB_select());
+
+	_mode = _bOptions[0];
+
 	_click = _current = Vector2f();
+
 	_clicking = false;
+
 	_dragable = true;
+	
+	_selecting = false;
 
 	_zone = rStart;
-	/* // Former les zones après avoir fait les buttonStrips
-	if (HORIZONTALMENU)
-		_zones[rButton] = FloatRect(
-			Vector2f(), Vector2f((float)SCREENW, _bOptions.back()->getP(bLowerRight).y));
-	else
-		_zones[rButton] = FloatRect(
-			Vector2f(), Vector2f(_bOptions.back()->getP(bLowerRight).x, (float)SCREENH));
 
-	_zoes[rDraw] = FloatRect();*/
+	//Initialisation du focus
+	initFocus();
+
+	//if (HORIZONTALMENU)
+	//	_zones[rRegion::rButton] = FloatRect(
+	//		Vector2f(), Vector2f((float)SCREENW, _bOptions.back()->getP(2).y));
+	//else
+	//	_zones[rRegion::rButton] = FloatRect(
+	//		Vector2f(), Vector2f(_bOptions.back()->getP(2).x, (float)SCREENH));
 }
 
 // Destructeur
@@ -81,43 +93,66 @@ void cursor::setCurrent(Vector2f current)
 	_current = current;
 }
 
-void cursor::initFocus(Vector2f current)
+void cursor::initFocus()
 {
-	_focus.setOrigin(current);	/// after pos ?
-	_focus.setPosition(current);	/// fusionner origin et pos?
-	_focus.setSize(Vector2f());
+	//_focus.setOrigin(_current);	/// sa bug 
+	_focus.shapePtr = new RectangleShape(Vector2f(0,0));
+
+	_focus.shapePtr->setPosition(_current);	/// fusionner origin et pos?
+	//_focus.shapePtr->setSize(Vector2f());
 }
 
-void cursor::setFocus(Vector2f current)
+void cursor::setFocus(shape s)
 {
-	if (_mode != nullptr)
-	{
+	_focus = s;
+}
 
-		_mode->scaleFocus(_click - current);
-	}
+void cursor::setSelected(bool b)
+{
+	_selecting = b;
 }
 
 
 /// Clicker
-void cursor::click(Vector2i click)
+void cursor::click()
 {
-	oButton * b = nullptr;	// Bouton sous la souris
-	if (onZone(rButton))
-		b = searchForButton();
+	//oButton * b = nullptr;	// Bouton sous la souris
+	/*if (onZone(rButton))
+		b = searchForButton();*/
 
 	_clicking = true;
-	_click = (Vector2f)click;
-
-	// Si un bouton est sélectionné
-	if (b != nullptr)
-	{
-		setMode(b);
-	}
-	// Initialise le focus
+	_click = _current;
+	
 	if (_mode != nullptr)
 	{
-		initFocus(_click);
-		_mode->click();
+		switch (_mode->getMode())
+		{
+		case cCreate:
+			switch (static_cast<oB_create*>(_mode)->getShape())
+			{
+			case sBox:
+				_focus.shapePtr = new RectangleShape();
+				_focus.shapeType = sBox;
+				break;
+			case sCircle:
+				_focus.shapePtr = new CircleShape();
+				_focus.shapeType = sCircle;
+				break;
+			default:
+				break;
+			}
+			_focus.shapePtr->setPosition(_click);
+			break;
+		case cSelect:
+			if (_selecting)
+			{
+				_offSet = _click - Vector2f(_focus.shapePtr->getPosition().x / 2 + (_focus.shapePtr->getLocalBounds().width / 2),
+					_focus.shapePtr->getPosition().y / 2 + (_focus.shapePtr->getLocalBounds().height / 2));
+			}
+			break;
+		default:
+			break;
+		}
 	}
 }
 
@@ -125,39 +160,81 @@ void cursor::drag(Vector2i mouse)
 {
 	if (_clicking)
 	{
-		if (_zone != rStart && _zone != rButton)
+		//Rayon pour le cercle
+		int radius = distance2Points(_click, _current); 
+
+		switch (_mode->getMode())
 		{
-			_mode->RectangleShape::setFillColor(Color::White);
-			//getButtonBody(_mode);
+		case cCreate:
+			switch (static_cast<oB_create*>(_mode)->getShape())
+			{
+			case sBox:
+				_focus.shapePtr = new RectangleShape(_current - _click);
+				_focus.shapePtr->setPosition(_click);
+				break;
+			case sCircle:
+				_focus.shapePtr = new CircleShape(radius);
+				_focus.shapePtr->setOrigin(radius, radius);
+				_focus.shapePtr->setPosition(_click);
+				break;
+			default:
+				break;
+				
+			}
+			break;
+		case cSelect:
+			if(_selecting)
+				_focus.shapePtr->move(_current - _focus.shapePtr->getPosition() - _offSet);
+			break;	
+		default:
+			break;
 		}
-		else if (_zone == rButton)
-			return;
 	}
-	else if (_mode != nullptr)
-	{
-		Vector2f m = (Vector2f)mouse;
-		_current = m;
-		setFocus(m);
-	}
+
 }
 
-int cursor::unclick(Vector2i current)
+
+//Va retourner la forme selon le mode du curseur
+shape cursor::releaseClick()
 {
 	_clicking = false;
 	if (_mode != nullptr)
 	{
-		setFocus((Vector2f)current);
+		int radius = distance2Points(_click,_current);
+		int random = rand() % DBOARD.size();
 		switch (_mode->getMode())
 		{
 		case cCreate:
-			return onZone(rDraw);
+			switch (static_cast<oB_create*>(_mode)->getShape())
+			{
+			case sBox:
+				_focus.shapePtr = new RectangleShape(_current - _click);
+				break;
+			case sCircle:
+				_focus.shapePtr = new CircleShape(radius);
+				_focus.shapePtr->setOrigin(radius, radius);
+				break;
+			default:
+				break;
+			}
+			_focus.shapePtr->setPosition(_click);
+			//Couleur aleatoire
+			srand(time(NULL));
+			_focus.shapePtr->setFillColor(DBOARD.at(random));
+			break;
+		case cSelect:
+			if(_selecting)
+				_focus.shapePtr->move(_current - _focus.shapePtr->getPosition() - _offSet);
+			_selecting = false;
 			break;
 		default:
-			return 0;
 			break;
 		}
+
+
+		
+		return _focus;
 	}
-	return 0;
 }
 
 
@@ -173,23 +250,31 @@ bool cursor::isClicking(Mouse::Button it)
 
 bool cursor::getClicking() const { return _clicking; }
 
-oButton * cursor::getMode() const { return _mode; }
+cMode cursor::getModeCurs() const 
+{ 
+	return _mode->getMode();
+}
 
 // Retourner un int au lieu ?*
 
-RectangleShape * cursor::getFocus() const
+//Retourne le focus
+shape cursor::getFocus() const
 {
 	assert(_mode != nullptr);
-	return new RectangleShape(_focus);
+	return _focus;
 }
 
 Vector2f cursor::getClick() const { return _click; }
 
 Vector2f cursor::getCurrent() const { return _current; }
 
-/// Affichage
-// Procède à une méthode avec chaqu'un des boutons
-
+void cursor::changeMode()
+{
+	if (_mode == _bOptions[0])
+		_mode = _bOptions[4];
+	else
+		_mode = _bOptions[0];
+}
 
 /// Affichage
 
