@@ -119,7 +119,7 @@ void cursor::click()
 		switch (_mode->getMode())
 		{
 		case cCreate:
-			switch (static_cast<oB_create*>(_mode)->getShape())
+			switch (_mode->getShape())
 			{
 			case sBox:
 				_focus.shapePtr = new RectangleShape();
@@ -241,6 +241,7 @@ bool cursor::getClicking() const { return _clicking; }
 
 cMode cursor::getModeCurs() const 
 { 
+
 	return _mode->getMode();
 }
 

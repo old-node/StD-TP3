@@ -39,7 +39,7 @@ void painter::run()
 {
 	init();
 
-	Vector2f mousePos , mouseInit;
+	Vector2f mousePos, mouseInit;
 
 	while (_window.isOpen())
 	{
@@ -48,84 +48,89 @@ void painter::run()
 		{
 			switch (event.type)
 			{
-				case Event::Closed:
-					_window.close();
-					break;
-				case Event::MouseMoved:
-					mousePos = (Vector2f)Mouse::getPosition(_window);
-					_cursorInterface.setCurrent(mousePos); //On met le current du cursor avec la position
-					
-					//Regarde si on est dans un buttonstrip
-					_cursorInterface.setOnZone(isOnAZone());
+			case Event::Closed:
+				_window.close();
+				break;
+			case Event::MouseMoved:
+				mousePos = (Vector2f)Mouse::getPosition(_window);
+				_cursorInterface.setCurrent(mousePos); //On met le current du cursor avec la position
+
+				//Regarde si on est dans un buttonstrip
+				_cursorInterface.setOnZone(isOnAZone());
+				if (isOnAZone())
+					if (isOnButton()->getMode() == cCreate)
+						cout << "Release sur cCreate!!!!!" << mousePos.x << endl;
+
+				if (_cursorInterface.getClicking())
+				{
+					_cursorInterface.drag();
+				}
+				break;
+			case Event::MouseButtonPressed:
+				if (event.mouseButton.button == Mouse::Left)
+				{
 					if (isOnAZone())
-						if (isOnButton()->getMode() == cCreate)
-							cout << "Release sur cCreate!!!!!" << mousePos.x << endl;
-		
-					if (_cursorInterface.getClicking())
 					{
-						_cursorInterface.drag();
+						cout << "Im on zonnnne!" << endl;
+						if(isOnButton()!=nullptr)
+							_cursorInterface.setMode(isOnButton());
+						cout << _cursorInterface.getModeCurs() <<endl;
 					}
-					break;
-				case Event::MouseButtonPressed:
-					if (event.mouseButton.button == Mouse::Left)
-					{
 						
-						if (!listShape.empty() && _cursorInterface.getModeCurs() == cSelect && selectedShape(mousePos) != nullptr)
-						{
-							_cursorInterface.setFocus(*selectedShape(mousePos));
-							_cursorInterface.setSelected(true);
-						}
-						else if (_cursorInterface.getModeCurs() == cRemove)
-							_label.setString("Remove");
-						else
-							_cursorInterface.setSelected(false);
 
-
-						_cursorInterface.click(); //On fait cliquer le curseur
+					if (!listShape.empty() && _cursorInterface.getModeCurs() == cSelect && selectedShape(mousePos) != nullptr)
+					{
+						_cursorInterface.setFocus(*selectedShape(mousePos));
+						_cursorInterface.setSelected(true);
 					}
-					break;
-				case Event::MouseButtonReleased:
-					if (event.mouseButton.button == Mouse::Left)
-					{	
-						if (isOnAZone())
-							if (isOnButton() != nullptr)
-								_cursorInterface.setMode(isOnButton());
+					else if (_cursorInterface.getModeCurs() == cRemove)
+						_label.setString("Remove");
+					else
+						_cursorInterface.setSelected(false);
 
-						switch (_cursorInterface.getModeCurs())
+
+					_cursorInterface.click(); //On fait cliquer le curseur
+				}
+				break;
+			case Event::MouseButtonReleased:
+				if (event.mouseButton.button == Mouse::Left)
+				{
+
+
+					switch (_cursorInterface.getModeCurs())
+					{
+					case cSelect:
+						if (!listShape.empty())
 						{
-						case cSelect:
-							if (!listShape.empty())
-							{
-								selectShape = nullptr;
-								_cursorInterface.releaseClick();
-							}
-							break;
-						case cCreate:
-							//On push la nouvelle forme dans la liste si on est pas sur un bouton strip
-							if (!isOnAZone())
-								listShape.push_back(_cursorInterface.releaseClick());
-							break;
-						case cRemove:
-							if (!listShape.empty() && (searchShape(_cursorInterface.getClick()) != listShape.end()))
-							{
-								listShape.erase(searchShape(_cursorInterface.getClick()));
-							}
-							break;
-						default:
-							break;
+							selectShape = nullptr;
+							_cursorInterface.releaseClick();
 						}
-					}		
-					break;
-
-				default :
-					break;	
+						break;
+					case cCreate:
+						//On push la nouvelle forme dans la liste si on est pas sur un bouton strip
+						if (!isOnAZone())
+							listShape.push_back(_cursorInterface.releaseClick());
+						break;
+					case cRemove:
+						if (!listShape.empty() && (searchShape(_cursorInterface.getClick()) != listShape.end()))
+						{
+							listShape.erase(searchShape(_cursorInterface.getClick()));
+						}
+						break;
+					default:
+						break;
+					}
+				}
+				break;
+			default:
+				break;
 			}
 
 			_window.clear(Color::Black);
 
 			drawListShape();
 
-			if(_cursorInterface.getModeCurs() != cRemove)
+			if (_cursorInterface.getModeCurs() != cRemove && _cursorInterface.getModeCurs() != cDefault)
 				_window.draw(*_cursorInterface.getFocus().shapePtr);
 
 			drawButtonstrips();
@@ -157,7 +162,7 @@ void painter::drawListShape()
 
 void painter::drawButtonstrips()
 {
-	
+
 	for (auto & s : _bsH)
 	{
 		_window.draw(s->getOverlay());
@@ -236,11 +241,17 @@ void painter::addButton(oButton b)
 bool painter::isOnAZone()
 {
 	for (auto & s : _bsH)
+	{
 		if (_cursorInterface.onZone(s->getZone(), _window))
 			return true;
+	}
+
 	for (auto & s : _bsV)
-	if (_cursorInterface.onZone(s->getZone(), _window))
-	return true;
+	{
+		if (_cursorInterface.onZone(s->getZone(), _window))
+			return true;
+	}
+		
 	return false;
 }
 
@@ -250,17 +261,21 @@ buttonStrip * painter::isOnZone()
 		if (_cursorInterface.onZone(s->getZone(), _window))
 			return s;
 	for (auto & s : _bsV)
-	if (_cursorInterface.onZone(s->getZone(), _window))
-	return s;
+		if (_cursorInterface.onZone(s->getZone(), _window))
+			return s;
 	return nullptr;
 }
 
 oButton * painter::isOnButton()
 {
 	for (auto & s : _bsH)
+	{
 		for (auto & b : s->getButtonList())
+		{
 			if (_cursorInterface.onZone(b.RectangleShape::getGlobalBounds(), _window))
 				return &b;
+		}
+	}	
 	return nullptr;
 }
 

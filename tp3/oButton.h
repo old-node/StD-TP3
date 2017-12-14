@@ -116,6 +116,8 @@ private:
 	elemColors _oColor;		// Couleurs originales du bouton.
 
 protected:
+
+	sShape _s;				// Type de forme à créer
 	cMode _m;				// Type d'opérations que le bouton effectue
 	bool _clicking;			/// ??
 
@@ -161,10 +163,12 @@ public:
 	Vector2f getP(bCorner p = bLowerRight);
 	cMode getMode() const;
 	bool gotMouse(RenderWindow & screen) const;
+	sShape getShape() const;
 
 	/// Affichage
 	RectangleShape getBody();
 	Text getText();
+
 };
 
 
@@ -173,8 +177,7 @@ class oB_create : public oButton
 {
 private:
 protected:
-	sShape _s;				// Type de forme à créer
-
+	
 	/// Initialiseur
 	void initShape(sShape vertex = sBox);/// avec un default ?
 
@@ -188,11 +191,7 @@ public:
 		initMode(cCreate);
 	}
 
-	/// Getteurs
-	sShape getShape() const;
 
-	/// Opérations virtuelles des modes
-	virtual void s() = 0;
 };
 
 // Classe du bouton de création de boites
