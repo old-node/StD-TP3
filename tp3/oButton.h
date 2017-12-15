@@ -145,15 +145,29 @@ public:
 	void initOrigins(bCorner corner = bUpperLeft);
 	void scaleFocus(Vector2f diff);
 
-	/// Manipulation du focus
-	virtual void click(Vector2f pos = (Vector2f)Mouse::getPosition());
-	virtual int release(/*Vector2f pos*/);
-	virtual void drag(Vector2f pos);
-	virtual void undrag(Vector2f pos);
-	virtual void c(Vector2f pos) {}
-
-	void leave();
-	virtual void pick() {}
+	/// Opérations virtuelles des modes
+	//void pick() {}
+	virtual void mPick() {}
+	//void leave();
+	virtual void mLeave() {}
+	//void click(Vector2f pos = (Vector2f)Mouse::getPosition());
+	virtual void mClick(Vector2f pos = (Vector2f)Mouse::getPosition()) {}
+	//int release(/*Vector2f pos*/);
+	virtual int mRelease() 
+	{ 
+		_clicking = false;
+		_focus->setOrigin(Vector2f(
+			abs(_focus->getPoint(1).x - _focus->getOrigin().x),
+			abs(_focus->getPoint(2).y - _focus->getOrigin().y)));
+		
+		return 0;
+	}
+	//void drag(Vector2f pos);
+	virtual void mDrag(Vector2f pos) {}
+	//void undrag(Vector2f pos);
+	virtual void mUndrag(Vector2f pos) {}
+	
+	//void c(Vector2f pos) {}
 
 	/// Getteurs
 	float getW();
@@ -191,8 +205,32 @@ public:
 	/// Getteurs
 	sShape getShape() const;
 
-	/// Opérations virtuelles des modes
-	virtual void s() = 0;
+	/// Opérations du mode
+	void mPick() override
+	{
+
+	}
+	void mLeave() override
+	{
+
+	}
+	void mClick(Vector2f pos = (Vector2f)Mouse::getPosition()) override
+	{
+		
+	}
+	int mRelease() override
+	{
+		return 0;
+	}
+	void mDrag(Vector2f pos) override
+	{
+
+	}
+	void mUndrag(Vector2f pos) override
+	{
+
+	}
+	//void c(Vector2f pos) override {}
 };
 
 // Classe du bouton de création de boites
@@ -210,18 +248,32 @@ public:
 		initShape(sBox);
 	}
 
-	// 
-	void click()
+	/// Opérations du mode
+	void mPick() override
 	{
 
 	}
-	bool drawFocus(Shape * s, RenderWindow & w)
+	void mLeave() override
 	{
-		//RectangleShape * focus = new dynamic_cast<RectangleShape*>(s);
-		//w.draw(*focus);
-		return true;
-	}
 
+	}
+	void mClick(Vector2f pos = (Vector2f)Mouse::getPosition()) override
+	{
+
+	}
+	int mRelease() override
+	{
+		return 0;
+	}
+	void mDrag(Vector2f pos) override
+	{
+
+	}
+	void mUndrag(Vector2f pos) override
+	{
+
+	}
+	//void c(Vector2f pos) override {}
 };
 
 // Classe du bouton de création de traits
@@ -240,11 +292,32 @@ public:
 		initShape(sCircle);
 	}
 
-	// 
-	void click()
+	/// Opérations du mode
+	void mPick() override
 	{
 
 	}
+	void mLeave() override
+	{
+
+	}
+	void mClick(Vector2f pos = (Vector2f)Mouse::getPosition()) override
+	{
+
+	}
+	int mRelease() override
+	{
+		return 0;
+	}
+	void mDrag(Vector2f pos) override
+	{
+
+	}
+	void mUndrag(Vector2f pos) override
+	{
+
+	}
+	//void c(Vector2f pos) override {}
 };
 
 
@@ -264,11 +337,32 @@ public:
 		initMode(cRemove);
 	}
 
-	// 
-	void click()
+	/// Opérations du mode
+	void mPick() override
 	{
 
 	}
+	void mLeave() override
+	{
+
+	}
+	void mClick(Vector2f pos = (Vector2f)Mouse::getPosition()) override
+	{
+
+	}
+	int mRelease() override
+	{
+		return 0;
+	}
+	void mDrag(Vector2f pos) override
+	{
+
+	}
+	void mUndrag(Vector2f pos) override
+	{
+
+	}
+	//void c(Vector2f pos) override {}
 };
 
 
@@ -287,11 +381,32 @@ public:
 		initMode(cSelect);
 	}
 
-	// 
-	void click()
+	/// Opérations du mode
+	void mPick() override
 	{
 
 	}
+	void mLeave() override
+	{
+
+	}
+	void mClick(Vector2f pos = (Vector2f)Mouse::getPosition()) override
+	{
+
+	}
+	int mRelease() override
+	{
+		return 0;
+	}
+	void mDrag(Vector2f pos) override
+	{
+
+	}
+	void mUndrag(Vector2f pos) override
+	{
+
+	}
+	//void c(Vector2f pos) override {}
 };
 
 
@@ -310,11 +425,32 @@ public:
 		initMode(cLink);
 	}
 
-	// 
-	void click()
+	/// Opérations du mode
+	void mPick() override
 	{
 
 	}
+	void mLeave() override
+	{
+
+	}
+	void mClick(Vector2f pos = (Vector2f)Mouse::getPosition()) override
+	{
+
+	}
+	int mRelease() override
+	{
+		return 0;
+	}
+	void mDrag(Vector2f pos) override
+	{
+
+	}
+	void mUndrag(Vector2f pos) override
+	{
+
+	}
+	//void c(Vector2f pos) override {}
 };
 
 

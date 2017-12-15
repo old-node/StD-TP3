@@ -61,7 +61,7 @@ void cursor::setMode(oButton * b)
 	assert(b != nullptr);
 
 	if (_mode != nullptr)
-		_mode->leave();
+		_mode->mLeave();
 	_mode = b;
 	//_mode->pick(); /// ?
 }
@@ -230,7 +230,6 @@ shape cursor::releaseClick()
 
 
 /// Getteurs
-
 
 bool cursor::isClicking(Mouse::Button it)
 {
