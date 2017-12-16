@@ -137,8 +137,8 @@ void cursor::click()
 		case cSelect:
 			if (_selecting)
 			{
-				_offSet = _click - Vector2f(_focus.shapePtr->getPosition().x / 2 + (_focus.shapePtr->getLocalBounds().width / 2),
-					_focus.shapePtr->getPosition().y / 2 + (_focus.shapePtr->getLocalBounds().height / 2));
+				_offSet = _click - _focus.shapePtr->getPosition();
+				_focus.shapePtr->setPosition(_click - _offSet);
 			}
 			break;
 		default:
@@ -174,8 +174,8 @@ void cursor::drag(Vector2i mouse)
 			}
 			break;
 		case cSelect:
-			if(_selecting)
-				_focus.shapePtr->move(_current - _focus.shapePtr->getPosition() - _offSet);
+			if (_selecting)
+				_focus.shapePtr->setPosition(_current - _offSet);
 			break;	
 		default:
 			break;
@@ -214,8 +214,6 @@ shape cursor::releaseClick()
 			_focus.shapePtr->setFillColor(DBOARD.at(random));
 			break;
 		case cSelect:
-			if(_selecting)
-				_focus.shapePtr->move(_current - _focus.shapePtr->getPosition() - _offSet);
 			_selecting = false;
 			break;
 		default:
@@ -255,6 +253,11 @@ shape cursor::getFocus() const
 Vector2f cursor::getClick() const { return _click; }
 
 Vector2f cursor::getCurrent() const { return _current; }
+
+bool cursor::isOnZone() const
+{
+	return _onZone;
+}
 
 void cursor::changeMode(cMode mode)
 {

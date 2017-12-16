@@ -54,14 +54,13 @@ void painter::run()
 			case Event::MouseMoved:
 				mousePos = (Vector2f)Mouse::getPosition(_window);
 				_cursorInterface.setCurrent(mousePos); //On met le current du cursor avec la position
-
+				cout << "MousePos X :" << mousePos.x << endl;
+				cout << "MousePos Y :" << mousePos.y << endl;
 				//Regarde si on est dans un buttonstrip
 				_cursorInterface.setOnZone(isOnAZone());
-				if (isOnAZone())
-					if (isOnButton()->getMode() == cCreate)
-						cout << "Release sur cCreate!!!!!" << mousePos.x << endl;
 
-				if (_cursorInterface.getClicking())
+				//Si le cursor est en mode click et qu'il n'est pas sur une zone (buttonstrip)
+				if (_cursorInterface.getClicking() && !_cursorInterface.isOnZone())
 				{
 					_cursorInterface.drag();
 				}
@@ -69,34 +68,35 @@ void painter::run()
 			case Event::MouseButtonPressed:
 				if (event.mouseButton.button == Mouse::Left)
 				{
-					if (isOnAZone())
+					if (_cursorInterface.isOnZone())
 					{
-						cout << "Im on zonnnne!" << endl;
 						if(isOnButton()!=nullptr)
 							_cursorInterface.setMode(isOnButton());
-						cout << _cursorInterface.getModeCurs() <<endl;
 					}
-						
-
-					if (!listShape.empty() && _cursorInterface.getModeCurs() == cSelect && selectedShape(mousePos) != nullptr)
-					{
-						_cursorInterface.setFocus(*selectedShape(mousePos));
-						_cursorInterface.setSelected(true);
-					}
-					else if (_cursorInterface.getModeCurs() == cRemove)
-						_label.setString("Remove");
 					else
-						_cursorInterface.setSelected(false);
+					{
+						if (!listShape.empty() && _cursorInterface.getModeCurs() == cSelect && selectedShape(mousePos) != nullptr)
+						{
+							_cursorInterface.setFocus(*selectedShape(mousePos));
+							_cursorInterface.setSelected(true);
+						}
+						else if (_cursorInterface.getModeCurs() == cRemove)
+							_label.setString("Remove");
+						else
+							_cursorInterface.setSelected(false);
 
 
-					_cursorInterface.click(); //On fait cliquer le curseur
+						_cursorInterface.click(); //On fait cliquer le curseur
+					}
+
+			
+
+
 				}
 				break;
 			case Event::MouseButtonReleased:
 				if (event.mouseButton.button == Mouse::Left)
 				{
-
-
 					switch (_cursorInterface.getModeCurs())
 					{
 					case cSelect:

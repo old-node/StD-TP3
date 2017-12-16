@@ -74,7 +74,8 @@ public:
 	shape getFocus() const;
 	Vector2f getClick() const;
 	Vector2f getCurrent() const;
-	
+	bool isOnZone() const;
+
 	void changeMode(cMode mode);
 	//Setteur de focus
 
