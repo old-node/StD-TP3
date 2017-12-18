@@ -112,32 +112,6 @@ void oButton::move(Vector2f pos)
 
 /// Manipulation du focus
 
-void oButton::click(Vector2f pos)
-{
-	_clicking = true;
-}
-
-int oButton::release(/*Vector2f pos*/)
-{
-	_clicking = false;
-	_focus->setOrigin(Vector2f(
-		abs(_focus->getPoint(1).x - _focus->getOrigin().x),
-		abs(_focus->getPoint(2).y - _focus->getOrigin().y)));
-
-	return 1;
-}
-
-
-void oButton::drag(Vector2f pos)
-{
-	
-	_focus->setScale(pos);
-}
-
-void oButton::undrag(Vector2f pos)
-{
-
-}
 
 
 // Met à jour l'origine du rectangle et 
@@ -210,11 +184,6 @@ void oButton::scaleFocus(Vector2f diff)
 	_focus->setScale(diff);
 }
 
-
-void oButton::leave()
-{
-	//_focus->~Shape();
-}
 
 /// Getteurs
 
