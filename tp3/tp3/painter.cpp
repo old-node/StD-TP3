@@ -24,7 +24,7 @@ painter::painter()
 //Initiatlise l'interface
 void painter::init()
 {
-	_window.create(VideoMode(_sWidth, _sHeight), "Test de simon");	//Initialisation de la render window
+	_window.create(VideoMode(_sWidth, _sHeight), "The Painter f3");	//Initialisation de la render window
 	iteratorShape = listShape.begin();	//Initialisation de l'iterateur
 }
 
@@ -88,10 +88,6 @@ void painter::run()
 
 						_cursorInterface.click(); //On fait cliquer le curseur
 					}
-
-			
-
-
 				}
 				break;
 			case Event::MouseButtonReleased:

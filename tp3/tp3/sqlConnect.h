@@ -5,20 +5,22 @@ Date:			22-11-2017
 Description:
 ======================================================================================*/
 
-
 #pragma once
+
+#include "stdafx.h"
+
+
 #include <string>
 #include <iostream>
+
 #include <windows.h>
 #include <sqlext.h>
 #include <sqltypes.h>
 #include <sql.h>
 using namespace std;
 
-
 #define SQL_RESULT_LEN 240
 #define SQL_RETURN_CODE_LEN 1000
-
 
 class sqlConnect
 {
@@ -57,7 +59,7 @@ public:
 
 				//Connexion au SQL Server
 				switch (SQLDriverConnect(sqlConnHandle, NULL,
-					(SQLCHAR*)L"DRIVER={SQL Server};SERVER=localhost, 1433;DATABASE=demo;UID=sa;PWD=user123;", SQL_NTS, retconstring, 1024, NULL, SQL_DRIVER_NOPROMPT)) {
+					(SQLCHAR*)L"DRIVER={SQL Server};SERVER=localhost, 1433;DATABASE=ThePainter3;UID=sa;PWD=user123;", SQL_NTS, retconstring, 1024, NULL, SQL_DRIVER_NOPROMPT)) {
 
 				case SQL_SUCCESS:
 					cout << "Connexion reussi";
