@@ -4,9 +4,11 @@
     <ClCompile Include="..\cursor.cpp" />
     <ClCompile Include="..\oButton.cpp" />
     <ClCompile Include="..\tp3.cpp" />
-    <ClCompile Include="sqlConnect.cpp" />
     <ClCompile Include="painter.cpp" />
     <ClCompile Include="buttonStrip.cpp" />
+    <ClCompile Include="mainMenu.cpp" />
+    <ClCompile Include="inputMenu.cpp" />
+    <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\cursor.h" />
@@ -15,6 +17,10 @@
     <ClInclude Include="sqlConnect.h" />
     <ClInclude Include="painter.h" />
     <ClInclude Include="buttonStrip.h" />
+    <ClInclude Include="mainMenu.h" />
+    <ClInclude Include="inputMenu.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\images\machin.jpg" />

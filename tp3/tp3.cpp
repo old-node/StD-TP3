@@ -8,13 +8,17 @@ Description:	3e travail pratique du cours Structure de donnée. Application de de
 
 #include <locale>
 #include <iostream>
-using namespace std;
-//#include "tp3\sqlConnect.h"
+
+
+#include "tp3\sqlConnect.h"
 #include "tp3\painter.h"
 #include "tp3\buttonStrip.h"
 #include "cursor.h"
-using namespace sf;
+#include "tp3\mainMenu.h"
+#include "tp3\inputMenu.h"
 
+using namespace std;
+using namespace sf;
 
 int mainSimon();
 int mainOli();
@@ -25,37 +29,35 @@ int main()
 {
 	setlocale(LC_CTYPE, "can");
 
-	//mainSimon();
+	mainSimon();
 	//mainOli();
-	interfaceOli();
+	//interfaceOli();
 }
 
 
 int mainSimon()
 {
 	cout << "Bienvenue dans le main de Simon!" << endl;
+	mainMenu menu(800, 500);
 
-	painter interface;
-	interface.init();
-	interface.run();
+	menu.run();
 
-	system("pause");
 	return 0;
 
 }
 
 int interfaceOli()
 {
-	painter interface;
+	painter inter;
 
-	interface.addBsH();
-	interface.addButton(new oB_cBox());
-	interface.addButton(new oB_cCircle());
-	interface.addButton(new oB_remove());
-	interface.addButton(new oB_link());
-	interface.addButton(new oB_select());
+	inter.addBsH();
+	inter.addButton(oB_cBox());
+	inter.addButton(oB_cCircle());
+	inter.addButton(oB_remove());
+	inter.addButton(oB_link());
+	inter.addButton(oB_select());
 
-	interface.run();
+	inter.run();
 
 	return 1;
 }
