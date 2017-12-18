@@ -47,6 +47,7 @@ int mainSimon()
 int interfaceOli()
 {
 	painter interface;
+
 	interface.addBsH();
 	interface.addButton(oB_cBox());
 	interface.addButton(oB_cCircle());

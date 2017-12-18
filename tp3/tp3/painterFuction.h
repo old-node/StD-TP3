@@ -38,7 +38,7 @@ enum cMode {
 };
 // Choix de la forme à dessinner
 enum sShape {
-	sBox, sCircle, sCOUNT ///, sBall, sPoint, sLink?
+	sDefault, sBox, sCircle, sCOUNT ///, sBall, sPoint, sLink?
 };
 static bCorner oppositeC(bCorner c)
 {

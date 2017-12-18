@@ -25,6 +25,7 @@ oButton::oButton(float left, float top, float width, float height,
 		&& 0 <= focusOL && focusOL <= 10);		// Outline du focus
 
 	_p = police;
+	_s = sDefault;
 
 	// Positionnement
 	static float l = left + OL;		// Pos. en X cummulée des boutons
@@ -212,7 +213,10 @@ Vector2f oButton::getP(bCorner p)
 
 cMode oButton::getMode() const
 {
-	return _m;
+	if (this == nullptr)
+		return cDefault;
+	else
+		return _m;
 }
 
 bool oButton::gotMouse(RenderWindow & screen) const
@@ -235,6 +239,11 @@ bool oButton::gotMouse(RenderWindow & screen) const
 	return false;
 }
 
+sShape oButton::getShape() const
+{
+	return _s;
+}
+
 // 
 RectangleShape oButton::getBody()
 {
@@ -253,15 +262,11 @@ Text oButton::getText()
 
 void oB_create::initShape(sShape vertex)
 {
-	assert(sBox <= vertex && vertex <= sCOUNT);
+	assert(sDefault <= vertex && vertex <= sCOUNT);
 	_s = vertex;
 }
 
 
-sShape oB_create::getShape() const
-{
-	return _s;
-}
 
 
 ///=====///
