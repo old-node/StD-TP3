@@ -20,9 +20,9 @@ Vector2f buttonStrip::getCornerB(bCorner c, bool front)
 	float cPos;
 	oButton * b;
 	if (front)
-		b = &_buttons.front();
+		b = _buttons.front();
 	else
-		b = &_buttons.back();
+		b = _buttons.back();
 
 	cPos = b->RectangleShape::getPosition().x + b->getP(c).x;
 	return Vector2f((_scopeNb > 1) ? _limitPos.x : cPos, _initPos.y);
@@ -33,9 +33,9 @@ Vector2f buttonStrip::getCornerC(bCorner c, bool front)
 	float cPos;
 	oButton * b;
 	if (front)
-		b = &_buttons.front();
+		b = _buttons.front();
 	else
-		b = &_buttons.back();
+		b = _buttons.back();
 
 	cPos = b->RectangleShape::getPosition().y + b->getP(c).y;
 	return Vector2f(_initPos.x, cPos);
@@ -46,9 +46,9 @@ Vector2f buttonStrip::getCornerD(bCorner c, bool front)
 	Vector2f cPos;
 	oButton * b;
 	if (front)
-		b = &_buttons.front();
+		b = _buttons.front();
 	else
-		b = &_buttons.back();
+		b = _buttons.back();
 
 	Vector2f bPos = b->RectangleShape::getPosition();
 	cPos = Vector2f(bPos.x + b->getP(c).x, bPos.y + b->getP(c).y);
@@ -66,7 +66,7 @@ int buttonStrip::initButtonStat(const float S) {
 	static float offset = 0;
 	int newScope = 0;// État qui précise si la portée a été changée.
 
-					 /// Présentement pas utilisé, c'est un facteur pour le scope
+	/// Présentement pas utilisé, c'est un facteur pour le scope
 	if (_normalInterval)
 		assert(S > 0);
 	else
@@ -75,20 +75,20 @@ int buttonStrip::initButtonStat(const float S) {
 	// Positionne le premier bouton au bon endroit.
 	if (_activeButton == _buttons.begin())
 	{
-		_activeButton->initOrigins(oppositeC(_lastCorner));
-		_activeButton->move(_buttonPos);
+		(*_activeButton)->initOrigins(oppositeC(_lastCorner));
+		(*_activeButton)->move(_buttonPos);
 		return 0;
 	}
 	else	// Obtien les informations du bouton précédent.
 	{
 		_activeButton--;
-		initButtonSize(&*_activeButton, _minDim, dim, ol);
+		initButtonSize(*_activeButton, _minDim, dim, ol);
 		_activeButton++;
 	}
 
 
 	// Initialise et obtien de nouvelles informations du bouton.
-	_activeButton->initOrigins(oppositeC(_lastCorner));
+	(*_activeButton)->initOrigins(oppositeC(_lastCorner));
 
 	// Modifie la position de la prochaine portée si la dimmenssion du bouton est trop grande.
 	if (offset < dim.y)
@@ -108,7 +108,7 @@ int buttonStrip::initButtonStat(const float S) {
 	if (newScope)			// Si la portée a changée.
 		offset = 0;
 
-	_activeButton->move(_buttonPos);
+	(*_activeButton)->move(_buttonPos);
 
 	return newScope;
 }
@@ -167,9 +167,9 @@ bool buttonStrip::useInterval(float & iPos, float smallI, float bigI, float init
 			assert(_activeButton != _buttons.begin());
 			_activeButton--;
 
-			Vector2f newSize = _activeButton->getSize();
-			newSize.x + (_limitPos.x - _activeButton->getP(_lastCorner).x);
-			_activeButton->resize(newSize);
+			Vector2f newSize = (*_activeButton)->getSize();
+			newSize.x + (_limitPos.x - (*_activeButton)->getP(_lastCorner).x);
+			(*_activeButton)->resize(newSize);
 
 			_activeButton++;
 		}
@@ -243,7 +243,7 @@ buttonStrip::~buttonStrip()
 /// Utiliser l'itérateur _activeButton au lieu ?
 /// Modificateurs de la liste de bouton.
 
-int buttonStrip::addButton(oButton b)
+int buttonStrip::addButton(oButton * b)
 {
 	_buttons.push_back(b);
 	_activeButton = _buttons.end();
@@ -254,7 +254,7 @@ int buttonStrip::addButton(oButton b)
 	return initButtonStat();
 }
 
-int buttonStrip::addButtons(const vector<oButton> buttons)
+int buttonStrip::addButtons(const vector<oButton*> buttons)
 {
 	int newScope = 0;
 	for (const auto & b : buttons)
@@ -273,19 +273,19 @@ void buttonStrip::removeButtons(size_t begin, size_t end)
 	assert(0 <= begin && begin <= end
 		&& end <= _buttons.size());
 
-	vector<oButton>::iterator it = _buttons.begin();
+	vector<oButton*>::iterator it = _buttons.begin();
 	for (int i = 0; i < begin; i++)
 		it++;
 
 	for (size_t i = end - begin; i < end; i++, it++)
 		_buttons.erase(it);
 
-	_buttonPos = _buttons.back().getP(_lastCorner); /// _lastCorner-- ?
+	_buttonPos = _buttons.back()->getP(_lastCorner); /// _lastCorner-- ?
 }
 
 /// Getteurs
 
-vector<oButton>& buttonStrip::getButtonList()
+vector<oButton*> & buttonStrip::getButtonList()
 {
 	return _buttons;
 }

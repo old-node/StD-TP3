@@ -49,11 +49,11 @@ int interfaceOli()
 	painter interface;
 
 	interface.addBsH();
-	interface.addButton(oB_cBox());
-	interface.addButton(oB_cCircle());
-	interface.addButton(oB_remove());
-	interface.addButton(oB_link());
-	interface.addButton(oB_select());
+	interface.addButton(new oB_cBox());
+	interface.addButton(new oB_cCircle());
+	interface.addButton(new oB_remove());
+	interface.addButton(new oB_link());
+	interface.addButton(new oB_select());
 
 	interface.run();
 
@@ -62,63 +62,15 @@ int interfaceOli()
 
 int mainOli()
 {
-	/*
-	sqlConnect bd;
-	bd.selectUsager();
-
-	const char * nom = { "LastName\0" };
-	const char * prenom = { "Uner\0" };
-
-	bd.ajouteUsager(nom, prenom);
-	*/
-
-	/// Mettre la liste du bouton dans l'interface
-	buttonStripH topBanner;
-	topBanner.addButton(oB_cBox());
-	topBanner.addButton(oB_cCircle());
-	topBanner.addButton(oB_remove());
-	topBanner.addButton(oB_link());
-	topBanner.addButton(oB_select());
-	topBanner.updateZone();
-	FloatRect rectTB = topBanner.getZone();
-
-	// Au cas où l'on veut implémenter des bannières à des positions différentes.
-	///buttonStripH lowerBanner(false, false, Vector2f(0, SCREENH), Vector2f(SCREENW, SCREENH));
-	///lowerBanner.addButton();
-	///FloatRect rectLB = lowerBanner.getZone();
-	///buttonStripV leftBanner;
-
-	vector<oButton*> bOptionList;	// Pointeurs de toutes les options pour le curseur.
-
-	for (auto & b : topBanner.getButtonList())
-		bOptionList.push_back(&b);
-	/*for (auto & b : lowerBanner.getButtonList())
-	bOptionList.push_back(&b);
-	for (auto & b : leftBanner.getButtonList())
-	bOptionList.push_back(&b);*/
-
-	/// Mettre bOptionList dans le curseur
-	/// Les zones aussi
-	// Dimmenssions des zones
-	FloatRect _zones[static_cast<int>(rCOUNT)];
-
-	/*
-	sqlConnect bd;
-	bd.selectUsager();
-
-	const char * nom = { "LastName\0" };
-	const char * prenom = { "Uner\0" };
-
-	bd.ajouteUsager(nom, prenom);
-	*/
-
-
 	/* Tests */
 	RectangleShape test(Vector2f(100, 500));
 	test.setFillColor(Color(120, 210, 100, 130));
 	Texture machin;
 	machin.loadFromFile("machin.jpg");
 	Sprite truc(machin);
+
+	RenderWindow sandbox		// Fenêtre principale ?
+	(VideoMode(SCREENW, SCREENH), "Sandbox");
 
 	/*Text help("HELP ME", *FONT, 80);
 	Text help3("DONT help", *FONT, 80);
@@ -129,11 +81,7 @@ int mainOli()
 
 	sandbox.display();
 	/* Fin des tests */
-
-
-	RenderWindow sandbox		// Fenêtre principale ?
-	(VideoMode(SCREENW, SCREENH), "Sandbox");
-
+	
 	vector<Vertex> v;			// Points rouges
 	vector<Shape*> r;
 	vector<RectangleShape> visible;
@@ -196,11 +144,6 @@ int mainOli()
 				for (const auto & R : r)
 					sandbox.draw(*R);
 
-				for (auto & b : topBanner.getButtonList())
-				{
-					sandbox.draw(b.getBody());
-					//sandbox.draw(b.getText());
-				}
 				sandbox.display();
 			}
 		}

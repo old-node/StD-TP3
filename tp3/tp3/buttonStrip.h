@@ -55,8 +55,8 @@ protected:
 	/// Pour que la liste fonctionne correctement, 
 	///		il faut initialiser l'origine de ceux-ci au fur et à mesure.
 	///	Il va falloir utiliser une liste au lieu d'un vecteur pour permettre une réorganisation des boutons.
-	vector<oButton> _buttons;	// La liste des boutons.
-	vector<oButton>::iterator _activeButton;	// Dernier bouton actif.
+	vector<oButton*> _buttons;	// La liste des boutons.
+	vector<oButton*>::iterator _activeButton;	// Dernier bouton actif.
 	/// Faire en sotre que la liste des boutons enclenchés soit des oButton* ou en des ittérateurs au lieu??
 	vector<int> _pressedButtons;// Indices des boutons enclenchés de la liste.
 	elemColors _pressedColors;	// Couleur du corps des boutons enclenchés.
@@ -99,13 +99,13 @@ public:
 
 	/// Utiliser l'itérateur _activeButton au lieu ?
 	/// Modificateurs de la liste de bouton.
-	int addButton(oButton b);
-	int addButtons(const vector<oButton> buttons);
+	int addButton(oButton * b);
+	int addButtons(const vector<oButton*> buttons);
 
 	void removeButtons(size_t begin, size_t end);
 
 	/// Getteurs
-	vector<oButton> & getButtonList();
+	vector<oButton*> & getButtonList();
 	void updateZone();
 	FloatRect getZone();
 	RectangleShape & getOverlay()

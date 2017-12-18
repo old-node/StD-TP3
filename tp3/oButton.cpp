@@ -12,7 +12,7 @@ Date:			22-11-2017
 oButton::oButton(float left, float top, float width, float height,
 	float OL, Color fillC, Color OLC,
 	string text, Font police, int tSize, Color fontC,
-	Color focusC, Color focusOLC, float focusOL, Shape * focus)
+	Color focusC, Color focusOLC, float focusOL, shape * focus)
 {
 	assert(/// Peut changer si les boutons possèdent des icones ?
 		text != ""								// Message du bouton
@@ -75,9 +75,8 @@ oButton::~oButton()
 
 	_m = cDefault;
 	_clicking = false;
-	_focusC = _focusOLC = Color();
+	_focusC.~elemColors();
 	_focusOL = 0;
-	_focus = nullptr;
 }
 
 /// Initialiseurs
@@ -96,12 +95,10 @@ void oButton::setColors(Color fillC, Color OLC)
 }
 
 void oButton::setFocus(Color focusC, Color focusOLC, 
-	float focusOL, Shape * focus) /// ?
+	float focusOL, shape * focus) /// ?
 {
-	_focusC = focusC;
-	_focusOLC = focusOLC;
+	_focusC = elemColors(focusC, focusOLC);
 	_focusOL = focusOL;
-	_focus = focus;
 }
 
 void oButton::move(Vector2f pos)
@@ -110,11 +107,8 @@ void oButton::move(Vector2f pos)
 	Text::setPosition(pos);
 }
 
-/// Manipulation du focus
 
-
-
-// Met à jour l'origine du rectangle et 
+// Met à jour l'origine du rectangle et ...
 
 void oButton::resize(Vector2f dim)	/// Trop petit ??
 {
@@ -176,12 +170,6 @@ void oButton::initOrigins(bCorner corner)
 	_textOrigin = updateTextOrigin(_originCorner, tDim, _textOrigin);
 	Text::setOrigin(_textOrigin);
 	Text::setPosition(rPos);	/// À enlever pour certains cas??
-}
-
-/// ?
-void oButton::scaleFocus(Vector2f diff)
-{
-	_focus->setScale(diff);
 }
 
 

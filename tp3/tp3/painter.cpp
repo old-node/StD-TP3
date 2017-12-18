@@ -25,7 +25,7 @@ painter::painter()
 void painter::init()
 {
 	_window.create(VideoMode(_sWidth, _sHeight), "Test de simon");	//Initialisation de la render window
-	iteratorShape = listShape.begin();	//Initialisation de l'iterateur
+	_iteratorShape = _listShape.begin();	//Initialisation de l'iterateur
 }
 
 //void painter::show()
@@ -59,67 +59,60 @@ void painter::run()
 				//Regarde si on est dans un buttonstrip
 				_cursorInterface.setOnZone(isOnAZone());
 
-				//Si le cursor est en mode click et qu'il n'est pas sur une zone (buttonstrip)
-				if (_cursorInterface.getClicking() && !_cursorInterface.isOnZone())
-				{
-					_cursorInterface.drag();
-				}
+				_cursorInterface.drag();
+
 				break;
 			case Event::MouseButtonPressed:
 				if (event.mouseButton.button == Mouse::Left)
 				{
 					if (_cursorInterface.isOnZone())
 					{
-						if(isOnButton()!=nullptr)
-							_cursorInterface.setMode(isOnButton());
+						oButton * b = isOnButton();
+						if (b != nullptr)
+							_cursorInterface.setMode(b);
 					}
 					else
 					{
-						if (!listShape.empty() && _cursorInterface.getModeCurs() == cSelect && selectedShape(mousePos) != nullptr)
-						{
-							_cursorInterface.setFocus(*selectedShape(mousePos));
-							_cursorInterface.setSelected(true);
-						}
-						else if (_cursorInterface.getModeCurs() == cRemove)
-							_label.setString("Remove");
-						else
-							_cursorInterface.setSelected(false);
-
-
-						_cursorInterface.click(); //On fait cliquer le curseur
+						_cursorInterface.click(elemColors());
 					}
-
-			
-
 
 				}
 				break;
 			case Event::MouseButtonReleased:
 				if (event.mouseButton.button == Mouse::Left)
 				{
-					switch (_cursorInterface.getModeCurs())
+					if (!isOnAZone())
 					{
-					case cSelect:
-						if (!listShape.empty())
-						{
-							selectShape = nullptr;
-							_cursorInterface.releaseClick();
-						}
-						break;
-					case cCreate:
-						//On push la nouvelle forme dans la liste si on est pas sur un bouton strip
-						if (!isOnAZone())
-							listShape.push_back(_cursorInterface.releaseClick());
-						break;
-					case cRemove:
-						if (!listShape.empty() && (searchShape(_cursorInterface.getClick()) != listShape.end()))
-						{
-							listShape.erase(searchShape(_cursorInterface.getClick()));
-						}
-						break;
-					default:
-						break;
+						shape result = nullptr;
+						result = _cursorInterface.releaseClick();
+						//if (result != nullptr)
+						//	_listShape.push_back(result);
 					}
+
+					/* Mode sans héritage */
+					//switch (_cursorInterface.getModeCurs())
+					//{
+					//case cSelect:
+					//	if (!_listShape.empty())
+					//	{
+					//		_selectShape = nullptr;
+					//		_cursorInterface.releaseClick();
+					//	}
+					//	break;
+					//case cCreate:
+					//	//On push la nouvelle forme dans la liste si on est pas sur un bouton strip
+					//	if (!isOnAZone())
+					//		_listShape.push_back(_cursorInterface.releaseClick());
+					//	break;
+					//case cRemove:
+					//	if (!_listShape.empty() && (searchShape(_cursorInterface.getClick()) != _listShape.end()))
+					//	{
+					//		_listShape.erase(searchShape(_cursorInterface.getClick()));
+					//	}
+					//	break;
+					//default:
+					//	break;
+					//}
 				}
 				break;
 			default:
@@ -150,8 +143,8 @@ void painter::clear()
 //Dessine les formes de la liste
 void painter::drawListShape()
 {
-	list<shape>::iterator it = listShape.begin();
-	while (it != listShape.end())
+	list<shape>::iterator it = _listShape.begin();
+	while (it != _listShape.end())
 	{
 		_window.draw(*it->shapePtr);
 		it++;
@@ -168,8 +161,8 @@ void painter::drawButtonstrips()
 		_window.draw(s->getOverlay());
 		for (auto & b : s->getButtonList())
 		{
-			_window.draw(b.getBody());
-			_window.draw(b.getText());
+			_window.draw(b->getBody());
+			_window.draw(b->getText());
 		}
 	}
 }
@@ -179,50 +172,39 @@ bool painter::findShape() const
 	return false;
 }
 
-//Retourne la shape selon une position
-//Retourne nullptr si elle n'est pas trouvée
-shape* painter::selectedShape(Vector2f mousePos)
-{
-	assert(!listShape.empty());
-	list<shape>::iterator it = listShape.end();
-	//On parcourt la liste
-	it = searchShape(mousePos);
-	if (it == listShape.end())
-		return nullptr;
-	else
-		return &*it;
-}
-
 //Cherche une shape dans le vecteur et retourne l'iterateur ou la shape est
 //selon une position donnee
 list<shape>::iterator painter::searchShape(Vector2f pos)
 {
-	assert(!listShape.empty());
-	list<shape>::iterator it = listShape.end();
+	assert(!_listShape.empty());
+	list<shape>::iterator it = _listShape.end();
 
 	do
 	{
 		it--;
 		if (it->shapePtr->getGlobalBounds().intersects(FloatRect(pos, Vector2f(1, 1))))
 			return it;
-	} while (it != listShape.begin());
+	} while (it != _listShape.begin());
 
 	//Si la boucle est fini sans qu'on retourne l'iterateur,
 	//On retourne l'iterateur a la fin
-	it = listShape.end();
+	it = _listShape.end();
 	return it;
 }
 
 // Ajoute une bannière horizontale à l'interface.
 void painter::addBsH(bool normalScope, bool normalInterval, Vector2f initPos, Vector2f limitPos, bool fixed, Vector2f minDim)
 {
-	assert(limitPos.x >= initPos.x
-		&& limitPos.y >= initPos.y);
+	if (!_bsH.empty() && _bsH.back() != nullptr && initPos.y == 0)
+		initPos.y = _bsH.back()->getLowerRightCorner().y;
 
 	if (limitPos.x == 0)
 		limitPos.x = _sWidth;
 	if (limitPos.y == 0)
 		limitPos.y = _sHeight;
+
+	assert(limitPos.x >= initPos.x
+		&& limitPos.y >= initPos.y);
 
 	_bsH.push_back(new buttonStripH(normalScope, normalInterval,
 		initPos, limitPos, fixed, minDim));
@@ -230,28 +212,26 @@ void painter::addBsH(bool normalScope, bool normalInterval, Vector2f initPos, Ve
 }
 
 // Ajoute un bouton dans la bannière active.
-void painter::addButton(oButton b)
+void painter::addButton(oButton * b)
 {
 	assert(_bs != nullptr);
 	_bs->addButton(b);
+	_bs->getButtonList().back()->initCursorData(_cursorInterface.getCurrent(),
+		_cursorInterface.getClick(), &_listShape);
 	_bs->updateZone();
-	_cursorInterface.addButton(&_bs->getButtonList().back());
+	///_cursorInterface.addButton(_bs->getButtonList().back());
 }
 
 bool painter::isOnAZone()
 {
 	for (auto & s : _bsH)
-	{
 		if (_cursorInterface.onZone(s->getZone(), _window))
 			return true;
-	}
 
 	for (auto & s : _bsV)
-	{
 		if (_cursorInterface.onZone(s->getZone(), _window))
 			return true;
-	}
-		
+
 	return false;
 }
 
@@ -272,10 +252,10 @@ oButton * painter::isOnButton()
 	{
 		for (auto & b : s->getButtonList())
 		{
-			if (_cursorInterface.onZone(b.RectangleShape::getGlobalBounds(), _window))
-				return &b;
+			if (_cursorInterface.onZone(b->RectangleShape::getGlobalBounds(), _window))
+				return b;
 		}
-	}	
+	}
 	return nullptr;
 }
 
