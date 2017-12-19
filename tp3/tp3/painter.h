@@ -9,9 +9,9 @@ differents boutons
 */
 #include "../cursor.h"
 #include "buttonStrip.h"
-#include "../oButton.h"
-#include <SFML/Graphics.hpp>
-#include <list>
+#include "sqlConnect.h"
+#include <stdlib.h>
+
 using namespace sf;
 using namespace std;
 

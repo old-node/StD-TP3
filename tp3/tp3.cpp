@@ -9,13 +9,10 @@ Description:	3e travail pratique du cours Structure de donnée. Application de de
 #include <locale>
 #include <iostream>
 
-
-#include "tp3\sqlConnect.h"
 #include "tp3\painter.h"
 #include "tp3\buttonStrip.h"
 #include "cursor.h"
 #include "tp3\mainMenu.h"
-#include "tp3\inputMenu.h"
 
 using namespace std;
 using namespace sf;
@@ -39,23 +36,28 @@ int mainSimon()
 {
 	cout << "Bienvenue dans le main de Simon!" << endl;
 	mainMenu menu(800, 500);
-
 	menu.run();
+	/*sqlConnect bd;
+	
+	bd.userConnect("boby", "lamop");*/
+
+	system("pause");
 
 	return 0;
 
 }
+
 
 int interfaceOli()
 {
 	painter inter;
 
 	inter.addBsH();
-	inter.addButton(oB_cBox());
-	inter.addButton(oB_cCircle());
-	inter.addButton(oB_remove());
-	inter.addButton(oB_link());
-	inter.addButton(oB_select());
+	inter.addButton(new oB_cBox());
+	inter.addButton(new oB_cCircle());
+	inter.addButton(new oB_remove());
+	inter.addButton(new oB_link());
+	inter.addButton(new oB_select());
 
 	inter.run();
 

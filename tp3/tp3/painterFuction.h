@@ -10,8 +10,10 @@ Description:	.
 #include <cassert>
 #include <string>
 #include <SFML/Graphics.hpp>
+
 using namespace std;
 using namespace sf;
+
 
 ///============///
 /* Enumérateurs */

@@ -7,10 +7,9 @@ But: 			Classe qui représente le menu principal ou l'utilisateur va pouvoir se c
 ====================================================================================================
 */
 
-#include <SFML/Graphics.hpp>
 #include <iostream>
-#include "painterFuction.h"
 #include "inputMenu.h"
+
 
 using namespace sf;
 using namespace std;
@@ -37,6 +36,11 @@ private:
 	void draw();						//Dessine le menu
 
 	inputMenu* inputM = nullptr;		//Menu de input
+	sqlConnect bd;						
+	const char* username = "";
+	const char* password = "";
+	Text infoConnexion;					//Texte qui affiche qui est connecté
+	string info = "Vous êtes connecté en tant que : ";
 
 public:
 	mainMenu(int width, int height);	//Constructeur avec largeur et hauteur en param
@@ -48,8 +52,6 @@ public:
 	void moveDown();			//Descend dans les options
 
 	void enterOption();			//Fait une action selon l'option choisie
-
-
 	
 };
 
