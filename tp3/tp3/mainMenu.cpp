@@ -35,12 +35,14 @@ void mainMenu::draw()
 	}
 }
 
-mainMenu::mainMenu(int w, int h)
+mainMenu::mainMenu(float w, float h)
 {
 	_width = w;
 	_height = h;
 
-	_window.create(VideoMode(_width, _height), "The painter 3",0);	//Initialisation de la renderWindow
+	//Initialisation de la renderWindow
+	_window.create(VideoMode(
+		(unsigned int)_width, (unsigned int)_height), "The painter 3",0);
 
 	//On applique le default font de painterFunction qui est arial
 	_font = D_F;

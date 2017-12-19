@@ -24,8 +24,10 @@ painter::painter()
 //Initiatlise l'interface
 void painter::init()
 {
-	_window.create(VideoMode(_sWidth, _sHeight), "The Painter f3");	//Initialisation de la render window
-	iteratorShape = listShape.begin();	//Initialisation de l'iterateur
+	//Initialisation de la render window
+	_window.create(VideoMode(
+		(unsigned int)_sWidth, (unsigned int)_sHeight), "The Painter f3");
+	_iteratorShape = _listShape.begin();	//Initialisation de l'iterateur
 }
 
 //void painter::show()
@@ -35,7 +37,7 @@ void painter::init()
 
 //Va afficher l'interface et gèrer les evenements
 //Un peu comme une boucle de main...
-void painter::run()
+int painter::run()
 {
 	init();
 
@@ -68,13 +70,14 @@ void painter::run()
 					if (_cursorInterface.isOnZone())
 					{
 						oButton * b = isOnButton();
+						int option = 0;
 						if (b != nullptr)
-							_cursorInterface.setMode(b);
+							option = _cursorInterface.setMode(b);
+						if (option != 0)
+							return option;
 					}
 					else
-					{
-						_cursorInterface.click(elemColors());
-					}
+						_cursorInterface.click();
 
 				}
 				break;
@@ -82,37 +85,9 @@ void painter::run()
 				if (event.mouseButton.button == Mouse::Left)
 				{
 					if (!isOnAZone())
-					{
-						shape result = nullptr;
-						result = _cursorInterface.releaseClick();
-						//if (result != nullptr)
-						//	_listShape.push_back(result);
-					}
-
-					/* Mode sans héritage */
-					//switch (_cursorInterface.getModeCurs())
-					//{
-					//case cSelect:
-					//	if (!_listShape.empty())
-					//	{
-					//		_selectShape = nullptr;
-					//		_cursorInterface.releaseClick();
-					//	}
-					//	break;
-					//case cCreate:
-					//	//On push la nouvelle forme dans la liste si on est pas sur un bouton strip
-					//	if (!isOnAZone())
-					//		_listShape.push_back(_cursorInterface.releaseClick());
-					//	break;
-					//case cRemove:
-					//	if (!_listShape.empty() && (searchShape(_cursorInterface.getClick()) != _listShape.end()))
-					//	{
-					//		_listShape.erase(searchShape(_cursorInterface.getClick()));
-					//	}
-					//	break;
-					//default:
-					//	break;
-					//}
+						_cursorInterface.releaseClick();
+					else
+						_cursorInterface;
 				}
 				break;
 			default:
@@ -121,9 +96,12 @@ void painter::run()
 
 			_window.clear(Color::Black);
 
+			/*for (auto & s : _selected)
+				s._it->shapePtr->setFillColor(Color::Blue);*/
+
 			drawListShape();
 
-			if (_cursorInterface.getModeCurs() != cRemove && _cursorInterface.getModeCurs() != cDefault)
+			if (_cursorInterface.getModeCurs() != cDefault)
 				_window.draw(*_cursorInterface.getFocus().shapePtr);
 
 			drawButtonstrips();
@@ -217,7 +195,7 @@ void painter::addButton(oButton * b)
 	assert(_bs != nullptr);
 	_bs->addButton(b);
 	_bs->getButtonList().back()->initCursorData(_cursorInterface.getCurrent(),
-		_cursorInterface.getClick(), &_listShape);
+		_cursorInterface.getClick(), &_listShape, &_selected);
 	_bs->updateZone();
 	///_cursorInterface.addButton(_bs->getButtonList().back());
 }

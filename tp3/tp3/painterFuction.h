@@ -9,6 +9,7 @@ Description:	.
 #pragma once
 #include <cassert>
 #include <string>
+#include <list>
 #include <SFML/Graphics.hpp>
 using namespace std;
 using namespace sf;
@@ -34,7 +35,8 @@ enum oMode {
 };
 // Options d'opérations dans l'application
 enum cMode {
-	cDefault, cCreate, cLink, cRemove, cSelect, cMove, cResize, cCOUNT
+	cDefault, cCreate, cLink, cMove, cResize, cSelect, cRemove,
+	cClear, cSave, cLoad, cMenu, cQuit, cCOUNT
 };
 // Choix de la forme à dessinner
 enum sShape {
@@ -50,6 +52,7 @@ static bCorner oppositeC(bCorner c)
 	case bLowerLeft:	return bUpperRight;
 	default:	assert(false);		break;
 	}
+	return bCenter;
 }
 static Vector2f originOffset(bCorner c, float ol, Vector2f o)
 {
@@ -80,17 +83,88 @@ static Vector2f updateTextOrigin(bCorner c, FloatRect dim, Vector2f o)
 	}
 }
 
-//Structure d'une forme pour connaître son type
+// Structure d'une forme pour connaître son type
 struct shape
 {
 	Shape* shapePtr;	//Pointeur pour la forme
 	sShape shapeType;	//Type de forme selon l'enum
-	shape(Shape* s = nullptr, sShape sT = sBox)
+	shape(Shape* s = nullptr, sShape sT = sDefault)
 	{
 		shapePtr = s;
 		shapeType = sT;
 	}
 };
+
+// Assortissement des couleurs des formes.
+struct elemColors
+{
+	Color f;				// Couleur du corps de la forme.
+	Color ol;				// Couleur de la bordure de la forme.
+	Color t;				// Couleur du text sur la forme.
+	elemColors(Color fill = Color::White,
+		Color outline = Color::Black,
+		Color text = Color::Black)
+	{
+		set(fill, outline, text);
+	}
+	void set(Color fill = Color::White,
+		Color outline = Color::Black,
+		Color text = Color::Black)
+	{
+		f = fill;
+		ol = outline;
+		t = text;
+	}
+	void apply(shape & s)
+	{
+		s.shapePtr->setFillColor(f);
+		s.shapePtr->setOutlineColor(ol);
+	}
+	void set(elemColors c)
+	{
+		set(c.f, c.ol, c.t);
+	}
+	~elemColors()
+	{
+		t = ol = f = Color();
+	}
+	bool operator!=(elemColors eC)
+	{
+		if (f != eC.f)
+			return false;
+		if (ol != eC.ol)
+			return false;
+		if (t != eC.t)
+			return false;
+		return true;
+	}
+};
+
+// Structure qui mémorise les formes sélectionnés
+struct selection
+{
+	list<shape>::iterator _it;	// 
+	elemColors _c;	// Couleurs d'origine des formes sélectionnées.
+	Vector2f _o;	// Offset pour permettre le déplacement des formes.
+
+	selection(list<shape>::iterator it)
+	{
+		_it = it;
+		_c.f = _it->shapePtr->getFillColor();
+		_c.ol = _it->shapePtr->getOutlineColor();
+	}
+	void setOffset(Vector2f click)
+	{
+		_o = click - _it->shapePtr->getPosition();
+	}
+	list<shape>::iterator pop()
+	{
+		_it->shapePtr->setFillColor(_c.f);
+		_it->shapePtr->setOutlineColor(_c.ol);
+		return _it;
+	}
+};
+
 
 ///========================///
 /* Prototypes des fonctions */

@@ -29,9 +29,9 @@ int main()
 {
 	setlocale(LC_CTYPE, "can");
 
-	mainSimon();
+	//mainSimon();
 	//mainOli();
-	//interfaceOli();
+	interfaceOli();
 }
 
 
@@ -51,12 +51,15 @@ int interfaceOli()
 	painter inter;
 
 	inter.addBsH();
-	inter.addButton(oB_cBox());
-	inter.addButton(oB_cCircle());
-	inter.addButton(oB_remove());
-	inter.addButton(oB_link());
-	inter.addButton(oB_select());
-
+	inter.addButton(new oB_cBox());
+	inter.addButton(new oB_cCircle());
+	inter.addButton(new oB_link());
+	inter.addButton(new oB_select());
+	inter.addButton(new oB_remove());
+	inter.addButton(new oB_load());
+	inter.addButton(new oB_menu());
+	inter.addButton(new oB_quit());
+	
 	inter.run();
 
 	return 1;
@@ -72,7 +75,7 @@ int mainOli()
 	Sprite truc(machin);
 
 	RenderWindow sandbox		// Fenêtre principale ?
-	(VideoMode(SCREENW, SCREENH), "Sandbox");
+	(VideoMode((unsigned int)SCREENW, (unsigned int)SCREENH), "Sandbox");
 
 	/*Text help("HELP ME", *FONT, 80);
 	Text help3("DONT help", *FONT, 80);
@@ -87,7 +90,7 @@ int mainOli()
 	vector<Vertex> v;			// Points rouges
 	vector<Shape*> r;
 	vector<RectangleShape> visible;
-	cursor pointer();			// Souris
+	cursor pointer;				// Souris
 	Event event;				// Événement de l'application
 
 	sandbox.clear();
@@ -115,18 +118,6 @@ int mainOli()
 				case Event::KeyPressed:
 					if (event.key.code == Keyboard::Escape)
 						exit(0);
-				case Event::MouseButtonPressed:
-					/// Doit exclure les zones sans boutons ici
-					// 
-					if (event.mouseButton.button == Mouse::Left)
-						;// pointerclick();
-
-					break;
-				case Event::MouseButtonReleased:
-					if (event.mouseButton.button == Mouse::Left)
-						;// if (pointer.unclick() == 1)
-						 //r.push_back(pointer.getFocus());
-					break;
 				case Event::MouseMoved:
 					/// Doit exclure les zones ayant des boutons ici ?
 					/*if (pointer.isClicking())

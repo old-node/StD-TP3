@@ -29,7 +29,7 @@ private:
 	string strInput[MAX_NUMBER_OF_ITEMS];
 	int selectedIndex = 0;						//Defini quel input est selectionné
 public:
-	inputMenu(int width, int height);
+	inputMenu(float width, float height);
 	~inputMenu();
 
 	void run();
