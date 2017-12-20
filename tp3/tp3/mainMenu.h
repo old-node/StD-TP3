@@ -27,8 +27,8 @@ private:
 	Font _font;
 	Text options[MAX_NUMBER_OF_ITEMS]; //Les differentes options du menu
 
-	float _height;						//Hauteur de l'ecran
-	float _width;							//Largeur de l'ecran
+	int _height;						//Hauteur de l'ecran
+	int _width;							//Largeur de l'ecran
 	int selectedIndex = 0;				//Index de l'option sélectionné 
 
 	void setOptionsFont();				//Applique le font sur les options
@@ -39,7 +39,7 @@ private:
 	inputMenu* inputM = nullptr;		//Menu de input
 
 public:
-	mainMenu(float width, float height);	//Constructeur avec largeur et hauteur en param
+	mainMenu(int width, int height);	//Constructeur avec largeur et hauteur en param
 	~mainMenu();
 
 	void run();					//Boucle principal qui va runner le menu
@@ -48,5 +48,8 @@ public:
 	void moveDown();			//Descend dans les options
 
 	void enterOption();			//Fait une action selon l'option choisie
+
+
+	
 };
 

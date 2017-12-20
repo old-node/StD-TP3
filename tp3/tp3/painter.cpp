@@ -9,7 +9,6 @@ differents boutons
 */
 
 #include "painter.h"
-#include "sqlStructs.h"
 #include <stdlib.h>
 
 //Constructeur sans parametre
@@ -25,10 +24,7 @@ painter::painter()
 //Initiatlise l'interface
 void painter::init()
 {
-	//Initialisation de la render window
-	_window.create(VideoMode(
-		(unsigned int)_sWidth, (unsigned int)_sHeight), "The Painter f3");
-	_iteratorShape = _listShape.begin();	//Initialisation de l'iterateur
+	_window.create(VideoMode(_sWidth, _sHeight), "The Painter f3");	//Initialisation de la render window
 }
 
 //void painter::show()
@@ -71,30 +67,13 @@ int painter::run()
 					if (_cursorInterface.isOnZone())
 					{
 						oButton * b = isOnButton();
-						int option = 0;
 						if (b != nullptr)
-							option = _cursorInterface.setMode(b);
-						switch (option)
-						{
-						case 0:
-						default:
-							break;
-						case cSave:
-							/// sauvegarde des formes
-							generateSave();
-							break;
-						case cLoad:
-							break;
-						case cMenu:
-							return cMenu;
-							break;
-						case cQuit:
-							return cQuit;
-							break;
-						}
+							_cursorInterface.setMode(b);
 					}
 					else
+					{
 						_cursorInterface.click();
+					}
 
 				}
 				break;
@@ -102,9 +81,37 @@ int painter::run()
 				if (event.mouseButton.button == Mouse::Left)
 				{
 					if (!isOnAZone())
+					{
+						shape result = nullptr;
 						_cursorInterface.releaseClick();
-					else
-						_cursorInterface;
+						//if (result != nullptr)
+						//	_listShape.push_back(result);
+					}
+
+					/* Mode sans héritage */
+					//switch (_cursorInterface.getModeCurs())
+					//{
+					//case cSelect:
+					//	if (!_listShape.empty())
+					//	{
+					//		_selectShape = nullptr;
+					//		_cursorInterface.releaseClick();
+					//	}
+					//	break;
+					//case cCreate:
+					//	//On push la nouvelle forme dans la liste si on est pas sur un bouton strip
+					//	if (!isOnAZone())
+					//		_listShape.push_back(_cursorInterface.releaseClick());
+					//	break;
+					//case cRemove:
+					//	if (!_listShape.empty() && (searchShape(_cursorInterface.getClick()) != _listShape.end()))
+					//	{
+					//		_listShape.erase(searchShape(_cursorInterface.getClick()));
+					//	}
+					//	break;
+					//default:
+					//	break;
+					//}
 				}
 				break;
 			default:
@@ -113,12 +120,9 @@ int painter::run()
 
 			_window.clear(Color::Black);
 
-			/*for (auto & s : _selected)
-				s._it->shapePtr->setFillColor(Color::Blue);*/
-
 			drawListShape();
 
-			if (_cursorInterface.getModeCurs() != cDefault)
+			if (_cursorInterface.getModeCurs() != cRemove && _cursorInterface.getModeCurs() != cDefault)
 				_window.draw(*_cursorInterface.getFocus().shapePtr);
 
 			drawButtonstrips();
@@ -127,7 +131,6 @@ int painter::run()
 			_window.display();
 		}
 	}
-
 	return 0;
 }
 
@@ -202,12 +205,6 @@ void painter::addBsH(bool normalScope, bool normalInterval, Vector2f initPos, Ve
 
 	assert(limitPos.x >= initPos.x
 		&& limitPos.y >= initPos.y);
-
-	if (!_bsH.empty())
-	{
-		//initButtonSize();
-		initPos.y += TOLH;
-	}
 
 	_bsH.push_back(new buttonStripH(normalScope, normalInterval,
 		initPos, limitPos, fixed, minDim));

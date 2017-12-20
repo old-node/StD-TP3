@@ -8,7 +8,7 @@ Description:
 #pragma once
 
 #include "stdafx.h"
-#include "sqlStructs.h"
+
 
 #include <string>
 #include <iostream>
@@ -21,7 +21,6 @@ using namespace std;
 
 #define SQL_RESULT_LEN 240
 #define SQL_RETURN_CODE_LEN 1000
-
 
 class sqlConnect
 {
@@ -152,16 +151,14 @@ public:
 	}
 	void connexion();
 	void deconnexion();
-	void selectUsager();
-	void ajouteUsager(const char * nom, const char * prenom);
+	void ajouterDessin(char *user);
+	bool userConnect(const char * user, const char * password);
 };
 
-// .
 sqlConnect::sqlConnect()
 {
 }
 
-// .
 sqlConnect::~sqlConnect()
 {
 	///deconnexion();

@@ -9,10 +9,9 @@ But: 			Petit menu qui permet d'entrer un nom d'utilisateur et un mot de passe
 
 #include "inputMenu.h"
 
-inputMenu::inputMenu(float w, float h)
+inputMenu::inputMenu(int w, int h)
 {
-	_window.create(VideoMode(
-		(unsigned int)w, (unsigned int)h), "Entrez votre nom", Style::None);
+	_window.create(VideoMode(w, h), "Entrez votre nom", Style::None);
 
 	
 	//Set les fonts et les couleurs
