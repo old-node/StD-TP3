@@ -36,9 +36,9 @@ public:
 	~sqlConnect();
 	void connexion();
 	void deconnexion();
-	void selectUsager();
-	void ajouteUsager(const char * nom, const char * prenom);
-	bool userConnect(const char * user, const char * password);
+	bool userConnect(const char * user, const char * password); //Cherche un utilisateur dans la table tblUsager selon
+																//Son nom et son mot de passe retourne vraie si on le trouve
+	void ajouterDessin(char *user);						//Ajoute un dessin à la table dessin avec l'utilisateur donné
 };
 
 

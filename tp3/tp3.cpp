@@ -36,10 +36,12 @@ int mainSimon()
 {
 	cout << "Bienvenue dans le main de Simon!" << endl;
 	mainMenu menu(800, 500);
+	sqlConnect bd;
+	bd.ajouterDessin("boby");
+	bd.userConnect("boby", "lamop");
+
 	menu.run();
-	/*sqlConnect bd;
-	
-	bd.userConnect("boby", "lamop");*/
+
 
 	system("pause");
 
