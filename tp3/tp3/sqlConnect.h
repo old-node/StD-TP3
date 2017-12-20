@@ -36,8 +36,7 @@ public:
 	~sqlConnect();
 	void connexion();
 	void deconnexion();
-	void selectUsager();
-	void ajouteUsager(const char * nom, const char * prenom);
+	void ajouterDessin(char *user);
 	bool userConnect(const char * user, const char * password);
 };
 
