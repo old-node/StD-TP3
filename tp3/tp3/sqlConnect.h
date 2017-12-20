@@ -40,4 +40,10 @@ public:
 	bool userConnect(const char * user, const char * password);
 };
 
+sqlConnect::sqlConnect()
+{
+}
 
+sqlConnect::~sqlConnect()
+{
+}

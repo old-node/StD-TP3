@@ -51,14 +51,14 @@ cursor::~cursor()
 
 /// Setteurs
 
-void cursor::setMode(oButton * b)
+int cursor::setMode(oButton * b)
 {
 	assert(b != nullptr);
 
 	if (_mode != nullptr)
-		_mode->mLeave();
+		_mode->mLeave(_focus);
 	_mode = b;
-	_mode->mPick();
+	return _mode->mPick();
 }
 
 void cursor::setClick(Vector2f click)
@@ -100,7 +100,7 @@ void cursor::setOnZone(bool b)
 
 
 /// Clicker
-int cursor::click(elemColors focusC)
+int cursor::click()
 {
 	//oButton * b = nullptr;	// Bouton sous la souris
 	/*if (onZone(rButton))
@@ -120,13 +120,13 @@ int cursor::click(elemColors focusC)
 		switch (_mode->getShape())
 		{
 		case sBox:
-			nb = dynamic_cast<oB_cBox*>(_mode)->mClick(_focus);
+			nb = dynamic_cast<oB_cBox*>(_mode)->mClick(_focus, _focusC, _defaultC);
 			break;
 		case sCircle:
-			nb = dynamic_cast<oB_cCircle*>(_mode)->mClick(_focus);
+			nb = dynamic_cast<oB_cCircle*>(_mode)->mClick(_focus, _focusC, _defaultC);
 			break;
 			//case sLine:
-			//	dynamic_cast<oB_cLine*>(_mode)->mClick(_focus);
+			//	dynamic_cast<oB_cLine*>(_mode)->mClick(_focus, _focusC, _defaultC);
 			//	break;
 		default:
 			break;
@@ -138,24 +138,42 @@ int cursor::click(elemColors focusC)
 	// Pour les modes ayant besoin d'une forme sélectionnée.
 	switch (mode)
 	{
-	case cSelect:
-		return dynamic_cast<oB_select*>(_mode)->mClick(_focus);
 		break;
 	case cLink:
-		return dynamic_cast<oB_link*>(_mode)->mClick(_focus);
-		break;
-	case cRemove:
-		return dynamic_cast<oB_remove*>(_mode)->mClick(_focus);
+		dynamic_cast<oB_link*>(_mode)->mClick(_focus, _focusC, _defaultC);
 		break;
 	case cMove:
-		//return dynamic_cast<oB_move*>(_mode)->mClick(_focus);
+		//dynamic_cast<oB_move*>(_mode)->mClick(_focus);
 		break;
 	case cResize:
-		//return dynamic_cast<oB_resize*>(_mode)->mClick(_focus);
+		//dynamic_cast<oB_resize*>(_mode)->mClick(_focus);
+		break;
+	case cSelect:
+		dynamic_cast<oB_select*>(_mode)->mClick(_focus, _focusC, _defaultC);
+		break;
+	case cRemove:
+		dynamic_cast<oB_remove*>(_mode)->mClick(_focus, _focusC, _defaultC);
+		break;
+	case cClear:
+		//dynamic_cast<oB_clear*>(_mode)->mClick(_focus);
+		break;
+	case cSave:
+		dynamic_cast<oB_save*>(_mode)->mClick(_focus);
+		break;
+	case cLoad:
+		dynamic_cast<oB_load*>(_mode)->mClick(_focus);
+		break;
+	case cMenu:
+		dynamic_cast<oB_menu*>(_mode)->mClick(_focus);
+		break;
+	case cQuit:
+		dynamic_cast<oB_quit*>(_mode)->mClick(_focus);
 		break;
 	default:
 		break;
 	}
+
+	return 0;
 
 	/* Mode sans héritage */
 	/*if (_mode != nullptr && !_onZone)
@@ -193,14 +211,14 @@ int cursor::click(elemColors focusC)
 
 
 // Va retourner la forme selon le mode du curseur
-shape cursor::releaseClick()
+void cursor::releaseClick()
 {
 	_clicking = false;
 	float radius = distance2Points(_click, _current);
 	int random = rand() % DBOARD.size();
 
 	if (_mode == nullptr)
-		return nullptr;
+		return;
 
 	switch (_mode->getMode())
 	{
@@ -208,13 +226,13 @@ shape cursor::releaseClick()
 		switch (_mode->getShape())
 		{
 		case sBox:
-			return dynamic_cast<oB_cBox*>(_mode)->mRelease(_focus, radius);
+			dynamic_cast<oB_cBox*>(_mode)->mRelease(_focus, radius);
 			break;
 		case sCircle:
-			return dynamic_cast<oB_cCircle*>(_mode)->mRelease(_focus, radius);
+			dynamic_cast<oB_cCircle*>(_mode)->mRelease(_focus, radius);
 			break;
 			//case sLine:
-			//	return dynamic_cast<oB_cLine*>(_mode)->mRelease(_focus, radius);
+			//	dynamic_cast<oB_cLine*>(_mode)->mRelease(_focus, radius);
 			//	break;
 		default:
 			break;
@@ -222,24 +240,41 @@ shape cursor::releaseClick()
 		_focus.shapePtr = new RectangleShape();
 		break;
 
-	case cSelect:
-		return dynamic_cast<oB_select*>(_mode)->mRelease(_focus, radius);
-		break;
 	case cLink:
-		return dynamic_cast<oB_link*>(_mode)->mRelease(_focus, radius);
-		break;
-	case cRemove:
-		return dynamic_cast<oB_remove*>(_mode)->mRelease(_focus, radius);
+		dynamic_cast<oB_link*>(_mode)->mRelease(_focus, radius);
 		break;
 	case cMove:
-		//return dynamic_cast<oB_move*>(_mode)->mRelease(_focus, radius);
+		//dynamic_cast<oB_move*>(_mode)->mRelease(_focus, radius);
 		break;
 	case cResize:
-		//return dynamic_cast<oB_resize*>(_mode)->mRelease(_focus, radius);
+		//dynamic_cast<oB_resize*>(_mode)->mRelease(_focus, radius);
+		break;
+	case cSelect:
+		dynamic_cast<oB_select*>(_mode)->mRelease(_focus, radius);
+		break;
+	case cRemove:
+		dynamic_cast<oB_remove*>(_mode)->mRelease(_focus, radius);
+		break;
+	case cClear:
+		//dynamic_cast<oB_clear*>(_mode)->mRelease(_focus, radius);
+		break;
+	case cSave:
+		dynamic_cast<oB_save*>(_mode)->mRelease(_focus, radius);
+		break;
+	case cLoad:
+		dynamic_cast<oB_load*>(_mode)->mRelease(_focus, radius);
+		break;
+	case cMenu:
+		dynamic_cast<oB_menu*>(_mode)->mRelease(_focus, radius);
+		break;
+	case cQuit:
+		dynamic_cast<oB_quit*>(_mode)->mRelease(_focus, radius);
 		break;
 	default:
 		break;
 	}
+
+	return;
 
 	/* Version non héritée */
 	//if (_mode != nullptr && !_onZone)
@@ -303,20 +338,35 @@ void cursor::drag()
 		}
 		break;
 
-	case cSelect:
-		dynamic_cast<oB_select*>(_mode)->mDrag(_focus);
-		break;
 	case cLink:
 		dynamic_cast<oB_link*>(_mode)->mDrag(_focus);
-		break;
-	case cRemove:
-		dynamic_cast<oB_remove*>(_mode)->mDrag(_focus);
 		break;
 	case cMove:
 		//dynamic_cast<oB_move*>(_mode)->mDrag(_focus);
 		break;
 	case cResize:
 		//dynamic_cast<oB_resize*>(_mode)->mDrag(_focus);
+		break;
+	case cSelect:
+		dynamic_cast<oB_select*>(_mode)->mDrag(_focus);
+		break;
+	case cRemove:
+		dynamic_cast<oB_remove*>(_mode)->mDrag(_focus);
+		break;
+	case cClear:
+		//dynamic_cast<oB_clear*>(_mode)->mDrag(_focus);
+		break;
+	case cSave:
+		dynamic_cast<oB_save*>(_mode)->mDrag(_focus);
+		break;
+	case cLoad:
+		dynamic_cast<oB_load*>(_mode)->mDrag(_focus);
+		break;
+	case cMenu:
+		dynamic_cast<oB_menu*>(_mode)->mDrag(_focus);
+		break;
+	case cQuit:
+		dynamic_cast<oB_quit*>(_mode)->mDrag(_focus);
 		break;
 	default:
 		break;

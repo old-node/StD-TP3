@@ -9,8 +9,7 @@ differents boutons
 */
 
 #include "painter.h"
-
-
+#include <stdlib.h>
 
 //Constructeur sans parametre
 painter::painter()
@@ -26,7 +25,7 @@ painter::painter()
 void painter::init()
 {
 	_window.create(VideoMode(_sWidth, _sHeight), "The Painter f3");	//Initialisation de la render window
-	_iteratorShape = _listShape.begin();	//Initialisation de l'iterateur
+	iteratorShape = listShape.begin();	//Initialisation de l'iterateur
 }
 
 //void painter::show()

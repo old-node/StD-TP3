@@ -29,28 +29,24 @@ void mainMenu::setOptionsPosition()
 //Dessine le menu
 void mainMenu::draw()
 {
-	_window.draw(infoConnexion);
 	for (int i = 0; i < MAX_NUMBER_OF_ITEMS; i++)
 	{
 		_window.draw(options[i]);
 	}
 }
 
-mainMenu::mainMenu(int w, int h)
+mainMenu::mainMenu(float w, float h)
 {
 	_width = w;
 	_height = h;
 
-	_window.create(VideoMode(_width, _height), "The painter 3",0);	//Initialisation de la renderWindow
+	//Initialisation de la renderWindow
+	_window.create(VideoMode(
+		(unsigned int)_width, (unsigned int)_height), "The painter 3",0);
 
 	//On applique le default font de painterFunction qui est arial
 	_font = D_F;
-	
-	infoConnexion.setFont(_font);
-	infoConnexion.setPosition(20, 20);
-	infoConnexion.setCharacterSize(30);
-	infoConnexion.setFillColor(Color::Black);
-	infoConnexion.setString(info+=username);
+
 	//On applique le font aux options
 	setOptionsFont();
 
@@ -62,8 +58,8 @@ mainMenu::mainMenu(int w, int h)
 	}
 
 	//Texte des options du menu
-	options[0].setString("Nouvelle connexion");
-	options[1].setString("Nouveau dessin");
+	options[0].setString("Connexion");
+	options[1].setString("Déconnexion");
 	options[2].setString("Charger un dessin");
 	options[3].setString("Sortir");
 
@@ -88,15 +84,16 @@ void mainMenu::run()
 			{
 				_window.setVisible(false);
 				inputM->run();
-				bd.userConnect(inputM->getUsername(), inputM->getPassword());
-				username = inputM->getUsername();
-				password = inputM->getPassword();
-				infoConnexion.setString(info += username);
+
+				cout << inputM->getUsername() << endl;
+				cout << inputM->getPassword() << endl;
+
 				inputM = nullptr;
 				delete inputM;
 				_window.setVisible(true);
 			}
 			
+
 			switch (event.type)
 			{
 			case Event::Closed:
@@ -161,7 +158,7 @@ void mainMenu::enterOption()
 	switch (selectedIndex)
 	{
 	case 0:
-		inputM = new inputMenu(900, 500);
+		inputM = new inputMenu(800, 400);
 		break;
 	case 1:
 		break;

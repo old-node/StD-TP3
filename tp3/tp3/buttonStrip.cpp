@@ -115,7 +115,6 @@ int buttonStrip::initButtonStat(const float S) {
 
 /// Marche seullement avec seullement l'horizontal ??
 // Obtien les bonnes coordonnées du prochain bouton par raport à sa liste.
-
 int buttonStrip::getValidPosition(float dim, float offset)
 {
 	if (_normalScope)
@@ -149,7 +148,6 @@ int buttonStrip::getValidPosition(float dim, float offset)
 
 /// Utiliser le mot reach (étendue) au lieu ??
 // Modifie ou remplace la position des prochains boutons dans l'intervale (i = intervale)
-
 bool buttonStrip::useInterval(float & iPos, float smallI, float bigI, float initIPos)
 {
 	if (smallI < bigI)	// Si le bouton ne dépasserait pas l'intervale.
@@ -168,7 +166,7 @@ bool buttonStrip::useInterval(float & iPos, float smallI, float bigI, float init
 			_activeButton--;
 
 			Vector2f newSize = (*_activeButton)->getSize();
-			newSize.x + (_limitPos.x - (*_activeButton)->getP(_lastCorner).x);
+			newSize.x += (_limitPos.x - (*_activeButton)->getP(_lastCorner).x);
 			(*_activeButton)->resize(newSize);
 
 			_activeButton++;
@@ -180,7 +178,6 @@ bool buttonStrip::useInterval(float & iPos, float smallI, float bigI, float init
 }
 
 // Modifie la portée si nécessaire et si possible (s = portée).
-
 int buttonStrip::useScope(float & sPos, float smallS, float bigS, float & sPosLimit)
 {
 	if (smallS > bigS)	// Si le bouton dépasserait la portée.
@@ -225,14 +222,28 @@ buttonStrip::buttonStrip(bool fromTopOrLeft, bool reverseOrder,
 	else
 		assert(initPos.x >= limitPos.x);
 
-	_initPos = initPos;
+	_overlay.setOutlineThickness(1);
+	_overlay.setOrigin(Vector2f(-1, -1));
+	_overlay.setPosition(_initPos);
+	_overlay.setFillColor(Color(100, 100, 100, 255));
+	_overlay.setOutlineColor(Color::Black);
+
+	_buttonPos.x = initPos.x + TOLW;
+	_buttonPos.y = initPos.y + TOLH;
+	_initPos = _buttonPos;
+
+	float ol; // = _hinge.RectangleShape::getOutlineThickness();
+	// _hinge.setPos(initPos + Vector2f(ol, ol));
+	// initPos.x += _hinge.RectangleShape::getGlobalBounds().width + ol * 2;
+
 	_limitPos = limitPos;
 	_fixed = fixed;
 	_minDim = minDim;
 	_buttonPos = _initPos;
-	_overlay.setPosition(_initPos);
-	///initCorner();	// Seullement dans les enfants
+
+	///initCorner();	// Seullement dans les enfants ??
 }
+
 // 
 buttonStrip::~buttonStrip()
 {
@@ -242,7 +253,6 @@ buttonStrip::~buttonStrip()
 
 /// Utiliser l'itérateur _activeButton au lieu ?
 /// Modificateurs de la liste de bouton.
-
 int buttonStrip::addButton(oButton * b)
 {
 	_buttons.push_back(b);
@@ -293,10 +303,17 @@ vector<oButton*> & buttonStrip::getButtonList()
 void buttonStrip::updateZone()
 {
 	assert(!_buttons.empty());
+
 	Vector2f ul = getUpperLeftCorner();
+	ul.x -= TOLW/* - _hinge.P(bUpperLeft)*/;
+	ul.y -= TOLH;
 	Vector2f lr = getLowerRightCorner();
+	lr.x += TOLW/* - _hinge.P(bUpperLeft)*/;
+	lr.y += TOLH;
+
 	_overlay.setPosition(ul);
-	_overlay.setSize(Vector2f(lr.x - ul.x, lr.y - ul.y));
+	_overlay.setSize(Vector2f(lr.x - ul.x,
+		lr.y - ul.y));
 }
 
 FloatRect buttonStrip::getZone()

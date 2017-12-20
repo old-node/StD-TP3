@@ -9,10 +9,13 @@ Description:	3e travail pratique du cours Structure de donnée. Application de de
 #include <locale>
 #include <iostream>
 
+
+#include "tp3\sqlConnect.h"
 #include "tp3\painter.h"
 #include "tp3\buttonStrip.h"
 #include "cursor.h"
 #include "tp3\mainMenu.h"
+#include "tp3\inputMenu.h"
 
 using namespace std;
 using namespace sf;
@@ -46,7 +49,6 @@ int mainSimon()
 	return 0;
 
 }
-
 
 int interfaceOli()
 {

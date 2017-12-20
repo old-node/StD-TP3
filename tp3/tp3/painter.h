@@ -9,9 +9,9 @@ differents boutons
 */
 #include "../cursor.h"
 #include "buttonStrip.h"
-#include "sqlConnect.h"
-#include <stdlib.h>
-
+#include "../oButton.h"
+#include <SFML/Graphics.hpp>
+#include <list>
 using namespace sf;
 using namespace std;
 
@@ -19,8 +19,8 @@ using namespace std;
 class painter
 {
 private:
-	int _sHeight = 800;			// Hauteur de l'ecran
-	int _sWidth = 1200;			// Largeur de l'ecran
+	float _sHeight = 800;			// Hauteur de l'ecran
+	float _sWidth = 1200;			// Largeur de l'ecran
 	/// Utiliser un Vector2i au lieu des deux valeurs de dimmenssions?
 	RenderWindow _window;		// Fenêtre d'affichage
 	list<shape> _listShape;		// Liste des formes qui represente un dessin
@@ -33,10 +33,17 @@ private:
 	list<buttonStripV*> _bsV;	// Bannières de boutons d'ordre vertical.
 	buttonStrip * _bs;			// Bannière active.
 
+	vector<selection> _selected;	// 
+
+	void generateSave()
+	{
+		
+	}
+
 public:
 	painter();					// Constructeur sans paramètre
 	void init();				// Initialise l'interface
-	void run();					// Boucle principale
+	int run();					// Boucle principale
 	
 	/// Getteurs
 	bool findShape() const;		// 
@@ -51,7 +58,7 @@ public:
 	// Ajoute une bannière horizontale à l'interface.
 	void addBsH(bool normalScope = true, bool normalInterval = true,
 		Vector2f initPos = Vector2f(), Vector2f limitPos = Vector2f(),
-		bool fixed = false, Vector2f minDim = Vector2f(1, 1));
+		bool fixed = false, Vector2f minDim = Vector2f(1, 50));
 	void addButton(oButton * b);	// Ajoute un bouton dans la bannière active.
 
 	/// Affichage
@@ -59,6 +66,7 @@ public:
 	void drawListShape();		// Dessine les formes de la liste
 	void drawButtonstrips();	// Dessine toutes les bannières et leur boutons.
 	//void show();				// Affiche l'interface ///inutile ?
+
 };
 
 

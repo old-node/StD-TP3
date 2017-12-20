@@ -12,7 +12,8 @@ Date:			22-11-2017
 oButton::oButton(float left, float top, float width, float height,
 	float OL, Color fillC, Color OLC,
 	string text, Font police, int tSize, Color fontC,
-	Color focusC, Color focusOLC, float focusOL, shape * focus)
+	Color focusC, Color focusOLC, float focusOL, 
+	Color elemFillC, Color elemOLC, Color elemFontC)
 {
 	assert(/// Peut changer si les boutons possèdent des icones ?
 		text != ""								// Message du bouton
@@ -63,7 +64,9 @@ oButton::oButton(float left, float top, float width, float height,
 	RectangleShape::setOutlineThickness(OL);
 
 	// Initialise le focus
-	setFocus(focusC, focusOLC, focusOL, focus); /// 
+	setFocus(focusC, focusOLC, focusOL);
+
+	_elemC = elemColors(elemFillC, elemOLC, elemFontC);
 }
 
 oButton::~oButton()
@@ -82,7 +85,7 @@ oButton::~oButton()
 /// Initialiseurs
 void oButton::initMode(cMode mode)
 {
-	assert(cDefault <= mode && mode <= cResize);
+	assert(cDefault <= mode && mode <= cCOUNT);
 	_m = mode;
 }
 
@@ -95,7 +98,7 @@ void oButton::setColors(Color fillC, Color OLC)
 }
 
 void oButton::setFocus(Color focusC, Color focusOLC, 
-	float focusOL, shape * focus) /// ?
+	float focusOL) /// ?
 {
 	_focusC = elemColors(focusC, focusOLC);
 	_focusOL = focusOL;
@@ -116,36 +119,47 @@ void oButton::resize(Vector2f dim)	/// Trop petit ??
 		&& 0 < dim.y && dim.y < 1000
 	/*&& dim.y >= Text::getGlobalBounds().height*/);
 
-	Vector2f box, mid, center, pos;
+	Vector2f box, pos;
 	float ol = RectangleShape::getOutlineThickness();
-	RectangleShape::setOrigin(Vector2f(-ol, -ol));
 	pos = RectangleShape::getPosition();
 
-	float width = textDim(dim.x, Text::getGlobalBounds().width, BW);
-	float height;// = textDim(dim.y, Text::getGlobalBounds().height, BH);
-				 /// Resizer seullement la largeur ??
-
+	// Obtien les dimmenssions du texte nécessaire pour respecter le minimum.
+	dim.x -= TOLW * 2 - ol * 2;
+	textDim(dim.x, Text::getGlobalBounds().width, BW);
+	if (Text::getGlobalBounds().height < dim.y - TOLH * 2 - ol * 2)
+		dim.y -= (TOLH * 2 + ol * 2);
+	else
+		dim.y = Text::getGlobalBounds().height;
+	
+	// Réduit le nombre de caractères à afficher dans le bouton.
 	while (dim.x < Text::getGlobalBounds().width)
 	{
 		string current = Text::getString();
 		current.pop_back();
 		Text::setString(current);
 	}
+	// Augmente l'espace que le text prend dans le bouton pour de bonnes dimmenssions.
 	if (dim.x > Text::getGlobalBounds().width)
-		width = dim.x;
+		dim.x = Text::getGlobalBounds().width;
 
-	/*//if (dim.y != Text::getGlobalBounds().height)
-	height = dim.y;
-	box = Vector2f(width + TOLW * 2, height + TOLH * 2);
-	mid = Vector2f(width / 2, height / 2);
-	center = Vector2f(box.x / 2, box.y / 2 - TOLH / 2);
-	Text::setOrigin(mid);
-	Text::setPosition(pos);
-	Text::move(center);
-	//RectangleShape::setTextureRect((IntRect)FloatRect(pos, box));
-	RectangleShape::setOrigin(center);*/
-
-	initOrigins();
+	// Obtien les dimmenssions nécessaire du centre du bouton
+	box = Vector2f(dim.x + (TOLW * 2), dim.y + (TOLH * 2));
+	RectangleShape::setSize(Vector2f(dim.x + TOLW * 2 + ol * 2, dim.y));
+	Vector2f origin = originOffset(_originCorner, ol, getP(_originCorner));
+	RectangleShape::setOrigin(origin);
+	RectangleShape::setPosition(pos);
+	
+	// Forme la zone du texte.
+	FloatRect tDim = Text::getLocalBounds();
+	tDim.width = dim.x;
+	tDim.height = dim.y;
+	_textOrigin = Vector2f(
+		((box.x + ol * 2) - dim.x) / 2,
+		((box.y + ol * 2) - dim.y) / 2);
+	_textOrigin = updateTextOrigin(_originCorner, tDim, _textOrigin);
+	Text::setOrigin(_textOrigin);
+	
+	Text::setPosition(pos);	/// À enlever pour certains cas??
 }
 
 void oButton::initOrigins(bCorner corner)
@@ -304,3 +318,5 @@ void cursorPos(oButton * b, RenderWindow & screen)
 		<< Mouse::getPosition(screen).x << ","
 		<< Mouse::getPosition(screen).y << ").";
 }
+
+
