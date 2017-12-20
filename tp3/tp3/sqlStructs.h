@@ -1,5 +1,9 @@
 #pragma once
+#include <string>
+using namespace std;
 
+#define SQL_TYPE_DESC 20
+#define SQL_RETURN_CODE_LEN 1000
 
 // The following buffer is used to store parameter values.  
 typedef struct tblDessinCol {
@@ -20,16 +24,16 @@ typedef struct tblShapeCol {
 
 typedef struct tblTypeColorCol {
 	int typColID;
-	SQLCHAR typColDescription[20];
+	string typColDescription;
 } tblTypeColorCol;
 
 typedef struct tblTypeShapeCol {
 	int typShaID;
-	SQLCHAR typShaDescription[20];
+	string typShaDescription;
 } tblTypeShapeCol;
 
 typedef struct tblUsagerCol {
 	int usagerID;
-	SQLCHAR usagerNom[30];
-	SQLCHAR usagerPassword[30];
+	string usagerNom;
+	string usagerPassword;
 } tblUsagerCol;

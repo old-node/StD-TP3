@@ -18,36 +18,7 @@ using namespace std;
 using namespace sf;
 
 
-// Pour l'emplacement
-const float SCREENW = 800;				// Largeur de l'écran /// inclus à partir du (main) ?
-const float SCREENH = 800;				// Hauteur de l'écran
 
-const int BUTTONSPAN = 5;				// Rapport de boutons en largeur
-const float BW = SCREENW / BUTTONSPAN;	// Largeur maximum des boutons
-const float BH = 40.0;					// Hauteur maximum des boutons
-const bool HORIZONTALMENU = false;		// Sens de la liste des boutons
-const float BOL = 1;
-
-// pour l'apparence
-const Color FILLC = Color::White;
-const Color OUTLC = Color::Black;
-
-// Pour le text
-//const sf::Font FONT = FONT();
-const Color FONTC = Color::Blue;
-const int TSIZE = (int)(BH / 2 - 2 * BOL);
-const float TOLW = 15;
-const float TOLH = 8;
-
-// Pour le focus
-const Color FOCUSFILL = Color::Transparent;
-const Color FOCUSOL = Color::Black;
-
-// Couleurs des formes
-/// Faire un énum des couleurs ??
-const Color CBOX = Color::Green;
-const Color CLINE = Color::Cyan;
-const Color CLINK = Color::Yellow;
 
 
 
@@ -86,6 +57,7 @@ private:
 	Font _p;				// Police du bouton.
 	Vector2f _textOrigin;	// Décallage entre le text et le cadre du bouton.
 	bCorner _originCorner;	// Position du coin du bouton où son origine est placé.
+
 	elemColors _oColor;		// Couleurs originales du bouton.
 
 protected:
@@ -107,11 +79,11 @@ protected:
 
 	void resetButtonColor()
 	{
-		RectangleShape::setFillColor(_oColor.f);
-		RectangleShape::setOutlineColor(_oColor.ol);
-		Text::setFillColor(_oColor.t);
+		RectangleShape::setFillColor(getEnumC(_oColor.f));
+		RectangleShape::setOutlineColor(getEnumC(_oColor.ol));
+		Text::setFillColor(getEnumC(_oColor.t));
 	}
-	void setButtonColor(Color fill, Color outline = Color::Black, Color text = Color::Black)
+	void setButtonColor(Color fill, Color outline = getEnumC(P_1), Color text = getEnumC(P_1))
 	{
 		/// Make text white if fill is too dark??
 		RectangleShape::setFillColor(fill);
@@ -129,8 +101,8 @@ protected:
 	void setFocus(shape & focus)
 	{
 		focus.shapeType = _s;
-		focus.shapePtr->setFillColor(_elemC.f);
-		focus.shapePtr->setOutlineColor(_focusC.ol);
+		focus.shapePtr->setFillColor(getEnumC(_elemC.f));
+		focus.shapePtr->setOutlineColor(getEnumC(_focusC.ol));
 	}
 	void resetFocus(shape & focus)
 	{
@@ -138,7 +110,7 @@ protected:
 		focus.shapePtr = new RectangleShape();
 		focus.shapeType = sDefault;
 		//focus.shapePtr->setFillColor(Color::White);
-		//focus.shapePtr->setOutlineColor(Color::Black);
+		//focus.shapePtr->setOutlineColor(getColor(P_1));
 		focus.shapePtr->setPosition(*_current);
 	}
 	void moveSelected()
@@ -189,8 +161,8 @@ protected:
 				{
 					_selected->push_back(it);
 					_selected->back().setOffset(*_click);
-					it->shapePtr->setFillColor(_elemC.f);
-					it->shapePtr->setOutlineColor(_elemC.ol);
+					it->shapePtr->setFillColor(getEnumC(_elemC.f));
+					it->shapePtr->setOutlineColor(getEnumC(_elemC.ol));
 					// Si la zone de sélection est étroite,
 					//	ne retourner qu'une seule forme.
 					if (zone.width < 4 && zone.height < 4)
@@ -207,10 +179,10 @@ protected:
 public:
 	/// Constructeur
 	oButton(float left, float top, float width, float height,
-		float outline, Color fillC, Color OLC,
-		string text, Font police, int charSize, Color fontC,
-		Color focusC = Color::Transparent, Color focusOLC = Color::Black, float focusOL = 0,
-		Color elemFillC = Color::Transparent, Color elemOLC = Color::Black, Color elemFontC = Color::Black);
+		float outline, PBOARD fillC, PBOARD OLC,
+		string text, Font police, int charSize, PBOARD fontC,
+		PBOARD focusC = P_0, PBOARD focusOLC = P_1, float focusOL = 0,
+		PBOARD elemFillC = P_0, PBOARD elemOLC = P_1, PBOARD elemFontC = P_1);
 	~oButton();
 
 	/// Setteurs
@@ -221,8 +193,8 @@ public:
 		_listShape = listShape;
 		_selected = selected;
 	}
-	void setColors(Color fillC = FILLC, Color OLC = OUTLC);
-	void setFocus(Color focusC = Color::Transparent, Color focusOLC = Color::Yellow, float focusOL = 1);
+	void setColors(PBOARD fillC = P_2, PBOARD OLC = P_1);
+	void setFocus(PBOARD focusC = P_0, PBOARD focusOLC = P_J, float focusOL = 1);
 
 	void move(Vector2f pos = Vector2f());
 	void resize(Vector2f dim = Vector2f(1, 1));
@@ -263,10 +235,10 @@ protected:
 	void initShape(sShape vertex = sBox);/// avec un default ?
 public:
 	oB_create(float l, float t, float w, float h,
-		float o, Color bC, Color olC,
-		string s, Font p, int c, Color sC,
-		Color fC, Color folC, float fol,
-		Color eC, Color eOLC, Color eFC) :
+		float o, PBOARD bC, PBOARD olC,
+		string s, Font p, int c, PBOARD sC,
+		PBOARD fC, PBOARD folC, float fol,
+		PBOARD eC, PBOARD eOLC, PBOARD eFC) :
 		oButton(l, t, w, h, o, bC, olC, s, p, c, sC, folC, fC, fol, eC, eOLC, eFC)
 	{
 		initMode(cCreate);
@@ -280,10 +252,10 @@ private:
 protected:
 public:
 	oB_cBox(float l = 0, float t = 0, float w = 0, float h = 0,
-		float o = 1, Color bC = FILLC, Color olC = CBOX,
-		string s = "Boite", Font p = D_F, int c = TSIZE, Color sC = Color::Black,
-		Color fC = CBOX, Color folC = Color::Black, float fol = 1,
-		Color eC = Color::Green, Color eOLC = Color::Black, Color eFC = Color::Blue) :
+		float o = BOL, PBOARD bC = FILLC, PBOARD olC = C_B,
+		string s = "Boite", Font p = D_F, int c = TSIZE, PBOARD sC = FONTC,
+		PBOARD fC = C_B, PBOARD folC = OUTLC, float fol = 1,
+		PBOARD eC = C_B, PBOARD eOLC = OUTLC, PBOARD eFC = C_B) :
 		oB_create(l, t, w, h, o, bC, olC, s, p, c, sC, folC, fC, fol, eC, eOLC, eFC)
 	{
 		initShape(sBox);
@@ -304,7 +276,7 @@ public:
 		_clicking = true;
 
 		focus.shapePtr = new RectangleShape();
-		
+
 		if (focusC != elemColors())
 			focusC.apply(focus);
 		else
@@ -349,10 +321,10 @@ protected:
 
 public:
 	oB_cCircle(float l = 0, float t = 0, float w = 0, float h = 0,
-		float o = BOL, Color bC = FILLC, Color olC = CLINE,
-		string s = "Cercle", Font p = D_F, int c = TSIZE, Color sC = Color::Black,
-		Color fC = Color::Yellow, Color folC = CLINE, float fol = 2,
-		Color eC = Color::Blue, Color eOLC = Color::Magenta, Color eFC = Color::Green) :
+		float o = BOL, PBOARD bC = FILLC, PBOARD olC = C_C,
+		string s = "Cercle", Font p = D_F, int c = TSIZE, PBOARD sC = FONTC,
+		PBOARD fC = C_C, PBOARD folC = OUTLC, float fol = 4,
+		PBOARD eC = C_C, PBOARD eOLC = OUTLC, PBOARD eFC = C_C) :
 		oB_create(l, t, w, h, o, bC, olC, s, p, c, sC, folC, fC, fol, eC, eOLC, eFC)
 	{
 		initShape(sCircle);
@@ -373,7 +345,7 @@ public:
 		_clicking = true;
 
 		focus.shapePtr = new CircleShape();
-		
+
 		if (focusC != elemColors())
 			focusC.apply(focus);
 		else
@@ -405,10 +377,10 @@ private:
 protected:
 public:
 	oB_link(float l = 0, float t = 0, float w = 0, float h = 0,
-		float o = 1, Color bC = FILLC, Color olC = Color::Yellow,
-		string s = "Liaison", Font p = D_F, int c = TSIZE, Color sC = OUTLC,
-		Color fC = OUTLC, Color folC = Color::Yellow, float fol = 1,
-		Color eC = Color::White, Color eOLC = Color::Magenta, Color eFC = OUTLC) :
+		float o = BOL, PBOARD bC = FILLC, PBOARD olC = C_L,
+		string s = "Liaison", Font p = D_F, int c = TSIZE, PBOARD sC = OUTLC,
+		PBOARD fC = OUTLC, PBOARD folC = C_L, float fol = 1,
+		PBOARD eC = OUTLC, PBOARD eOLC = C_L, PBOARD eFC = C_L) :
 		oButton(l, t, w, h, o, bC, olC, s, p, c, sC, folC, fC, fol, eC, eOLC, eFC)
 	{
 		initMode(cLink);
@@ -439,10 +411,10 @@ private:
 protected:
 public:
 	oB_remove(float l = 0, float t = 0, float w = 0, float h = 0,
-		float o = 1, Color bC = FILLC, Color olC = Color::Red,
-		string s = "Effacer", Font p = D_F, int c = TSIZE, Color sC = Color::Black,
-		Color fC = Color(201, 18, 18, 50), Color folC = Color(255, 9, 9, 255), float fol = 2,
-		Color eC = Color::Red, Color eOLC = Color::Black, Color eFC = Color::White) :
+		float o = BOL, PBOARD bC = FILLC, PBOARD olC = P_oR2,
+		string s = "Effacer", Font p = D_F, int c = TSIZE, PBOARD sC = P_oR2,
+		PBOARD fC = P_oR1, PBOARD folC = P_oR2, float fol = 2,
+		PBOARD eC = P_oR2, PBOARD eOLC = OUTLC, PBOARD eFC = FILLC) :
 		oButton(l, t, w, h, o, bC, olC, s, p, c, sC, folC, fC, fol, eC, eOLC, eFC)
 	{
 		initMode(cRemove);
@@ -513,10 +485,10 @@ private:
 protected:
 public:
 	oB_select(float l = 0, float t = 0, float w = 0, float h = 0,
-		float o = 1, Color bC = FILLC, Color olC = Color::Green,
-		string s = "Sélection", Font p = D_F, int c = TSIZE, Color sC = Color::Black,
-		Color fC = Color::White, Color folC = Color::Green, float fol = 3,
-		Color eC = Color::Green, Color eOLC = Color::Blue, Color eFC = Color::White) :
+		float o = BOL, PBOARD bC = FILLC, PBOARD olC = P_oS2,
+		string s = "Sélection", Font p = D_F, int c = TSIZE, PBOARD sC = P_oS2,
+		PBOARD fC = P_oS1, PBOARD folC = P_oS2, float fol = 2,
+		PBOARD eC = P_oS2, PBOARD eOLC = OUTLC, PBOARD eFC = FILLC) :
 		oButton(l, t, w, h, o, bC, olC, s, p, c, sC, folC, fC, fol, eC, eOLC, eFC)
 	{
 		initMode(cSelect);
@@ -588,8 +560,8 @@ private:
 protected:
 public:
 	oB_save(float l = 0, float t = 0, float w = 0, float h = 0,
-		float o = 1, Color bC = FILLC, Color olC = OUTLC,
-		string s = "Sauver", Font p = D_F, int c = TSIZE, Color sC = Color::Green) :
+		float o = BOL, PBOARD bC = FILLC, PBOARD olC = P_oA1,
+		string s = "Sauver", Font p = D_F, int c = TSIZE, PBOARD sC = P_oA1) :
 		oButton(l, t, w, h, o, bC, olC, s, p, c, sC)
 	{
 		initMode(cSave);
@@ -597,7 +569,7 @@ public:
 
 	/// Opérations du mode
 	int mPick() override
-	{ 
+	{
 		// Fait la sauvegarde du dessin actuel.
 		return cSave;
 	}
@@ -615,8 +587,8 @@ private:
 protected:
 public:
 	oB_load(float l = 0, float t = 0, float w = 0, float h = 0,
-		float o = 1, Color bC = FILLC, Color olC = OUTLC,
-		string s = "Charger", Font p = D_F, int c = TSIZE, Color sC = Color::Blue) :
+		float o = BOL, PBOARD bC = FILLC, PBOARD olC = P_oA2,
+		string s = "Charger", Font p = D_F, int c = TSIZE, PBOARD sC = P_oA2) :
 		oButton(l, t, w, h, o, bC, olC, s, p, c, sC)
 	{
 		initMode(cLoad);
@@ -642,8 +614,8 @@ private:
 protected:
 public:
 	oB_menu(float l = 0, float t = 0, float w = 0, float h = 0,
-		float o = 1, Color bC = FILLC, Color olC = OUTLC,
-		string s = "Menu", Font p = D_F, int c = TSIZE, Color sC = Color::Green) :
+		float o = BOL, PBOARD bC = FILLC, PBOARD olC = P_o1,
+		string s = "Menu", Font p = D_F, int c = TSIZE, PBOARD sC = P_o1) :
 		oButton(l, t, w, h, o, bC, olC, s, p, c, sC)
 	{
 		initMode(cMenu);
@@ -669,8 +641,8 @@ private:
 protected:
 public:
 	oB_quit(float l = 0, float t = 0, float w = 0, float h = 0,
-		float o = 1, Color bC = FILLC, Color olC = OUTLC,
-		string s = "Quitter", Font p = D_F, int c = TSIZE, Color sC = Color::Red) :
+		float o = BOL, PBOARD bC = FILLC, PBOARD olC = P_o0,
+		string s = "Quitter", Font p = D_F, int c = TSIZE, PBOARD sC = P_o0) :
 		oButton(l, t, w, h, o, bC, olC, s, p, c, sC)
 	{
 		initMode(cQuit);

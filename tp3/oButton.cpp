@@ -10,10 +10,10 @@ Date:			22-11-2017
 
 // Constructeur de la classe parente
 oButton::oButton(float left, float top, float width, float height,
-	float OL, Color fillC, Color OLC,
-	string text, Font police, int tSize, Color fontC,
-	Color focusC, Color focusOLC, float focusOL, 
-	Color elemFillC, Color elemOLC, Color elemFontC)
+	float OL, PBOARD fillC, PBOARD OLC,
+	string text, Font police, int tSize, PBOARD fontC,
+	PBOARD focusC, PBOARD focusOLC, float focusOL,
+	PBOARD elemFillC, PBOARD elemOLC, PBOARD elemFontC)
 {
 	assert(/// Peut changer si les boutons possèdent des icones ?
 		text != ""								// Message du bouton
@@ -38,7 +38,7 @@ oButton::oButton(float left, float top, float width, float height,
 
 	// Initiaise le text
 	this->Text::Text(text, D_F, tSize);
-	Text::setFillColor(fontC);
+	Text::setFillColor(getEnumC(fontC));
 
 	// Obtien les dimenssions nécessaires au bouton
 	width = textDim(width, Text::getGlobalBounds().width, BW);
@@ -59,8 +59,8 @@ oButton::oButton(float left, float top, float width, float height,
 	RectangleShape::setPosition(pos);
 	RectangleShape::move(center);
 
-	RectangleShape::setFillColor(fillC);
-	RectangleShape::setOutlineColor(OLC);
+	RectangleShape::setFillColor(getEnumC(fillC));
+	RectangleShape::setOutlineColor(getEnumC(OLC));
 	RectangleShape::setOutlineThickness(OL);
 
 	// Initialise le focus
@@ -91,13 +91,13 @@ void oButton::initMode(cMode mode)
 
 /// Setteurs
 
-void oButton::setColors(Color fillC, Color OLC)
+void oButton::setColors(PBOARD fillC, PBOARD OLC)
 {
-	RectangleShape::setFillColor(fillC);
-	RectangleShape::setOutlineColor(OLC);
+	RectangleShape::setFillColor(getEnumC(fillC));
+	RectangleShape::setOutlineColor(getEnumC(OLC));
 }
 
-void oButton::setFocus(Color focusC, Color focusOLC, 
+void oButton::setFocus(PBOARD focusC, PBOARD focusOLC,
 	float focusOL) /// ?
 {
 	_focusC = elemColors(focusC, focusOLC);
@@ -130,7 +130,7 @@ void oButton::resize(Vector2f dim)	/// Trop petit ??
 		dim.y -= (TOLH * 2 + ol * 2);
 	else
 		dim.y = Text::getGlobalBounds().height;
-	
+
 	// Réduit le nombre de caractères à afficher dans le bouton.
 	while (dim.x < Text::getGlobalBounds().width)
 	{
@@ -148,7 +148,7 @@ void oButton::resize(Vector2f dim)	/// Trop petit ??
 	Vector2f origin = originOffset(_originCorner, ol, getP(_originCorner));
 	RectangleShape::setOrigin(origin);
 	RectangleShape::setPosition(pos);
-	
+
 	// Forme la zone du texte.
 	FloatRect tDim = Text::getLocalBounds();
 	tDim.width = dim.x;
@@ -158,7 +158,7 @@ void oButton::resize(Vector2f dim)	/// Trop petit ??
 		((box.y + ol * 2) - dim.y) / 2);
 	_textOrigin = updateTextOrigin(_originCorner, tDim, _textOrigin);
 	Text::setOrigin(_textOrigin);
-	
+
 	Text::setPosition(pos);	/// À enlever pour certains cas??
 }
 

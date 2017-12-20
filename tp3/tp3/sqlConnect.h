@@ -31,7 +31,7 @@ private:
 	SQLHANDLE sqlStmtHandle;
 	SQLHANDLE sqlEnvHandle;
 	SQLCHAR retconstring[SQL_RETURN_CODE_LEN];
-	
+
 	tblShapeCol shapeElem;
 	tblDessinCol dessinElem;
 	tblTypeColorCol typeColorElem;
@@ -42,12 +42,113 @@ public:
 	sqlConnect();
 	~sqlConnect();
 
-	void saveCanva()
+	void saveCanva(tblShapeCol *shapeElem, int shapeQty)
 	{
+		/*https://docs.microsoft.com/en-us/sql/odbc/reference/develop-app/binding-parameters-by-name-named-parameters
 		
-		/*Statement;
-		EXEC SQL CALL INOUT_PARAM(:inout_median:medianind, : out_sqlcode : codeind,
-			: out_buffer : bufferind);*/
+		// With the following example
+		--CREATE PROCEDURE test @title_id int = 1, @quote char(30) AS <blah>
+		
+		// In this procedure, the first parameter, @title_id, has a default 
+		//	value of 1. An application can use the following code to invoke 
+		//	this procedure such that it specifies only one dynamic parameter. 
+		//	This parameter is a named parameter with the name "@quote". 
+
+		// Prepare the procedure invocation statement.
+		SQLPrepare(hstmt, "{call test(?)}", SQL_NTS);
+
+		// Populate record 1 of ipd.
+		SQLBindParameter(hstmt, 1, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_CHAR,
+				  30, 0, szQuote, 0, &cbValue);
+
+		// Get ipd handle and set the SQL_DESC_NAMED and SQL_DESC_UNNAMED fields for record #1.
+		SQLGetStmtAttr(hstmt, SQL_ATTR_IMP_PARAM_DESC, &hIpd, 0, 0);
+		SQLSetDescField(hIpd, 1, SQL_DESC_NAME, "@quote", SQL_NTS);
+
+		// Assuming that szQuote has been appropriately initializedm execute.
+		SQLExecute(hstmt);
+		*/
+
+		// Notre procédure stockée: 
+		///		L'appel de la procédure suivante n'est pas conforme,
+		///		Il faudra faire l'insertion de chaques enregistrmeent à la fois
+		///		si nous l'utilisont, sinon il faut ajuster la requête pour qu'elle
+		///		accepte une structure plus complexe.
+		/*CREATE PROCEDURE saveCanva @usermame VARCHAR(20), @dessID int = -1,
+									 @shapeQty INT, @shapeList --INPUT(shqpeQty) ///
+		AS
+		BEGIN
+		BEGIN TRAN addCanva
+
+			DECLARE @errorID INT = 0
+
+			SET @shapeQty = @shapeQty - 1
+			WHILE (@shapeQty > 0 OR @errorID != 0)
+			BEGIN
+				INSERT INTO tbl Shape (shaPoX, shaPoY, shaDimX, shaDimY, shaType, shaColor, shaDessin)
+				VALUES (shapeList[@shapeQty].shaPoX, shapeList[@shapeQty].shaPosY, 
+					shapeList[@shapeQty].shaDimX, shapeList[@shapeQty].shaDimY, 
+					shapeList[@shapeQty].shaType, shapeList[@shapeQty].shaColor, 
+					shapeList[@shapeQty].shaDessin)
+
+				SET @shapeQty = @shapeQty - 1
+				SET @errorID = @@ERROR
+			END
+
+			IF !(0 > (SELECT COUNT(*) FROM inserted))
+				@errorID = 1
+
+			IF (@errorID > 0)
+				ROLLBACK
+			ELSE
+				COMMIT
+		END
+		GO
+		*/
+
+		SQLRETURN retcode;	// Code d'erreur
+
+		// Prépare l'invocation de la procedure
+		retcode = SQLPrepare(sqlStmtHandle, (SQLCHAR*)L"{call saveCanva(?)}", SQL_NTS);
+
+		// Prépare les variables vers la requête /// Populate record 1 of ipd.
+		for (int i = 0; i < shapeQty; i++)
+		{
+			retcode = SQLBindParameter(sqlStmtHandle, 2, SQL_PARAM_INPUT, SQL_C_FLOAT, SQL_REAL,
+				1000, 0, &shapeElem[i].shaPosX, 0, 0);
+			retcode = SQLBindParameter(sqlStmtHandle, 3, SQL_PARAM_INPUT, SQL_C_FLOAT, SQL_REAL,
+				1000, 0, &shapeElem[i].shaPosY, 0, 0);
+			retcode = SQLBindParameter(sqlStmtHandle, 4, SQL_PARAM_INPUT, SQL_C_FLOAT, SQL_REAL,
+				1000, 0, &shapeElem[i].shaDimX, 0, 0);
+			retcode = SQLBindParameter(sqlStmtHandle, 5, SQL_PARAM_INPUT, SQL_C_FLOAT, SQL_REAL,
+				1000, 0, &shapeElem[i].shaDimY, 0, 0);
+			retcode = SQLBindParameter(sqlStmtHandle, 6, SQL_PARAM_INPUT, SQL_C_LONG, SQL_INTEGER,
+				1000, 0, &shapeElem[i].shaType, 0, 0);
+			retcode = SQLBindParameter(sqlStmtHandle, 7, SQL_PARAM_INPUT, SQL_C_LONG, SQL_INTEGER,
+				1000, 0, &shapeElem[i].shaColor, 0, 0);
+			retcode = SQLBindParameter(sqlStmtHandle, 8, SQL_PARAM_INPUT, SQL_C_LONG, SQL_INTEGER,
+				1000, 0, &shapeElem[i].shaDessin, 0, 0);
+		}
+
+		// Get ipd handle and set the SQL_DESC_NAMED and SQL_DESC_UNNAMED fields for record #1.
+		
+		/// Je crois que je fais les choses à l'envert,
+		///		Il se peut que le deuxième paramètre est plutôt la position de
+		///		l'enregistrement, si c'est le cas, il faut obtenir celle-ci d'avance.
+		//SQLGetStmtAttr(sqlStmtHandle, SQL_ATTR_IMP_PARAM_DESC, &hIpd, 0, 0);
+		retcode = SQLSetDescField(sqlStmtHandle, 2, SQL_DESC_NAME, "@shaPosX", SQL_NTS);
+		retcode = SQLSetDescField(sqlStmtHandle, 3, SQL_DESC_NAME, "@shaPosY", SQL_NTS);
+		retcode = SQLSetDescField(sqlStmtHandle, 4, SQL_DESC_NAME, "@shaDimX", SQL_NTS);
+		retcode = SQLSetDescField(sqlStmtHandle, 5, SQL_DESC_NAME, "@shaDimY", SQL_NTS);
+		retcode = SQLSetDescField(sqlStmtHandle, 6, SQL_DESC_NAME, "@shaType", SQL_NTS);
+		retcode = SQLSetDescField(sqlStmtHandle, 7, SQL_DESC_NAME, "@shaColor", SQL_NTS);
+		retcode = SQLSetDescField(sqlStmtHandle, 8, SQL_DESC_NAME, "@shaDessin", SQL_NTS);
+
+		retcode = SQLExecute(sqlStmtHandle);
+
+		if (SQL_SUCCESS != retcode) {
+			throw string("Erreur dans la requête");
+		}
 	}
 	void connexion();
 	void deconnexion();
@@ -97,21 +198,16 @@ void sqlConnect::connexion() {
 				SQL_NTS, retconstring, 1024, NULL, SQL_DRIVER_NOPROMPT)) {
 
 			case SQL_SUCCESS:
-				cout << "Connexion reussi";
-				cout << "\n";
-
-
-				break;
 			case SQL_SUCCESS_WITH_INFO:
 				cout << "Connexion reussi";
 				cout << "\n";
-
 				break;
-			case SQL_INVALID_HANDLE:
-				throw string("Erreur de connexion");
 
+			case SQL_INVALID_HANDLE:
 			case SQL_ERROR:
 				throw string("Erreur de connexion");
+				break;
+
 			default:
 				throw string("Erreur");
 				break;

@@ -8,6 +8,7 @@ differents boutons
 ====================================================================================================
 */
 #include "../cursor.h"
+#include "sqlStructs.h"
 #include "buttonStrip.h"
 #include "../oButton.h"
 #include <SFML/Graphics.hpp>
@@ -38,6 +39,37 @@ private:
 	void generateSave()
 	{
 		
+		// get username -> get user ID in tblUsager:
+
+		vector<tblUsagerCol*> usagerElem;
+
+		// get current dessID:
+
+		vector<tblDessinCol*> dessinElem;	///A
+
+
+		// insert in tblShape those:
+
+		const int shapeQty = _listShape.size();
+		tblShapeCol *shapeElem[1000];
+
+		// store those in the right place
+		tblTypeColorCol *typeColorElem[1000];
+		
+		int i = 0;
+		for (auto & s : _listShape)
+		{
+			/*shapeElem[i].shaPosX = s.shapePtr->getPosition().x;
+			shapeElem[i].shaPosY = s.shapePtr->getPosition().y;
+			shapeElem[i].shaDimX = s.shapePtr->getGlobalBounds().width;
+			shapeElem[i].shaDimY = s.shapePtr->getGlobalBounds().height;
+			shapeElem[i].shaType = s.shapeType;
+			shapeElem[i].shaColor = s.f;
+			shapeElem[i].shaDessin = dessinElem.dessID;*/
+			i++;
+		}
+
+		// Faire appel à la méthode saveCanva de sqlConnect
 	}
 
 public:
