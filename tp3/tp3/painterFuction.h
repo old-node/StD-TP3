@@ -35,13 +35,20 @@ enum oMode {
 };
 // Options d'opérations dans l'application
 enum cMode {
-	cDefault, cCreate, cLink, cResize, cMove, cSelect, cRemove,
+	cDefault, cCreate, cColor, cLink, cResize, cMove, cSelect, cRemove,
 	cClear, cSave, cLoad, cMenu, cQuit, cCOUNT
 };
 // Choix de la forme à dessinner
 enum sShape {
 	sDefault, sBox, sCircle, sCOUNT ///, sBall, sPoint, sLink?
 };
+// Choix de couleurs par bouton
+enum pColor
+{
+	pDefault, pC1, pC2, pC3, pC4, pCOUNT
+};
+
+// 
 static bCorner oppositeC(bCorner c)
 {
 	switch (c)
@@ -54,6 +61,7 @@ static bCorner oppositeC(bCorner c)
 	}
 	return bCenter;
 }
+// 
 static Vector2f originOffset(bCorner c, float ol, Vector2f o)
 {
 	switch (c)
@@ -65,7 +73,7 @@ static Vector2f originOffset(bCorner c, float ol, Vector2f o)
 	default:			return o;
 	}
 }
-
+// 
 static Vector2f updateTextOrigin(bCorner c, FloatRect dim, Vector2f o)
 {
 	switch (c)

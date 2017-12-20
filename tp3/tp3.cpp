@@ -85,7 +85,13 @@ int interfaceOli()
 		canva.addButton(new oB_link());
 		canva.addButton(new oB_select());
 		canva.addButton(new oB_remove());
-		
+
+		//canva.addBsH();
+		//canva.addButton(new oB_p1(P_A, P_B, "Jaune", P_A, P_B));
+		//canva.addButton(new oB_p1(P_C, P_D, "Orange", P_C, P_D));
+		//canva.addButton(new oB_p1(P_Y, P_Z, "Bleu", P_Y, P_Z));
+		//canva.addButton(new oB_p1(P_H, P_I, "Gris", P_H, P_I));
+
 		option = canva.run();
 
 	} while (option == cMenu);

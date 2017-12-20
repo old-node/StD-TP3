@@ -47,19 +47,18 @@ protected:
 
 	list<shape> * _listShape;// Pointeur sur la liste des formes de l'application.
 
+	void setButtonColor(elemColors p)
+	{
+		_oColor = p;
+		resetButtonColor();
+	}
 	void resetButtonColor()
 	{
 		RectangleShape::setFillColor(getEnumC(_oColor.f));
 		RectangleShape::setOutlineColor(getEnumC(_oColor.ol));
 		Text::setFillColor(getEnumC(_oColor.t));
 	}
-	void setButtonColor(Color fill, Color outline = getEnumC(P_1), Color text = getEnumC(P_1))
-	{
-		/// Make text white if fill is too dark??
-		RectangleShape::setFillColor(fill);
-		RectangleShape::setOutlineColor(outline);
-		Text::setFillColor(text);
-	}
+	
 	/// Initialiseur
 	void initMode(cMode mode);
 	void makeFocusRectangle(shape & focus)
@@ -476,11 +475,11 @@ public:
 		_clicking = _selecting = true;
 		makeFocusRectangle(focus);
 
-		for (auto & s : *_selected)
-			s.setOffset(*_click);
-
 		if (!_listShape->empty())
 			selectShapes(focus);
+
+		for (auto & s : *_selected)
+			s.setOffset(*_click);
 
 		return 0;
 	}
@@ -489,16 +488,9 @@ public:
 		/// check if ny selection was made before releselecting more??
 		mDrag(focus);
 
-		// version : 
+		// 
 		if (!_listShape->empty())
-		{
 			selectShapes(focus);
-			/*for (auto & s : *_selected)
-			{
-				s._it->shapePtr->setFillColor(_focusC.f);
-				s._it->shapePtr->setOutlineColor(_elemC.ol);
-			}*/
-		}
 
 		// 
 		if (_selected->empty())
@@ -632,6 +624,108 @@ public:
 };
 
 
-// 
-void cursorPos(oButton * b, RenderWindow & screen);
+// Classe de base des boutons de création
+class oB_pad : public oButton
+{
+private:
+protected:
 
+	void initPad(pColor p = pDefault)
+	{
+		_p = p;
+	}
+	void setColor(elemColors color)
+	{
+		_color = color;
+		
+	}
+	elemColors _color;		// Couleurs du mode
+	pColor _p;				// Mode de la couleur
+public:
+	oB_pad(PBOARD bC, PBOARD olC, string s,
+		PBOARD fC, PBOARD folC = P_2, float fol = 5, PBOARD tC = P_1, float o = 2,
+		float w = 30, float h = 30, float l = 0, float t = 0, Font p = D_F, int c = TSIZE,
+		PBOARD eC = P_0, PBOARD eOLC = P_1, PBOARD eTC = P_2) :
+		oButton(l, t, w, h, o, bC, olC, s, p, c, tC, folC, fC, fol, eC, eOLC, eTC)
+	{
+		initMode(cColor);
+		_color = elemColors(bC, olC, tC);
+	}
+
+	/// Opérations du mode
+	int mPick() override { return 0; }
+	int mPick(shape & focus)
+	{
+		_focusC.apply(focus);
+
+		for (auto & s : *_selected)
+			_color.apply(*s._it);
+
+		return 0;
+	}
+	void mLeave(shape & focus) override
+	{
+		resetFocus(focus);
+	}
+	int mClick(shape & focus, elemColors focusC, bool defaultC) override
+	{
+		_clicking = true;
+
+		focus.shapePtr = new RectangleShape();
+
+		if (focusC != elemColors())
+			focusC.apply(focus);
+		else
+			setFocus(focus);
+
+		_clicking = _selecting = true;
+		makeFocusRectangle(focus);
+
+		if (!_listShape->empty())
+			selectShapes(focus);
+
+		for (auto & s : *_selected)
+			s.setOffset(*_click);
+
+		return 0;
+	}
+	void mRelease(shape & focus, float radius = 0) override
+	{
+		mDrag(focus);
+
+		// 
+		if (!_listShape->empty())
+			selectShapes(focus);
+
+		// 
+		if (_selected->empty())
+			_selecting = false;
+
+		resetFocus(focus);
+	}
+	void mDrag(shape & focus) override
+	{
+		if (_clicking)
+		{
+			makeFocusRectangle(focus);
+
+			if (_selected->size() == 1)
+				moveSelected();
+		}
+	}
+	void mUndrag() override {}
+};
+
+// Classe de base des boutons de création
+class oB_p1 : public oB_pad
+{
+private:
+protected:
+
+	elemColors _color;		// 
+public:
+	oB_p1(PBOARD bC, PBOARD olC, string s,
+		PBOARD fC, PBOARD folC = P_2, float fol = 5, PBOARD sC = P_1, float o = 2,
+		float w = 30, float h = 30, float l = 0, float t = 0) :
+		oB_pad(bC, olC, s, fC, folC, fol, sC, o, w, h, l, t) {}
+};

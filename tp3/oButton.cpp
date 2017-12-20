@@ -281,7 +281,6 @@ void cursorPos(oButton * b, RenderWindow & screen)
 		<< Mouse::getPosition(screen).y << ").";
 }
 
-
 ///=====///
 /* Créer */
 ///=====///

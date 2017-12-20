@@ -47,11 +47,15 @@ public:
 
 	void connexion();
 	void deconnexion();
+	
 	void ajouteUsager(const char * nom, const char * prenom);
 	void selectUsager();
 	bool userConnect(const char * user, const char * password);
-	void ajouterDessin(char *user);
+	
+	void listCanvas(int userID);
+	void ajouterDessin(int userID);
 	void saveCanva(/*tblShapeCol *shapeElem, */int shapeQty);
+	void loadCanva(int dessID, int userID);
 };
 
 /// Initialisation
@@ -66,7 +70,7 @@ sqlConnect::~sqlConnect()
 }
 
 /// Connecteurs
-// .
+// Procède à la connexion à la base de donnée ThePainter3
 void sqlConnect::connexion() {
 	//Initialisations
 	sqlConnHandle = NULL;
@@ -128,7 +132,7 @@ void sqlConnect::connexion() {
 	}
 
 }
-// .
+// Déconnecte l'application à la base de donnée ThePainter3
 void sqlConnect::deconnexion() {
 
 	cout << "Deconnexion ..." << "\n";
@@ -229,8 +233,13 @@ bool sqlConnect::userConnect(const char * user, const char * password)
 }
 
 /// Dessins
+// 
+void sqlConnect::listCanvas(int userID)
+{
+
+}
 // Ajoute une sauvegarde d'un dessin de l'usager
-void sqlConnect::ajouterDessin(char *user)
+void sqlConnect::ajouterDessin(int userID)
 {
 
 }
@@ -342,4 +351,9 @@ void sqlConnect::saveCanva(/*tblShapeCol *shapeElem, */int shapeQty)
 	if (SQL_SUCCESS != retcode) {
 		throw string("Erreur dans la requête");
 	}
+}
+// Charge les informations d'un dessin dans la bse de donnée.
+void sqlConnect::loadCanva(int dessID, int userID)
+{
+
 }
