@@ -11,10 +11,9 @@ Description:
 #include <vector>
 #include <math.h>
 using namespace std;
+
 #include "oButton.h"
-
 using namespace sf;
-
 
 
 
@@ -30,16 +29,16 @@ private:
 	bool _clicking;			// État des boutons de la souris 
 	bool _dragable;			// Condition qui permet le déplacement du focus
 	bool _selecting;		// Condition à savoir si une forme est selectionne ou pas
-	bool _onZone;			// Condition à savoir si le curseur est dans une zone (buttonstrip)
+	bool _onZone;			// Condition à savoir si le curseur est dans une zone
 
 	shape _focus;			// Zone de sélection ou aperçu d'une forme
-	elemColors _focusC;		// 
-	bool _defaultC;			// 
+	elemColors _focusC;		// Couleurs a appliquer à la forme créée
+	bool _defaultC;			// État qui spécifie si on utilise la couleur par défaut.
 	rRegion _zone;			// Zone active du curseur
 	FloatRect _zones[static_cast<int>(rCOUNT)];	// Dimmenssions des zones
 
 	// Recherche si un bouton est sous la souris
-	//oButton * searchForButton();
+	///oButton * searchForButton();
 
 public:
 	cursor();
@@ -69,9 +68,6 @@ public:
 	Vector2f * getClick();
 	Vector2f * getCurrent();
 	bool isOnZone() const;
-
-	/// Affichage
-
 
 	//void drawButton(oButton * oB);
 	bool onZone(FloatRect z, RenderWindow & w);

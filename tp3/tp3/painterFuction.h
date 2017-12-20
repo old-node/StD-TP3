@@ -145,6 +145,7 @@ enum PBOARD {
 	COUNT
 };
 
+
 ///========================///
 /* Prototypes des fonctions */
 ///========================///
@@ -155,52 +156,40 @@ static const PBOARD getNewColor(PBOARD last);
 static const Color getEnumC(PBOARD c);
 static void swithColor(Shape & s, int c);
 static float distance2Points(Vector2f p1, Vector2f p2);
+static float textDim(float & p, float t, float MAX);
+
 
 ///===========================///
 /* Constantes de l'application */
 ///===========================///
 
-const Font D_F = FONT();
-// Vecteur de deux points float pour les multiplications.
-const Vector2f TWOO = Vector2f(2, 2);
-// Palette des couleurs par défaut.
-const vector<Color> DBOARD = makeCBoard();
+/// Variables par défaut
 
+const Font D_F = FONT();	// Police par défaut de l'application
+const Vector2f TWOO = Vector2f(2, 2);		// Vecteur pour les calculs rapides.
+const vector<Color> DBOARD = makeCBoard();	// Palette des couleurs par défaut.
 
-// Pour l'emplacement
-
-const float SCREENW = 800;				// Largeur de l'écran /// inclus à partir du (main) ?
-const float SCREENH = 800;				// Hauteur de l'écran
-
-const int BUTTONSPAN = 5;				// Rapport de boutons en largeur
+/// Pour l'emplacement
+const float SCREENW = 800;	// Largeur de l'écran /// inclus à partir du (main) ?
+const float SCREENH = 800;	// Hauteur de l'écran
+const int BUTTONSPAN = 5;	// Rapport de boutons en largeur
 const float BW = SCREENW / BUTTONSPAN;	// Largeur maximum des boutons
-const float BH = 40.0;					// Hauteur maximum des boutons
+const float BH = 40.0;		// Hauteur maximum des boutons
 const bool HORIZONTALMENU = false;		// Sens de la liste des boutons
-const float BOL = 1;
+const float BOL = 1;		// Largeur des bordures par défaut
 
-// pour l'apparence
+/// Pour l'affichage
+const PBOARD FILLC = P_2;	// Couleur par défaut du corps de formes
+const PBOARD OUTLC = P_1;	// Couleur par défaut des bordures de formes
+const PBOARD FONTC = P_T;	// Couleur par défaut du texte
+const int TSIZE = (int)(BH / 2 - 2 * BOL);	// hauteur du texte par défaut
+const float TOLW = 15;		// Espacement entre le texte et le coté des boutons
+const float TOLH = 8;		// Espacement entre le texte et le haut et le bas des boutons
 
-const PBOARD FILLC = P_2;
-const PBOARD OUTLC = P_1;
-
-// Pour le text
-///const sf::Font FONT = FONT();
-
-const PBOARD FONTC = P_T;
-const int TSIZE = (int)(BH / 2 - 2 * BOL);
-const float TOLW = 15;
-const float TOLH = 8;
-
-// Pour le focus
-
-const Color FOCUSFILL = getEnumC(P_0);
-const Color FOCUSOL = getEnumC(P_1);
-
-// Couleurs des formes
-
-const PBOARD C_B = P_B;
-const PBOARD C_C = P_C;
-const PBOARD C_L = P_L;
+/// Couleurs des formes
+const PBOARD C_B = P_B;		// Couleur par défaut des rectangles
+const PBOARD C_C = P_C;		// Couleur par défaut des cercles
+const PBOARD C_L = P_L;		// Couleur par défaut des liaisons
 
 
 ///==========///
@@ -396,4 +385,15 @@ const vector<Color> makeCBoard()
 float distance2Points(Vector2f p1, Vector2f p2)
 {
 	return sqrt(pow(p1.x - p2.x, 2) + pow(p1.y - p2.y, 2));
+}
+
+// Calcul les dimmensions nécessaire du bouton pour le texte
+float textDim(float & p, float t, float MAX)
+{
+	if (p == 0)
+		if (t <= MAX)
+			p = t;
+		else
+			p = MAX;
+	return p;
 }

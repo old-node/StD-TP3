@@ -7,13 +7,18 @@ But: 			Petit menu qui permet d'entrer un nom d'utilisateur et un mot de passe
 ====================================================================================================
 */
 
+
 #include "inputMenu.h"
 
+
+/// Initialisation
+// Constructeur
 inputMenu::inputMenu(int w, int h)
 {
 	_window.create(VideoMode(w, h), "Entrez votre nom", Style::None);
 
-	
+	Vector2f sDim = Vector2f((float)w, (float)h);
+
 	//Set les fonts et les couleurs
 	for (int i = 0; i < MAX_NUMBER_OF_ITEMS; i++)
 	{
@@ -32,11 +37,11 @@ inputMenu::inputMenu(int w, int h)
 	inputs[1].setString("");
 
 	texts[0].setPosition(50, 0);
-	texts[1].setPosition(50, h/2);
+	texts[1].setPosition(50, sDim.y/2);
 
 	for (int i = 0; i < MAX_NUMBER_OF_ITEMS; i++)
 	{
-		rect[i] = RectangleShape(Vector2f(w - 100, h/4));
+		rect[i] = RectangleShape(Vector2f(sDim.x - 100, sDim.y/4));
 		rect[i].setPosition((Vector2f(50, texts[i].getPosition().y + texts[i].getLocalBounds().height + 20)));
 		rect[i].setFillColor(Color(98, 195, 98));
 		inputs[i].setPosition((Vector2f(50, texts[i].getPosition().y + texts[i].getLocalBounds().height + 20)));
@@ -50,12 +55,13 @@ inputMenu::inputMenu(int w, int h)
 	recSelect.setFillColor(Color::Black);
 	recSelect.setPosition(Vector2f(rect[0].getPosition().x - 45, rect[0].getPosition().y + 30));
 }
-
-
+// Destructeur
 inputMenu::~inputMenu()
 {
 }
 
+/// Actions
+// Boucle principale
 void inputMenu::run()
 {
 	string invisiblePass;
@@ -125,7 +131,7 @@ void inputMenu::run()
 		_window.display();
 	}
 }
-
+// Affichage
 void inputMenu::draw()
 {
 	_window.draw(recSelect);
@@ -138,11 +144,13 @@ void inputMenu::draw()
 	}
 }
 
+/// Getteurs
+// 
 string inputMenu::getUsername() const
 {
 	return strInput[0];
 }
-
+// 
 string inputMenu::getPassword() const
 {
 	return strInput[1];

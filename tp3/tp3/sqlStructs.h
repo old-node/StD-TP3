@@ -6,12 +6,12 @@ using namespace std;
 #define SQL_RETURN_CODE_LEN 1000
 
 // The following buffer is used to store parameter values.  
-typedef struct tblDessinCol {
+typedef struct tblDessin {
 	int dessID;
 	int dessUser;
 } tblDessinCol;
 
-typedef struct tblShapeCol {
+typedef struct tblShape {
 	int shaID;
 	float shaPosX;
 	float shaPosY;
@@ -22,17 +22,17 @@ typedef struct tblShapeCol {
 	int shaDessin;
 } tblShapeCol;
 
-typedef struct tblTypeColorCol {
+typedef struct tblTypeColor {
 	int typColID;
 	string typColDescription;
 } tblTypeColorCol;
 
-typedef struct tblTypeShapeCol {
+typedef struct tblTypeShape {
 	int typShaID;
 	string typShaDescription;
 } tblTypeShapeCol;
 
-typedef struct tblUsagerCol {
+typedef struct tblUsager {
 	int usagerID;
 	string usagerNom;
 	string usagerPassword;

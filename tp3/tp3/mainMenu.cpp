@@ -7,7 +7,10 @@ But: 			Classe qui représente le menu principal ou l'utilisateur va pouvoir se c
 ====================================================================================================
 */
 
+
+
 #include "mainMenu.h"
+
 
 //Attribu le font a tous les options 
 void mainMenu::setOptionsFont()
@@ -21,8 +24,8 @@ void mainMenu::setOptionsPosition()
 {
 	for (int i = 0; i < MAX_NUMBER_OF_ITEMS; i++)
 	{
-		options[i].setPosition(Vector2f((_width / 2) - (options[i].getLocalBounds().width / 2),
-			_height / (MAX_NUMBER_OF_ITEMS + 1) * (i + 1)));
+		options[i].setPosition(Vector2f((_sDim.x / 2) - (options[i].getLocalBounds().width / 2),
+			_sDim.y / (MAX_NUMBER_OF_ITEMS + 1) * (i + 1)));
 	}
 }
 
@@ -30,19 +33,20 @@ void mainMenu::setOptionsPosition()
 void mainMenu::draw()
 {
 	for (int i = 0; i < MAX_NUMBER_OF_ITEMS; i++)
-	{
 		_window.draw(options[i]);
-	}
 }
 
-mainMenu::mainMenu(float w, float h)
+/* Public */
+
+/// Initialisation
+// 
+mainMenu::mainMenu(int w, int h)
 {
-	_width = w;
-	_height = h;
+	_sDim.x = w;
+	_sDim.y = h;
 
 	//Initialisation de la renderWindow
-	_window.create(VideoMode(
-		(unsigned int)_width, (unsigned int)_height), "The painter 3",0);
+	_window.create(VideoMode(_sDim.x, _sDim.y), "The painter 3", 0);
 
 	//On applique le default font de painterFunction qui est arial
 	_font = D_F;
@@ -52,7 +56,7 @@ mainMenu::mainMenu(float w, float h)
 
 	//On applique les couleurs pour le menu
 	options[0].setFillColor(sf::Color::Red);
-	for (int i = 1; i <MAX_NUMBER_OF_ITEMS; i++)
+	for (int i = 1; i < MAX_NUMBER_OF_ITEMS; i++)
 	{
 		options[i].setFillColor(sf::Color::Black);
 	}
@@ -66,12 +70,13 @@ mainMenu::mainMenu(float w, float h)
 	setOptionsPosition();
 
 }
-
-
+// Destructeur
 mainMenu::~mainMenu()
 {
 }
 
+/// Méthode principale
+//
 void mainMenu::run()
 {
 	while (_window.isOpen())
@@ -92,14 +97,14 @@ void mainMenu::run()
 				delete inputM;
 				_window.setVisible(true);
 			}
-			
+
 
 			switch (event.type)
 			{
 			case Event::Closed:
 				_window.close();
 				break;
-			case Event::KeyReleased :
+			case Event::KeyReleased:
 				switch (event.key.code)
 				{
 				case Keyboard::Up:
@@ -128,6 +133,7 @@ void mainMenu::run()
 	}
 }
 
+/// Navigation
 //Monte dans les options
 void mainMenu::moveUp()
 {
@@ -138,13 +144,12 @@ void mainMenu::moveUp()
 		options[selectedIndex].setFillColor(Color::Red);
 
 	}
-	
-}
 
+}
 //Descend dans les options
 void mainMenu::moveDown()
 {
-	if (selectedIndex +1 < MAX_NUMBER_OF_ITEMS)
+	if (selectedIndex + 1 < MAX_NUMBER_OF_ITEMS)
 	{
 		options[selectedIndex].setFillColor(Color::Black);
 		selectedIndex++;
@@ -152,7 +157,7 @@ void mainMenu::moveDown()
 
 	}
 }
-
+// Actionne une des options
 void mainMenu::enterOption()
 {
 	switch (selectedIndex)
@@ -163,6 +168,7 @@ void mainMenu::enterOption()
 	case 1:
 		break;
 	case 2:
+		_window.close();
 		break;
 	case 3:
 		_window.close();

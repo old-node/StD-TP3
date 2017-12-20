@@ -7,18 +7,19 @@ But: 			Classe qui représente le menu principal ou l'utilisateur va pouvoir se c
 ====================================================================================================
 */
 
-#include <SFML/Graphics.hpp>
+#pragma once
 #include <iostream>
-#include "painterFuction.h"
-#include "inputMenu.h"
-
-using namespace sf;
 using namespace std;
 
-#pragma once
+#include "painterFuction.h"
+#include "inputMenu.h"
+#include <SFML/Graphics.hpp>
+using namespace sf;
 
 #define MAX_NUMBER_OF_ITEMS 4
 
+
+// Menu principal
 class mainMenu
 {
 private:
@@ -27,8 +28,7 @@ private:
 	Font _font;
 	Text options[MAX_NUMBER_OF_ITEMS]; //Les differentes options du menu
 
-	int _height;						//Hauteur de l'ecran
-	int _width;							//Largeur de l'ecran
+	Vector2i _sDim;						//Dimmenssions de l'écran
 	int selectedIndex = 0;				//Index de l'option sélectionné 
 
 	void setOptionsFont();				//Applique le font sur les options
@@ -48,8 +48,4 @@ public:
 	void moveDown();			//Descend dans les options
 
 	void enterOption();			//Fait une action selon l'option choisie
-
-
-	
 };
-

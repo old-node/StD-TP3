@@ -78,13 +78,10 @@ protected:
 	///oB_bannerSet _hinge;		// Bouton de la banière qui permet d'activer le
 	FloatRect _zone;			// Zone sélectionnable ... utiliser _overlay ?
 
-	////// POUR BS_HORIZONTALE SEULEMENT? ///////
+	// 
 	int initButtonStat(const float S = 1);
-
-	/// Marche seullement avec seullement l'horizontal ??
 	// Obtien les bonnes coordonnées du prochain bouton par raport à sa liste.
 	int getValidPosition(float dim, float offset);
-	/// Utiliser le mot reach (étendue) au lieu ??
 	// Modifie ou remplace la position des prochains boutons dans l'intervale (i = intervale)
 	bool useInterval(float & iPos, float smallI, float bigI, float initIPos);
 	// Modifie la portée si nécessaire et si possible (s = portée).
@@ -103,7 +100,6 @@ public:
 	int addButtons(const vector<oButton*> buttons);
 	void initLastButton()
 	{
-
 		//initButtonSize(*_activeButton, _minDim, dim, ol);
 	}
 	void removeButtons(size_t begin, size_t end);
@@ -122,7 +118,6 @@ public:
 	virtual Vector2f getLowerRightCorner(bool front = false);
 };
 
-
 // Liste de boutons positionnés à l'horizontale.
 class buttonStripH : public buttonStrip
 {
@@ -139,11 +134,9 @@ public:
 		initCorner();
 	}
 	~buttonStripH();
-
-
 };
 
-// 
+// Liste de boutons positionnés verticalement.
 class buttonStripV : public buttonStrip
 {
 private:
@@ -157,7 +150,5 @@ public:
 		initCorner();
 	}
 	~buttonStripV();
-
-
 };
 

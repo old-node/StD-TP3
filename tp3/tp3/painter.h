@@ -36,40 +36,45 @@ private:
 
 	vector<selection> _selected;	// 
 
-	void generateSave()
+	vector<tblShapeCol> generateSaveData()
 	{
-		
 		// get username -> get user ID in tblUsager:
-
-		vector<tblUsagerCol*> usagerElem;
+		vector<tblUsagerCol> usagerElem;
 
 		// get current dessID:
-
-		vector<tblDessinCol*> dessinElem;	///A
-
+		vector<tblDessinCol> dessinElem;	///A
 
 		// insert in tblShape those:
-
-		const int shapeQty = _listShape.size();
-		tblShapeCol *shapeElem[1000];
+		const int shapeQty = (int)_listShape.size();
+		vector<tblShapeCol> shapeElem;
 
 		// store those in the right place
-		tblTypeColorCol *typeColorElem[1000];
+		vector<tblTypeColorCol> typeColorElem;
 		
 		int i = 0;
 		for (auto & s : _listShape)
 		{
-			/*shapeElem[i].shaPosX = s.shapePtr->getPosition().x;
+			// Méthode 1
+			shapeElem.push_back(tblShapeCol{ -1,
+				s.shapePtr->getPosition().x, s.shapePtr->getPosition().y, 
+				s.shapePtr->getGlobalBounds().width, s.shapePtr->getGlobalBounds().height,
+				s.shapeType, s.f/*, dessinElem.dessID*/});
+			
+			/* // Méthode 2
+			
+			shapeElem[i].shaPosX = s.shapePtr->getPosition().x;
 			shapeElem[i].shaPosY = s.shapePtr->getPosition().y;
 			shapeElem[i].shaDimX = s.shapePtr->getGlobalBounds().width;
 			shapeElem[i].shaDimY = s.shapePtr->getGlobalBounds().height;
 			shapeElem[i].shaType = s.shapeType;
 			shapeElem[i].shaColor = s.f;
 			shapeElem[i].shaDessin = dessinElem.dessID;*/
+
 			i++;
 		}
 
 		// Faire appel à la méthode saveCanva de sqlConnect
+		return shapeElem;
 	}
 
 public:

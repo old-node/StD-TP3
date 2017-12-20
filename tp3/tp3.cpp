@@ -8,7 +8,7 @@ Description:	3e travail pratique du cours Structure de donnée. Application de de
 
 #include <locale>
 #include <iostream>
-
+using namespace std;
 
 #include "tp3\sqlConnect.h"
 #include "tp3\painter.h"
@@ -16,22 +16,23 @@ Description:	3e travail pratique du cours Structure de donnée. Application de de
 #include "cursor.h"
 #include "tp3\mainMenu.h"
 #include "tp3\inputMenu.h"
-
-using namespace std;
 using namespace sf;
 
+
+/* Prototypes */
+
 int mainSimon();
-int mainOli();
 int interfaceOli();
+
+
 
 // Programme principal
 int main()
 {
 	setlocale(LC_CTYPE, "can");
 
-	mainSimon();
-	//mainOli();
-	//interfaceOli();
+	//mainSimon();
+	interfaceOli();
 }
 
 
@@ -41,7 +42,7 @@ int mainSimon()
 	mainMenu menu(800, 500);
 	menu.run();
 	/*sqlConnect bd;
-	
+
 	bd.userConnect("boby", "lamop");*/
 
 	system("pause");
@@ -52,112 +53,33 @@ int mainSimon()
 
 int interfaceOli()
 {
-	painter inter;
+	int option = 0;
 
-	inter.addBsH();
-	inter.addButton(new oB_cBox());
-	inter.addButton(new oB_cCircle());
-	inter.addButton(new oB_remove());
-	inter.addButton(new oB_link());
-	inter.addButton(new oB_select());
+	do
+	{
+		mainMenu menu(800, 500);
+		menu.run();
 
-	inter.run();
+		painter canva;
+
+		canva.addBsH();
+		canva.addButton(new oB_save());
+		canva.addButton(new oB_load());
+		canva.addButton(new oB_menu());
+		canva.addButton(new oB_quit());
+		canva.addBsH();
+		canva.addButton(new oB_cBox());
+		canva.addButton(new oB_cCircle());
+		canva.addButton(new oB_remove());
+		canva.addButton(new oB_link());
+		canva.addButton(new oB_select());
+
+		option = canva.run();
+
+	} while (option == cMenu);
+
+	if (option != cQuit)
+		return -1;
 
 	return 1;
-}
-
-int mainOli()
-{
-	/* Tests */
-	RectangleShape test(Vector2f(100, 500));
-	test.setFillColor(Color(120, 210, 100, 130));
-	Texture machin;
-	machin.loadFromFile("machin.jpg");
-	Sprite truc(machin);
-
-	RenderWindow sandbox		// Fenêtre principale ?
-	(VideoMode(SCREENW, SCREENH), "Sandbox");
-
-	/*Text help("HELP ME", *FONT, 80);
-	Text help3("DONT help", *FONT, 80);
-	help.setPosition(Vector2f(60,88));
-	help3.setPosition(Vector2f(60, 120));
-	sandbox.draw(help);
-	sandbox.draw(help3);
-
-	sandbox.display();
-	/* Fin des tests */
-	
-	vector<Vertex> v;			// Points rouges
-	vector<Shape*> r;
-	vector<RectangleShape> visible;
-	cursor pointer();			// Souris
-	Event event;				// Événement de l'application
-
-	sandbox.clear();
-	sandbox.draw(truc);
-	sandbox.draw(test);
-	sandbox.display();
-
-	//system("pause");
-
-
-	bool play = true;
-	while (play)
-	{
-		while (sandbox.isOpen())
-		{
-			while (sandbox.pollEvent(event))
-			{
-				sandbox.clear();
-				visible.clear();
-
-				switch (event.type)
-				{
-				case Event::Closed:
-					exit(0);
-				case Event::KeyPressed:
-					if (event.key.code == Keyboard::Escape)
-						exit(0);
-				case Event::MouseButtonPressed:
-					/// Doit exclure les zones sans boutons ici
-					// 
-					if (event.mouseButton.button == Mouse::Left)
-						;// pointerclick();
-
-					break;
-				case Event::MouseButtonReleased:
-					if (event.mouseButton.button == Mouse::Left)
-						;// if (pointer.unclick() == 1)
-						 //r.push_back(pointer.getFocus());
-					break;
-				case Event::MouseMoved:
-					/// Doit exclure les zones ayant des boutons ici ?
-					/*if (pointer.isClicking())
-					{
-					pointer.drag();
-					sandbox.draw(*pointer.getFocus()); /// ?
-					}*/
-					v.push_back(Vertex((Vector2f)Mouse::getPosition(sandbox),
-						Color::Red, (Vector2f)Mouse::getPosition(sandbox)));
-					break;
-				default:
-					break;
-				}
-
-				for (const auto & V : v)
-					sandbox.draw(&V, 1, PrimitiveType::Points);
-				for (const auto & R : r)
-					sandbox.draw(*R);
-
-				sandbox.display();
-			}
-		}
-
-		if (false)
-			play = false;
-	}
-
-	system("pause");
-	return 0;
 }

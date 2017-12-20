@@ -19,36 +19,6 @@ using namespace sf;
 
 
 
-
-
-
-// Calcul les dimmensions nécessaire du bouton pour le texte
-static float textDim(float & p, float t, float MAX)
-{
-	if (p == 0)
-		if (t <= MAX)
-			p = t;
-		else
-			p = MAX;
-	return p;
-}
-
-/// Classe de base des boutons de la boite à outils et du menu principal
-//class button
-//{
-//private:
-//public:
-//	button()
-//	{
-//	}
-//	~button()
-//	{
-//	}
-//};
-
-
-
-
 // Classe de base des boutons
 class oButton : public RectangleShape, public Text
 {

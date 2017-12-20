@@ -9,17 +9,6 @@ Date:			20-11-2017
 
 
 
-///Va dans painter.cpp???
-// Recherche si un bouton est sous la souris
-
-//oButton * cursor::searchForButton()
-//{
-//	for (auto & b : _bOptions)
-//		if (b->gotMouse(_w))
-//			return b;
-//	return nullptr;
-//}
-
 // Constructeur
 cursor::cursor()
 {
@@ -50,7 +39,7 @@ cursor::~cursor()
 
 
 /// Setteurs
-
+// 
 int cursor::setMode(oButton * b)
 {
 	assert(b != nullptr);
@@ -60,20 +49,19 @@ int cursor::setMode(oButton * b)
 	_mode = b;
 	return _mode->mPick();
 }
-
+// 
 void cursor::setClick(Vector2f click)
 {
 	_click = click;
 }
 
-
 /// Manipulations du focus
-
+// 
 void cursor::setCurrent(Vector2f current)
 {
 	_current = current;
 }
-
+// 
 void cursor::initFocus()
 {
 	//_focus.setOrigin(_current);	/// sa bug 
@@ -82,24 +70,24 @@ void cursor::initFocus()
 	_focus.shapePtr->setPosition(_current);	/// fusionner origin et pos?
 	//_focus.shapePtr->setSize(Vector2f());
 }
-
+// 
 void cursor::setFocus(shape s)
 {
 	_focus = s;
 }
-
+// 
 void cursor::setSelected(bool b)
 {
 	_selecting = b;
 }
-
+// 
 void cursor::setOnZone(bool b)
 {
 	_onZone = b;
 }
 
-
-/// Clicker
+/// Activation des modes
+// 
 int cursor::click()
 {
 	//oButton * b = nullptr;	// Bouton sous la souris
@@ -174,42 +162,7 @@ int cursor::click()
 	}
 
 	return 0;
-
-	/* Mode sans héritage */
-	/*if (_mode != nullptr && !_onZone)
-	{
-		switch (_mode->getMode())
-		{
-		case cCreate:
-			switch (_mode->getShape())
-			{
-			case sBox:
-				_focus.shapePtr = new RectangleShape();
-				_focus.shapeType = sBox;
-				break;
-			case sCircle:
-				_focus.shapePtr = new CircleShape();
-				_focus.shapeType = sCircle;
-				break;
-			default:
-				break;
-			}
-			_focus.shapePtr->setPosition(_click);
-			break;
-		case cSelect:
-			if (_selecting)
-			{
-				_offset = _click - _focus.shapePtr->getPosition();
-				_focus.shapePtr->setPosition(_click - _offset);
-			}
-			break;
-		default:
-			break;
-		}
-	}*/
 }
-
-
 // Va retourner la forme selon le mode du curseur
 void cursor::releaseClick()
 {
@@ -275,44 +228,8 @@ void cursor::releaseClick()
 	}
 
 	return;
-
-	/* Version non héritée */
-	//if (_mode != nullptr && !_onZone)
-	//{
-	//	float radius = distance2Points(_click, _current);
-	//	int random = rand() % DBOARD.size();
-	//	switch (_mode->getMode())
-	//	{
-	//	case cCreate:
-	//		switch (static_cast<oB_create*>(_mode)->getShape())
-	//		{
-	//		case sBox:
-	//			_focus.shapePtr = new RectangleShape(
-	//				Vector2f(_current.x - _click.x, _current.y - _click.y));
-	//			break;
-	//		case sCircle:
-	//			_focus.shapePtr = new CircleShape(radius);
-	//			_focus.shapePtr->setOrigin(radius, radius);
-	//			break;
-	//		default:
-	//			break;
-	//		}
-	//		_focus.shapePtr->setPosition(_click);
-	//		//Couleur aleatoire
-	//		srand(time(NULL));
-	//		_focus.shapePtr->setFillColor(DBOARD.at(random));
-	//		break;
-	//	case cSelect:
-	//		_selecting = false;
-	//		break;
-	//	default:
-	//		break;
-	//	}
-	//	return _focus;
-	//}
 }
-
-
+// 
 void cursor::drag()
 {
 	//Si le cursor est en mode click et qu'il n'est pas sur une zone (buttonstrip)
@@ -371,77 +288,39 @@ void cursor::drag()
 	default:
 		break;
 	}
-
-
-	/* Options */
-	//if (_clicking && !_onZone)
-	//{
-	//	//Rayon pour le cercle
-	//	int radius = distance2Points(_click, _current);
-	//	switch (_mode->getMode())
-	//	{
-	//	case cCreate:
-	//		switch (static_cast<oB_create*>(_mode)->getShape())
-	//		{
-	//		case sBox:
-	//			_focus.shapePtr = new RectangleShape(
-	//				Vector2f(_current.x - _click.x, _current.y - _click.y));
-	//			_focus.shapePtr->setPosition(_click);
-	//			break;
-	//		case sCircle:
-	//			_focus.shapePtr = new CircleShape(radius);
-	//			_focus.shapePtr->setOrigin(radius, radius);
-	//			_focus.shapePtr->setPosition(_click);
-	//			break;
-	//		default:
-	//			break;
-	//		}
-	//		break;
-	//	case cSelect:
-	//		if (_selecting)
-	//			_focus.shapePtr->setPosition(
-	//				Vector2f(_current.x - _offset.x, _current.y - _offset.y));
-	//		break;
-	//	default:
-	//		break;
-	//	}
-	//}
-
 }
 
-
 /// Getteurs
-
+// 
 bool cursor::isClicking(Mouse::Button it)
 {
 	return (isButtonPressed(it) && _clicking);
 }
-
+// 
 bool cursor::getClicking() const { return _clicking; }
-
+// 
 cMode cursor::getModeCurs() const
 {
-
 	return _mode->getMode();
 }
-
 //Retourne le focus
 shape cursor::getFocus() const
 {
 	assert(_mode != nullptr);
 	return _focus;
 }
-
+// 
 Vector2f * cursor::getClick() { return &_click; }
-
+// 
 Vector2f * cursor::getCurrent() { return &_current; }
-
+// 
 bool cursor::isOnZone() const
 {
 	return _onZone;
 }
 
 /// Affichage
+// 
 bool cursor::onZone(FloatRect z, RenderWindow & w)
 {
 	if (z.contains((Vector2f)getPosition(w)))

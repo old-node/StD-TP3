@@ -8,6 +8,15 @@ Date:			22-11-2017
 #include "oButton.h"
 
 
+/* Prototype */
+
+void cursorPos(oButton * b, RenderWindow & screen);
+
+
+///==============///
+/* Classe de base */
+///==============///
+
 // Constructeur de la classe parente
 oButton::oButton(float left, float top, float width, float height,
 	float OL, PBOARD fillC, PBOARD OLC,
@@ -240,73 +249,27 @@ bool oButton::gotMouse(RenderWindow & screen) const
 		return true;
 	return false;
 }
-
+// 
 sShape oButton::getShape() const
 {
 	return _s;
 }
-
 // 
 RectangleShape oButton::getBody()
 {
 	return static_cast<RectangleShape>(*this);
 }
-
+// 
 Text oButton::getText()
 {
 	return static_cast<Text>(*this);
 }
-
-
-///======///
-/* Create */
-///======///
-
+// 
 void oB_create::initShape(sShape vertex)
 {
 	assert(sDefault <= vertex && vertex <= sCOUNT);
 	_s = vertex;
 }
-
-
-
-
-///=====///
-/* Créer */
-///=====///
-
-
-
-
-///=====///
-/* Trait */
-///=====///
-
-
-
-
-
-///====///
-/* Lier */
-///====///
-
-
-
-
-///=========///
-/* Sélection */
-///=========///
-
-
-
-
-
-///======///
-/* Efface */
-///======///
-
-
-
 
 
 // Information de la position de la souris
@@ -320,3 +283,18 @@ void cursorPos(oButton * b, RenderWindow & screen)
 }
 
 
+///=====///
+/* Créer */
+///=====///
+///=====///
+/* Trait */
+///=====///
+///====///
+/* Lier */
+///====///
+///=========///
+/* Sélection */
+///=========///
+///======///
+/* Efface */
+///======///

@@ -7,17 +7,17 @@ But: 			Petit menu qui permet d'entrer un nom d'utilisateur et un mot de passe
 ====================================================================================================
 */
 
-#include <SFML/Graphics.hpp>
-#include "painterFuction.h"
-
-
-using namespace sf;
-using namespace std;
 
 #pragma once
+using namespace std;
+
+#include <SFML/Graphics.hpp>
+#include "painterFuction.h"
+using namespace sf;
 
 #define MAX_NUMBER_OF_ITEMS 2
 
+// Menu de saisie
 class inputMenu
 {
 private:
@@ -29,7 +29,7 @@ private:
 	string strInput[MAX_NUMBER_OF_ITEMS];
 	int selectedIndex = 0;						//Defini quel input est selectionné
 public:
-	inputMenu(float width, float height);
+	inputMenu(int width, int height);
 	~inputMenu();
 
 	void run();
