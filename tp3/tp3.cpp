@@ -62,6 +62,7 @@ int interfaceOli()
 		//inter.addButton(new oB_link());
 		canva.addButton(new oB_select());
 		canva.addButton(new oB_remove());
+		canva.addBsH();
 		canva.addButton(new oB_save());
 		canva.addButton(new oB_load());
 		canva.addButton(new oB_menu());
