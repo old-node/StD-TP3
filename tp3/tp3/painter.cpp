@@ -9,6 +9,7 @@ differents boutons
 */
 
 #include "painter.h"
+#include "sqlStructs.h"
 #include <stdlib.h>
 
 //Constructeur sans parametre
@@ -126,6 +127,8 @@ int painter::run()
 			_window.display();
 		}
 	}
+
+	return 0;
 }
 
 //Nettoie l'interface
@@ -199,6 +202,12 @@ void painter::addBsH(bool normalScope, bool normalInterval, Vector2f initPos, Ve
 
 	assert(limitPos.x >= initPos.x
 		&& limitPos.y >= initPos.y);
+
+	if (!_bsH.empty())
+	{
+		//initButtonSize();
+		initPos.y += TOLH;
+	}
 
 	_bsH.push_back(new buttonStripH(normalScope, normalInterval,
 		initPos, limitPos, fixed, minDim));

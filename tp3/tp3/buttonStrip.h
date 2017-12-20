@@ -101,7 +101,11 @@ public:
 	/// Modificateurs de la liste de bouton.
 	int addButton(oButton * b);
 	int addButtons(const vector<oButton*> buttons);
+	void initLastButton()
+	{
 
+		//initButtonSize(*_activeButton, _minDim, dim, ol);
+	}
 	void removeButtons(size_t begin, size_t end);
 
 	/// Getteurs
