@@ -121,7 +121,6 @@ void oButton::move(Vector2f pos)
 
 
 // Met à jour l'origine du rectangle et ...
-
 void oButton::resize(Vector2f dim)	/// Trop petit ??
 {
 	assert(0 < dim.x && dim.x < 1000

@@ -42,9 +42,11 @@ inputMenu::inputMenu(int w, int h)
 	for (int i = 0; i < MAX_NUMBER_OF_ITEMS; i++)
 	{
 		rect[i] = RectangleShape(Vector2f(sDim.x - 100, sDim.y/4));
-		rect[i].setPosition((Vector2f(50, texts[i].getPosition().y + texts[i].getLocalBounds().height + 20)));
+		rect[i].setPosition((Vector2f(50, 
+			texts[i].getPosition().y + texts[i].getLocalBounds().height + 20)));
 		rect[i].setFillColor(Color(98, 195, 98));
-		inputs[i].setPosition((Vector2f(50, texts[i].getPosition().y + texts[i].getLocalBounds().height + 20)));
+		inputs[i].setPosition((Vector2f(50, 
+			texts[i].getPosition().y + texts[i].getLocalBounds().height + 20)));
 	}
 
 	inputs[0].setString(strInput[0]);
@@ -53,7 +55,8 @@ inputMenu::inputMenu(int w, int h)
 	//Petit rectangle pour montrer quel input est selectionné
 	recSelect.setSize(Vector2f(40,40));
 	recSelect.setFillColor(Color::Black);
-	recSelect.setPosition(Vector2f(rect[0].getPosition().x - 45, rect[0].getPosition().y + 30));
+	recSelect.setPosition(Vector2f(
+		rect[0].getPosition().x - 45, rect[0].getPosition().y + 30));
 }
 // Destructeur
 inputMenu::~inputMenu()

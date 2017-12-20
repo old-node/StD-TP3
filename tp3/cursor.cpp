@@ -164,11 +164,13 @@ int cursor::click()
 	return 0;
 }
 // Va retourner la forme selon le mode du curseur
-void cursor::releaseClick()
+void cursor::releaseClick(list<shape> & l)
 {
 	_clicking = false;
 	float radius = distance2Points(_click, _current);
+
 	int random = rand() % DBOARD.size();
+
 
 	if (_mode == nullptr)
 		return;
@@ -191,6 +193,7 @@ void cursor::releaseClick()
 			break;
 		}
 		_focus.shapePtr = new RectangleShape();
+		applyColor(l.back());
 		break;
 
 	case cLink:

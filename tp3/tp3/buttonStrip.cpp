@@ -229,7 +229,9 @@ bool buttonStrip::useInterval(float & iPos, float smallI, float bigI, float init
 			_activeButton--;
 
 			Vector2f newSize = (*_activeButton)->getSize();
-			newSize.x += (_limitPos.x - (*_activeButton)->getP(_lastCorner).x);
+			newSize.x += (_limitPos.x 
+				- (*_activeButton)->RectangleShape::getPosition().x
+				- (*_activeButton)->getP(_lastCorner).x);
 			(*_activeButton)->resize(newSize);
 
 			_activeButton++;
@@ -398,7 +400,6 @@ buttonStripH::~buttonStripH()
 	_lastCorner = bUpperLeft;
 
 	_zone = FloatRect();
-	//buttonStrip::~buttonStrip();
 }
 
 

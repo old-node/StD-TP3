@@ -35,6 +35,8 @@ int painter::run()
 {
 	init();
 
+	_cursorInterface.setColorsRandom();
+
 	Vector2f mousePos, mouseInit;
 
 	while (_window.isOpen())
@@ -95,7 +97,7 @@ int painter::run()
 				if (event.mouseButton.button == Mouse::Left)
 				{
 					if (!isOnAZone())
-						_cursorInterface.releaseClick();
+						_cursorInterface.releaseClick(_listShape);
 					else
 						_cursorInterface;
 				}

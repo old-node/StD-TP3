@@ -41,9 +41,9 @@ int mainSimon()
 	cout << "Bienvenue dans le main de Simon!" << endl;
 	mainMenu menu(800, 500);
 	menu.run();
-	/*sqlConnect bd;
+	sqlConnect bd;
 
-	bd.userConnect("boby", "lamop");*/
+	bd.userConnect("boby", "lamop");
 
 	system("pause");
 
@@ -62,18 +62,30 @@ int interfaceOli()
 
 		painter canva;
 
+		/*canva.addBsH();
+		canva.addButton(new oB_link(0, 0, 0, 0, 1, P_2, P_L, "Bouton etc no. 1"));
+		canva.addButton(new oB_link(0, 0, 0, 0, 1, P_2, P_L, "Bouton etc no. 2"));
+		canva.addButton(new oB_link(0, 0, 0, 0, 1, P_2, P_L, "Bouton etc no. 3"));
+		canva.addButton(new oB_link(0, 0, 0, 0, 1, P_2, P_L, "Bouton etc no. 4"));
+		canva.addButton(new oB_link(0, 0, 0, 0, 1, P_2, P_L, "Bouton etc no. 5"));
+		canva.addButton(new oB_link(0, 0, 0, 0, 1, P_2, P_L, "Bouton etc no. 6"));
+		canva.addButton(new oB_link(0, 0, 0, 0, 1, P_2, P_L, "Bouton etc no. 7"));
+		canva.addButton(new oB_link(0, 0, 0, 0, 1, P_2, P_L, "Bouton etc no. 8"));
+		canva.addButton(new oB_link(0, 0, 0, 0, 1, P_2, P_L, "Bouton etc no. 9"));*/
+
 		canva.addBsH();
 		canva.addButton(new oB_save());
 		canva.addButton(new oB_load());
 		canva.addButton(new oB_menu());
 		canva.addButton(new oB_quit());
+
 		canva.addBsH();
 		canva.addButton(new oB_cBox());
 		canva.addButton(new oB_cCircle());
-		canva.addButton(new oB_remove());
 		canva.addButton(new oB_link());
 		canva.addButton(new oB_select());
-
+		canva.addButton(new oB_remove());
+		
 		option = canva.run();
 
 	} while (option == cMenu);
