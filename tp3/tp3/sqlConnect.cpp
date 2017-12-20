@@ -14,7 +14,6 @@ void sqlConnect::connexion() {
 	sqlStmtHandle = NULL;
 
 	/* COURS déclencher 2 *//*
-
 							sur sql
 							audit /// rapport
 							ordonnancer
@@ -81,88 +80,6 @@ void sqlConnect::deconnexion() {
 	SQLFreeHandle(SQL_HANDLE_ENV, sqlEnvHandle);
 }
 
-void sqlConnect::selectUsager() {
-
-	try
-	{
-		connexion();
-
-		//S'il y a un problème avec la requête on quitte l'application sinon on affiche le résultat
-		if (SQL_SUCCESS != SQLExecDirectW(sqlStmtHandle, (SQLWCHAR*)L"SELECT usagerprenom, usagernom FROM usager", SQL_NTS)) {
-			throw string("Erreur dans la requête");
-		}
-		else {
-			//Déclarer les variables d'affichage
-
-			SQLCHAR nom[SQL_RESULT_LEN];
-			SQLLEN ptrnom;
-
-			SQLCHAR prenom[SQL_RESULT_LEN];
-			SQLLEN ptrprenom;
-
-			while (SQLFetch(sqlStmtHandle) == SQL_SUCCESS) {
-				SQLGetData(sqlStmtHandle, 1, SQL_CHAR, prenom, SQL_RESULT_LEN, &ptrprenom);
-				SQLGetData(sqlStmtHandle, 2, SQL_CHAR, nom, SQL_RESULT_LEN, &ptrnom);
-
-				//Afficher le résultat d'une requête			
-				cout << nom << "  " << prenom << endl;
-			}
-		}
-	}
-	catch (string const& e)
-	{
-		cout << e << "\n";
-		deconnexion();
-	}
-
-	deconnexion();
-}
-
-void sqlConnect::ajouteUsager(const char * nom, const char * prenom) {
-
-	try
-	{
-		connexion();
-
-		SQLRETURN retcode;
-
-		/*
-		Paramètre SQLBindParameter:
-		- Handler de la requête
-		- No du paramètre (commence à 1)
-		- Est-ce un paramètre de type Input ou Output
-		- Quel est le type de la variable en C++
-		- Quel est le type de la variable en SQL
-		- Quelle est la taille de la colonne dans la BD
-		- Nombre de décimal
-		- Quelle variable ou données (pointeur)
-		- Longueur du buffer
-		- Pointeur du buffer
-		*/
-
-		retcode = SQLBindParameter(sqlStmtHandle, 2, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_CHAR, 50, 0, &nom, 0, 0);
-
-		retcode = SQLPrepareW(sqlStmtHandle, (SQLWCHAR*)L"INSERT INTO Usager (username) VALUES (?)", SQL_NTS);
-
-		retcode = SQLExecute(sqlStmtHandle);
-
-		if (SQL_SUCCESS != retcode) {
-			throw string("Erreur dans la requête");
-		}
-	}
-	catch (string const& e)
-	{
-		cout << e << "\n";
-
-		deconnexion();
-
-		getchar();
-		exit(1);
-	}
-
-	deconnexion();
-}
-
 
 bool sqlConnect::userConnect(const char * user, const char * password)
 {
@@ -188,7 +105,7 @@ bool sqlConnect::userConnect(const char * user, const char * password)
 				SQLGetData(sqlStmtHandle, 2, SQL_CHAR, pass, SQL_RESULT_LEN, &ptrpass);
 
 				//Compaison des strings de la BD et ceux entrés en parametre
-				if (strcmp(((const char*)username),user)==0 && strcmp(((const char*)pass),password)==0)
+				if (strcmp(((const char*)username), user) == 0 && strcmp(((const char*)pass), password) == 0)
 				{
 					cout << "VALID CONNECTION" << endl;
 					return true;
@@ -207,4 +124,60 @@ bool sqlConnect::userConnect(const char * user, const char * password)
 
 	deconnexion();
 	return false;
+}
+
+void sqlConnect::ajouterDessin(char *user)
+{
+	try
+	{
+		connexion();
+		string userStr = user;
+		string select = userStr + "' ";
+
+		SQLRETURN retcode;
+
+		if (SQL_SUCCESS != SQLExecDirectW(sqlStmtHandle, (SQLWCHAR*)L"SELECT usagerID usagerNom FROM tblUsager", SQL_NTS)) {
+			throw string("Erreur dans la requête");
+		}
+		else {
+
+			SQLCHAR username[SQL_RESULT_LEN];
+			SQLLEN ptrusername;
+
+			SQLINTEGER id;
+			SQLLEN ptr1;
+
+			while (SQLFetch(sqlStmtHandle) == SQL_SUCCESS) {
+				SQLGetData(sqlStmtHandle, 1, SQL_INTEGER, &id, 0, &ptr1);
+				SQLGetData(sqlStmtHandle, 2, SQL_CHAR, username, SQL_RESULT_LEN, &ptrusername);
+
+				int idint = id;
+				int *intptr = &idint;
+
+				if (strcmp(((const char*)username), user) == 0)
+				{
+					retcode = SQLBindParameter(sqlStmtHandle, 2, SQL_PARAM_INPUT, SQL_C_SLONG, SQL_INTEGER, 4, 0, intptr, 0, 0);
+
+					retcode = SQLPrepareW(sqlStmtHandle, (SQLWCHAR*)L"INSERT INTO tblDessin (dessUser) VALUES (?)", SQL_NTS);
+
+					retcode = SQLExecute(sqlStmtHandle);
+
+					if (SQL_SUCCESS != retcode)
+						throw string("Erreur dans la requête");
+
+				}
+			}
+		}
+	}
+	catch (string const& e)
+	{
+		cout << e << "\n";
+
+		deconnexion();
+
+		getchar();
+		exit(1);
+	}
+
+	deconnexion();
 }
