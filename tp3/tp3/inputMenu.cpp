@@ -85,7 +85,13 @@ void inputMenu::run()
 				switch (event.key.code)
 				{
 				case Keyboard::Return:
-					_window.close();
+					
+					//if (bd.userConnect(getUsername(), getPassword()))
+						_window.close();
+					/*else
+					{
+						invalidInfo = true;
+					}*/
 					break;
 				case Keyboard::Tab:
 					selectedIndex = (selectedIndex+1)%MAX_NUMBER_OF_ITEMS;
@@ -139,6 +145,10 @@ void inputMenu::draw()
 {
 	_window.draw(recSelect);
 
+
+	if (invalidInfo)
+		_window.draw(badLog);
+
 	for (int i = 0; i < MAX_NUMBER_OF_ITEMS; i++)
 	{
 		_window.draw(texts[i]);
@@ -149,12 +159,12 @@ void inputMenu::draw()
 
 /// Getteurs
 // 
-string inputMenu::getUsername() const
+const char* inputMenu::getUsername() const
 {
-	return strInput[0];
+	return strInput[0].c_str();
 }
 // 
-string inputMenu::getPassword() const
+const char* inputMenu::getPassword() const
 {
-	return strInput[1];
+	return strInput[1].c_str();
 }

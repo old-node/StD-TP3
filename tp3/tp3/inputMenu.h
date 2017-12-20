@@ -13,6 +13,7 @@ using namespace std;
 
 #include <SFML/Graphics.hpp>
 #include "painterFuction.h"
+//#include "sqlConnect.h"
 using namespace sf;
 
 #define MAX_NUMBER_OF_ITEMS 2
@@ -21,6 +22,7 @@ using namespace sf;
 class inputMenu
 {
 private:
+	bool invalidInfo = false;
 	Vector2f _sDim;
 	RenderWindow _window;						//Fenêtre d'affichage
 	Text texts[MAX_NUMBER_OF_ITEMS];			//Text pour les titres d'inputs
@@ -30,6 +32,7 @@ private:
 	string strInput[MAX_NUMBER_OF_ITEMS];
 	int selectedIndex = 0;						//Defini quel input est selectionné
 	Text badLog;
+	//sqlConnect bd;
 
 public:
 	inputMenu(int width, int height);
@@ -85,7 +88,7 @@ public:
 
 	void draw();
 
-	string getUsername()const;
-	string getPassword()const;
+	const char* getUsername()const;
+	const char* getPassword()const;
 };
 
