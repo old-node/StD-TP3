@@ -25,7 +25,6 @@ painter::painter()
 void painter::init()
 {
 	_window.create(VideoMode(_sWidth, _sHeight), "The Painter f3");	//Initialisation de la render window
-	iteratorShape = listShape.begin();	//Initialisation de l'iterateur
 }
 
 //void painter::show()
@@ -35,7 +34,7 @@ void painter::init()
 
 //Va afficher l'interface et gèrer les evenements
 //Un peu comme une boucle de main...
-void painter::run()
+int painter::run()
 {
 	init();
 
@@ -73,7 +72,7 @@ void painter::run()
 					}
 					else
 					{
-						_cursorInterface.click(elemColors());
+						_cursorInterface.click();
 					}
 
 				}
@@ -84,7 +83,7 @@ void painter::run()
 					if (!isOnAZone())
 					{
 						shape result = nullptr;
-						result = _cursorInterface.releaseClick();
+						_cursorInterface.releaseClick();
 						//if (result != nullptr)
 						//	_listShape.push_back(result);
 					}
@@ -132,6 +131,7 @@ void painter::run()
 			_window.display();
 		}
 	}
+	return 0;
 }
 
 //Nettoie l'interface
@@ -217,7 +217,7 @@ void painter::addButton(oButton * b)
 	assert(_bs != nullptr);
 	_bs->addButton(b);
 	_bs->getButtonList().back()->initCursorData(_cursorInterface.getCurrent(),
-		_cursorInterface.getClick(), &_listShape);
+		_cursorInterface.getClick(), &_listShape, &_selected);
 	_bs->updateZone();
 	///_cursorInterface.addButton(_bs->getButtonList().back());
 }
