@@ -35,6 +35,11 @@ private:
 
 	vector<selection> _selected;	// 
 
+	void generateSave()
+	{
+		
+	}
+
 public:
 	painter();					// Constructeur sans paramètre
 	void init();				// Initialise l'interface

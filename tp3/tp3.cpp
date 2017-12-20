@@ -48,19 +48,29 @@ int mainSimon()
 
 int interfaceOli()
 {
-	painter inter;
+	int option = 0;
 
-	inter.addBsH();
-	inter.addButton(new oB_cBox());
-	inter.addButton(new oB_cCircle());
-	inter.addButton(new oB_link());
-	inter.addButton(new oB_select());
-	inter.addButton(new oB_remove());
-	inter.addButton(new oB_load());
-	inter.addButton(new oB_menu());
-	inter.addButton(new oB_quit());
+	do
+	{
+		mainMenu menu(800, 500);
+		menu.run();
+
+		painter canva;
+		canva.addBsH();
+		canva.addButton(new oB_cBox());
+		canva.addButton(new oB_cCircle());
+		//inter.addButton(new oB_link());
+		canva.addButton(new oB_select());
+		canva.addButton(new oB_remove());
+		canva.addButton(new oB_save());
+		canva.addButton(new oB_load());
+		canva.addButton(new oB_menu());
+		canva.addButton(new oB_quit());
+
+		option = canva.run();
+
+	} while (option == cMenu);
 	
-	inter.run();
 
 	return 1;
 }

@@ -73,8 +73,24 @@ int painter::run()
 						int option = 0;
 						if (b != nullptr)
 							option = _cursorInterface.setMode(b);
-						if (option != 0)
-							return option;
+						switch (option)
+						{
+						case 0:
+						default:
+							break;
+						case cSave:
+							/// sauvegarde des formes
+							generateSave();
+							break;
+						case cLoad:
+							break;
+						case cMenu:
+							return cMenu;
+							break;
+						case cQuit:
+							return cQuit;
+							break;
+						}
 					}
 					else
 						_cursorInterface.click();
