@@ -7,11 +7,16 @@ Description:
 
 
 #pragma once
+#include <cassert>
+#include <vector>
 #include <math.h>
 using namespace std;
 #include "oButton.h"
 
 using namespace sf;
+
+
+
 
 // Classe cursor qui est manipulé par la sourie de l'ordinateur
 class cursor : private Mouse

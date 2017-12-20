@@ -11,28 +11,9 @@ But: 			Petit menu qui permet d'entrer un nom d'utilisateur et un mot de passe
 
 inputMenu::inputMenu(int w, int h)
 {
-	_width = w;
-	_height = h;
 	_window.create(VideoMode(w, h), "Entrez votre nom", Style::None);
-	init();
+
 	
-	
-}
-
-
-inputMenu::~inputMenu()
-{
-}
-
-void inputMenu::init()
-{
-	badLog.setFont(D_F);
-	badLog.setFillColor(Color::Black);
-	badLog.setCharacterSize(60);
-	badLog.setString("Informations invalides!");
-	badLog.setPosition(50, 150);
-	
-
 	//Set les fonts et les couleurs
 	for (int i = 0; i < MAX_NUMBER_OF_ITEMS; i++)
 	{
@@ -43,7 +24,7 @@ void inputMenu::init()
 		inputs[i].setFillColor(Color::Black);
 		inputs[i].setCharacterSize(65);
 	}
-
+	
 	texts[0].setString("Nom d'utilisateur :");
 	texts[1].setString("Mot de passe :");
 
@@ -51,11 +32,11 @@ void inputMenu::init()
 	inputs[1].setString("");
 
 	texts[0].setPosition(50, 0);
-	texts[1].setPosition(50, _height / 2);
+	texts[1].setPosition(50, h/2);
 
 	for (int i = 0; i < MAX_NUMBER_OF_ITEMS; i++)
 	{
-		rect[i] = RectangleShape(Vector2f(_width - 100, _height / 4));
+		rect[i] = RectangleShape(Vector2f(w - 100, h/4));
 		rect[i].setPosition((Vector2f(50, texts[i].getPosition().y + texts[i].getLocalBounds().height + 20)));
 		rect[i].setFillColor(Color(98, 195, 98));
 		inputs[i].setPosition((Vector2f(50, texts[i].getPosition().y + texts[i].getLocalBounds().height + 20)));
@@ -65,9 +46,14 @@ void inputMenu::init()
 	inputs[1].setString(strInput[1]);
 
 	//Petit rectangle pour montrer quel input est selectionné
-	recSelect.setSize(Vector2f(40, 40));
+	recSelect.setSize(Vector2f(40,40));
 	recSelect.setFillColor(Color::Black);
 	recSelect.setPosition(Vector2f(rect[0].getPosition().x - 45, rect[0].getPosition().y + 30));
+}
+
+
+inputMenu::~inputMenu()
+{
 }
 
 void inputMenu::run()
@@ -90,12 +76,7 @@ void inputMenu::run()
 				switch (event.key.code)
 				{
 				case Keyboard::Return:
-					if(bd.userConnect(getUsername(),getPassword()))
-						_window.close();
-					else
-					{
-						invalidInfo = true;
-					}
+					_window.close();
 					break;
 				case Keyboard::Tab:
 					selectedIndex = (selectedIndex+1)%MAX_NUMBER_OF_ITEMS;
@@ -107,7 +88,6 @@ void inputMenu::run()
 				}
 				break;
 			case Event::TextEntered:
-				invalidInfo = false;
 				if (
 					((event.key.code >= 97 && event.key.code <= 122)
 						|| event.key.code == 32
@@ -150,9 +130,6 @@ void inputMenu::draw()
 {
 	_window.draw(recSelect);
 
-	if(invalidInfo)
-		_window.draw(badLog);
-
 	for (int i = 0; i < MAX_NUMBER_OF_ITEMS; i++)
 	{
 		_window.draw(texts[i]);
@@ -161,12 +138,12 @@ void inputMenu::draw()
 	}
 }
 
-const char* inputMenu::getUsername() const
+string inputMenu::getUsername() const
 {
-	return strInput[0].c_str();
+	return strInput[0];
 }
 
-const char* inputMenu::getPassword() const
+string inputMenu::getPassword() const
 {
-	return strInput[1].c_str();
+	return strInput[1];
 }

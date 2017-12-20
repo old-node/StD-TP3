@@ -11,10 +11,8 @@ Description:	.
 #include <string>
 #include <list>
 #include <SFML/Graphics.hpp>
-
 using namespace std;
 using namespace sf;
-
 
 ///============///
 /* Enumérateurs */

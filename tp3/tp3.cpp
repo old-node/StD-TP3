@@ -29,9 +29,9 @@ int main()
 {
 	setlocale(LC_CTYPE, "can");
 
-	//mainSimon();
+	mainSimon();
 	//mainOli();
-	interfaceOli();
+	//interfaceOli();
 }
 
 
@@ -48,30 +48,16 @@ int mainSimon()
 
 int interfaceOli()
 {
-	int option = 0;
+	painter inter;
 
-	do
-	{
-		mainMenu menu(800, 500);
-		menu.run();
+	inter.addBsH();
+	inter.addButton(oB_cBox());
+	inter.addButton(oB_cCircle());
+	inter.addButton(oB_remove());
+	inter.addButton(oB_link());
+	inter.addButton(oB_select());
 
-		painter canva;
-		canva.addBsH();
-		canva.addButton(new oB_cBox());
-		canva.addButton(new oB_cCircle());
-		//inter.addButton(new oB_link());
-		canva.addButton(new oB_select());
-		canva.addButton(new oB_remove());
-		canva.addBsH();
-		canva.addButton(new oB_save());
-		canva.addButton(new oB_load());
-		canva.addButton(new oB_menu());
-		canva.addButton(new oB_quit());
-
-		option = canva.run();
-
-	} while (option == cMenu);
-	
+	inter.run();
 
 	return 1;
 }
@@ -86,7 +72,7 @@ int mainOli()
 	Sprite truc(machin);
 
 	RenderWindow sandbox		// Fenêtre principale ?
-	(VideoMode((unsigned int)SCREENW, (unsigned int)SCREENH), "Sandbox");
+	(VideoMode(SCREENW, SCREENH), "Sandbox");
 
 	/*Text help("HELP ME", *FONT, 80);
 	Text help3("DONT help", *FONT, 80);
@@ -101,7 +87,7 @@ int mainOli()
 	vector<Vertex> v;			// Points rouges
 	vector<Shape*> r;
 	vector<RectangleShape> visible;
-	cursor pointer;				// Souris
+	cursor pointer();			// Souris
 	Event event;				// Événement de l'application
 
 	sandbox.clear();
@@ -129,6 +115,18 @@ int mainOli()
 				case Event::KeyPressed:
 					if (event.key.code == Keyboard::Escape)
 						exit(0);
+				case Event::MouseButtonPressed:
+					/// Doit exclure les zones sans boutons ici
+					// 
+					if (event.mouseButton.button == Mouse::Left)
+						;// pointerclick();
+
+					break;
+				case Event::MouseButtonReleased:
+					if (event.mouseButton.button == Mouse::Left)
+						;// if (pointer.unclick() == 1)
+						 //r.push_back(pointer.getFocus());
+					break;
 				case Event::MouseMoved:
 					/// Doit exclure les zones ayant des boutons ici ?
 					/*if (pointer.isClicking())
