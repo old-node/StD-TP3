@@ -9,10 +9,13 @@ Description:	3e travail pratique du cours Structure de donnée. Application de de
 #include <locale>
 #include <iostream>
 
+
+#include "tp3\sqlConnect.h"
 #include "tp3\painter.h"
 #include "tp3\buttonStrip.h"
 #include "cursor.h"
 #include "tp3\mainMenu.h"
+#include "tp3\inputMenu.h"
 
 using namespace std;
 using namespace sf;
@@ -26,9 +29,9 @@ int main()
 {
 	setlocale(LC_CTYPE, "can");
 
-	mainSimon();
+	//mainSimon();
 	//mainOli();
-	//interfaceOli();
+	interfaceOli();
 }
 
 
@@ -36,32 +39,38 @@ int mainSimon()
 {
 	cout << "Bienvenue dans le main de Simon!" << endl;
 	mainMenu menu(800, 500);
-	sqlConnect bd;
-	bd.ajouterDessin("boby");
-	bd.userConnect("boby", "lamop");
 
 	menu.run();
-
-
-	system("pause");
 
 	return 0;
 
 }
 
-
 int interfaceOli()
 {
-	painter inter;
+	int option = 0;
 
-	inter.addBsH();
-	inter.addButton(new oB_cBox());
-	inter.addButton(new oB_cCircle());
-	inter.addButton(new oB_remove());
-	inter.addButton(new oB_link());
-	inter.addButton(new oB_select());
+	do
+	{
+		mainMenu menu(800, 500);
+		menu.run();
 
-	inter.run();
+		painter canva;
+		canva.addBsH();
+		canva.addButton(new oB_cBox());
+		canva.addButton(new oB_cCircle());
+		//inter.addButton(new oB_link());
+		canva.addButton(new oB_select());
+		canva.addButton(new oB_remove());
+		canva.addButton(new oB_save());
+		canva.addButton(new oB_load());
+		canva.addButton(new oB_menu());
+		canva.addButton(new oB_quit());
+
+		option = canva.run();
+
+	} while (option == cMenu);
+	
 
 	return 1;
 }
@@ -76,7 +85,7 @@ int mainOli()
 	Sprite truc(machin);
 
 	RenderWindow sandbox		// Fenêtre principale ?
-	(VideoMode(SCREENW, SCREENH), "Sandbox");
+	(VideoMode((unsigned int)SCREENW, (unsigned int)SCREENH), "Sandbox");
 
 	/*Text help("HELP ME", *FONT, 80);
 	Text help3("DONT help", *FONT, 80);
@@ -91,7 +100,7 @@ int mainOli()
 	vector<Vertex> v;			// Points rouges
 	vector<Shape*> r;
 	vector<RectangleShape> visible;
-	cursor pointer();			// Souris
+	cursor pointer;				// Souris
 	Event event;				// Événement de l'application
 
 	sandbox.clear();
@@ -119,18 +128,6 @@ int mainOli()
 				case Event::KeyPressed:
 					if (event.key.code == Keyboard::Escape)
 						exit(0);
-				case Event::MouseButtonPressed:
-					/// Doit exclure les zones sans boutons ici
-					// 
-					if (event.mouseButton.button == Mouse::Left)
-						;// pointerclick();
-
-					break;
-				case Event::MouseButtonReleased:
-					if (event.mouseButton.button == Mouse::Left)
-						;// if (pointer.unclick() == 1)
-						 //r.push_back(pointer.getFocus());
-					break;
 				case Event::MouseMoved:
 					/// Doit exclure les zones ayant des boutons ici ?
 					/*if (pointer.isClicking())

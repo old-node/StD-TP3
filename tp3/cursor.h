@@ -28,10 +28,10 @@ private:
 	bool _onZone;			// Condition à savoir si le curseur est dans une zone (buttonstrip)
 
 	shape _focus;			// Zone de sélection ou aperçu d'une forme
-
+	elemColors _focusC;		// 
+	bool _defaultC;			// 
 	rRegion _zone;			// Zone active du curseur
 	FloatRect _zones[static_cast<int>(rCOUNT)];	// Dimmenssions des zones
-
 
 	// Recherche si un bouton est sous la souris
 	//oButton * searchForButton();
@@ -41,7 +41,7 @@ public:
 	~cursor();
 
 	/// Setteurs
-	void setMode(oButton * b);
+	int setMode(oButton * b);
 	void setClick(Vector2f click);
 	void setCurrent(Vector2f current);
 	void setSelected(bool b);
@@ -52,9 +52,9 @@ public:
 	void setFocus(shape current);
 
 	/// Clicker
-	int click(elemColors focusC);
+	int click();
 	void drag();
-	shape releaseClick();
+	void releaseClick();
 
 	/// Getteurs
 	bool isClicking(Mouse::Button it = Mouse::Left);

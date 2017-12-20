@@ -35,7 +35,7 @@ private:
 	sqlConnect bd;
 
 public:
-	inputMenu(int width, int height);
+	inputMenu(float width, float height);
 	~inputMenu();
 
 	void init();
