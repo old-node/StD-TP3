@@ -114,7 +114,7 @@ void mainMenu::run()
 					moveDown();
 					break;
 				case Keyboard::Return:
-					enterOption();
+					enterOption();	/// finaliser les options
 					break;
 				default:
 					break;

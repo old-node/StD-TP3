@@ -47,13 +47,13 @@ public:
 
 	void connexion();
 	void deconnexion();
-	
+
 	void ajouteUsager(const char * nom, const char * prenom);
 	void selectUsager();
 	bool userConnect(const char * user, const char * password);
-	
+
 	void listCanvas(int userID);
-	void ajouterDessin(int userID);
+	void ajouterDessin(const char * user);
 	void saveCanva(/*tblShapeCol *shapeElem, */int shapeQty);
 	void loadCanva(int dessID, int userID);
 };
@@ -229,19 +229,96 @@ void sqlConnect::selectUsager() {
 // Procède à la connexion de l'usager
 bool sqlConnect::userConnect(const char * user, const char * password)
 {
-	return 0;
+	try
+	{
+		connexion();
+
+		//S'il y a un problème avec la requête on quitte l'application sinon on affiche le résultat
+		if (SQL_SUCCESS != SQLExecDirectW(sqlStmtHandle, (SQLWCHAR*)L"SELECT usagerNom, usagerPassword FROM tblUsager", SQL_NTS)) {
+			throw string("Erreur dans la requête");
+		}
+		else {
+			//Déclarer les variables d'affichage
+
+			SQLCHAR username[SQL_RESULT_LEN];
+			SQLLEN ptrusername;
+
+			SQLCHAR pass[SQL_RESULT_LEN];
+			SQLLEN ptrpass;
+
+			while (SQLFetch(sqlStmtHandle) == SQL_SUCCESS) {
+				SQLGetData(sqlStmtHandle, 1, SQL_CHAR, username, SQL_RESULT_LEN, &ptrusername);
+				SQLGetData(sqlStmtHandle, 2, SQL_CHAR, pass, SQL_RESULT_LEN, &ptrpass);
+
+				//Compaison des strings de la BD et ceux entrés en parametre
+				if (strcmp(((const char*)username), user) == 0 && strcmp(((const char*)pass), password) == 0)
+				{
+					cout << "VALID CONNECTION" << endl;
+					return true;
+				}
+				else
+					cout << "Nope" << endl;
+
+			}
+		}
+	}
+	catch (string const& e)
+	{
+		cout << e << "\n";
+		deconnexion();
+	}
+
+	deconnexion();
+	return false;
 }
 
 /// Dessins
-// 
+// Montre la liste des dessins disponible
 void sqlConnect::listCanvas(int userID)
 {
 
 }
 // Ajoute une sauvegarde d'un dessin de l'usager
-void sqlConnect::ajouterDessin(int userID)
+void sqlConnect::ajouterDessin(const char * user)
 {
+	connexion();
+	string userStr = user;
+	string select = userStr + "' ";
 
+	SQLRETURN retcode;
+
+	if (SQL_SUCCESS != SQLExecDirectW(sqlStmtHandle, (SQLWCHAR*)L"SELECT usagerID usagerNom FROM tblUsager", SQL_NTS)) {
+		throw string("Erreur dans la requête");
+	}
+	else {
+
+		SQLCHAR username[SQL_RESULT_LEN];
+		SQLLEN ptrusername;
+
+		SQLINTEGER id;
+		SQLLEN ptr1;
+
+		while (SQLFetch(sqlStmtHandle) == SQL_SUCCESS) {
+			SQLGetData(sqlStmtHandle, 1, SQL_INTEGER, &id, 0, &ptr1);
+			SQLGetData(sqlStmtHandle, 2, SQL_CHAR, username, SQL_RESULT_LEN, &ptrusername);
+
+			int idint = id;
+			int *intptr = &idint;
+
+			if (strcmp(((const char*)username), user) == 0)
+			{
+				retcode = SQLBindParameter(sqlStmtHandle, 2, SQL_PARAM_INPUT, SQL_C_SLONG, SQL_INTEGER, 4, 0, intptr, 0, 0);
+
+				retcode = SQLPrepareW(sqlStmtHandle, (SQLWCHAR*)L"INSERT INTO tblDessin (dessUser) VALUES (?)", SQL_NTS);
+
+				retcode = SQLExecute(sqlStmtHandle);
+
+				if (SQL_SUCCESS != retcode)
+					throw string("Erreur dans la requête");
+
+			}
+		}
+	}
 }
 // Met à jour la sauvegarde d'un utilisateur
 void sqlConnect::saveCanva(/*tblShapeCol *shapeElem, */int shapeQty)

@@ -17,7 +17,7 @@ inputMenu::inputMenu(int w, int h)
 {
 	_window.create(VideoMode(w, h), "Entrez votre nom", Style::None);
 
-	Vector2f sDim = Vector2f((float)w, (float)h);
+	_sDim = Vector2f((float)w, (float)h);
 
 	//Set les fonts et les couleurs
 	for (int i = 0; i < MAX_NUMBER_OF_ITEMS; i++)
@@ -37,11 +37,11 @@ inputMenu::inputMenu(int w, int h)
 	inputs[1].setString("");
 
 	texts[0].setPosition(50, 0);
-	texts[1].setPosition(50, sDim.y/2);
+	texts[1].setPosition(50, _sDim.y/2);
 
 	for (int i = 0; i < MAX_NUMBER_OF_ITEMS; i++)
 	{
-		rect[i] = RectangleShape(Vector2f(sDim.x - 100, sDim.y/4));
+		rect[i] = RectangleShape(Vector2f(_sDim.x - 100, _sDim.y/4));
 		rect[i].setPosition((Vector2f(50, 
 			texts[i].getPosition().y + texts[i].getLocalBounds().height + 20)));
 		rect[i].setFillColor(Color(98, 195, 98));
